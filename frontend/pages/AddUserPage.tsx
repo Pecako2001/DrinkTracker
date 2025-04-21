@@ -29,7 +29,7 @@ export default function AddUserPage() {
             onChange={(e) => setName(e.currentTarget.value)}
           />
 
-          <Group position="right">
+          <Group justify="flex-end">
             <Button type="submit">Create User</Button>
           </Group>
         </Stack>

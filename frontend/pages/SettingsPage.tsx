@@ -64,7 +64,7 @@ export default function SettingsPage() {
           </Button>
         </Paper>
       ) : (
-        <Stack spacing="lg">
+        <Stack gap="lg">
           <UserManagement users={users} setUsers={setUsers} />
           <PaymentsTable payments={payments} />
         </Stack>

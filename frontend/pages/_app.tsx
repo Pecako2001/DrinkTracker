@@ -6,7 +6,7 @@ import WebLayout from '../components/WebLayout';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <MantineProvider withGlobalStyles withNormalizeCSS>
+    <MantineProvider globalStyles normalizeCSS theme={{}}>
       <WebLayout>
         <Component {...pageProps} />
       </WebLayout>
