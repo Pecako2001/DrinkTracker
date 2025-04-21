@@ -52,16 +52,13 @@ import {
                 <td>{u.name}</td>
                 <td>
                 <NumberInput
-                  defaultValue={u.balance}
+                  defaultValue={Math.round(u.balance * 100) / 100}
                   step={1}
-                  formatter={(value) =>
-                    !Number.isNaN(parseFloat(value || '')) ? `€ ${parseFloat(value).toFixed(2)}` : ''
-                  }
-                  parser={(value) => value.replace(/€\s?|(,*)/g, '')}
                   onBlur={(e) =>
-                    updateBalance(u.id, Number(e.currentTarget.value))
+                    updateBalance(u.id, Math.round(Number(e.currentTarget.value) * 100) / 100)
                   }
                 />
+
                 </td>
                 <td>{u.total_drinks}</td>
                 <td>
