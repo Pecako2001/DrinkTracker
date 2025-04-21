@@ -1,7 +1,4 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
-name: Node.js CI
+name: Full Stack CI
 
 on:
   push:
@@ -15,16 +12,57 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.0]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        node-version: [18.x]
 
     steps:
     - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
+
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+        
+    # FRONTEND
+    - name: Install Frontend Dependencies
+      working-directory: frontend
+      run: npm ci
+
+    - name: Lint Frontend Code
+      working-directory: frontend
+      run: |
+        # Uncomment this if you use eslint
+        # npm run lint
+
+    - name: Type Check Frontend
+      working-directory: frontend
+      run: |
+        # Uncomment this if you use TypeScript
+        # npm run type-check
+
+    - name: Build Frontend
+      working-directory: frontend
+      run: npm run build
+
+    - name: Run Frontend Tests
+      working-directory: frontend
+      run: |
+        # Optional: include only if you have test setup
+        npm test
+
+    # BACKEND
+    - name: Install Backend Dependencies
+      working-directory: backend
+      run: npm ci
+
+    - name: Lint Backend Code
+      working-directory: backend
+      run: |
+        # Uncomment this if backend uses Node + eslint
+        # npm run lint
+
+    - name: Type Check Backend
+      working-directory: backend
+      run: |
+        # Uncomment this if backend uses TypeScript
+        # npm run type-check
