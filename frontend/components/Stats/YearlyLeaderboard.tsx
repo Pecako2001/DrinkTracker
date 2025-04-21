@@ -1,6 +1,6 @@
-import React from 'react';
-import { Card, ScrollArea, Table, Title } from '@mantine/core';
-import { Person } from '../../types';
+import React from "react";
+import { Card, ScrollArea, Table, Title } from "@mantine/core";
+import { Person } from "../../types";
 
 interface LeaderboardProps {
   users: Person[];
@@ -12,11 +12,17 @@ export function YearlyLeaderboard({ users }: LeaderboardProps) {
 
   return (
     <Card shadow="sm" p="md" radius="md" withBorder style={{ flex: 1 }}>
-      <Title order={4} mb="sm">This Year</Title>
+      <Title order={4} mb="sm">
+        This Year
+      </Title>
       <ScrollArea>
         <Table striped highlightOnHover>
           <thead>
-            <tr><th>#</th><th>Name</th><th>Drinks</th></tr>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Drinks</th>
+            </tr>
           </thead>
           <tbody>
             {sorted.map((u, i) => (

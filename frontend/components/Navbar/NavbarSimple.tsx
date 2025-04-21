@@ -1,27 +1,26 @@
 // components/Navbar/NavbarSimpleContent.tsx
-import { useState } from 'react';
-import Link from 'next/link';
+import { useState } from "react";
+import Link from "next/link";
 import {
   IconHome,
   IconChartDots3,
   IconSettings,
-  IconUserPlus,       // if you don’t have this, pick another add‑user icon
-} from '@tabler/icons-react';
-import { Group, Text } from '@mantine/core';
-import classes from './NavbarSimple.module.css';
+  IconUserPlus, // if you don’t have this, pick another add‑user icon
+} from "@tabler/icons-react";
+import { Group, Text } from "@mantine/core";
+import classes from "./NavbarSimple.module.css";
 
 const mainLinks = [
-  { href: '/',         label: 'Home',        icon: IconHome },
-  { href: '/StatsPage',    label: 'Statistieken', icon: IconChartDots3 },
+  { href: "/", label: "Home", icon: IconHome },
+  { href: "/StatsPage", label: "Statistieken", icon: IconChartDots3 },
 ];
 const footerLinks = [
-  { href: '/AddUserPage', label: 'Add User',    icon: IconUserPlus },
-  { href: '/SettingsPage', label: 'Settings',    icon: IconSettings },
+  { href: "/AddUserPage", label: "Add User", icon: IconUserPlus },
+  { href: "/SettingsPage", label: "Settings", icon: IconSettings },
 ];
 
-
 export default function NavbarSimpleContent() {
-  const [active, setActive] = useState('Home');
+  const [active, setActive] = useState("Home");
 
   return (
     <>

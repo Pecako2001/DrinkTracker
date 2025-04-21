@@ -1,5 +1,5 @@
 // frontend/pages/SettingsPage.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   PasswordInput,
   Button,
@@ -7,11 +7,11 @@ import {
   Title,
   Container,
   Stack,
-} from '@mantine/core';
-import api from '../api/api';
-import { Person } from '../types';
-import { UserManagement } from '../components/Settings/UserManagement';
-import { PaymentsTable } from '../components/Settings/PaymentsTable';
+} from "@mantine/core";
+import api from "../api/api";
+import { Person } from "../types";
+import { UserManagement } from "../components/Settings/UserManagement";
+import { PaymentsTable } from "../components/Settings/PaymentsTable";
 
 interface Payment {
   id: number;
@@ -23,8 +23,8 @@ interface Payment {
 }
 
 export default function SettingsPage() {
-  const [password, setPassword] = useState('');
-  const [authError, setAuthError] = useState('');
+  const [password, setPassword] = useState("");
+  const [authError, setAuthError] = useState("");
   const [isAuth, setIsAuth] = useState(false);
 
   const [users, setUsers] = useState<Person[]>([]);
@@ -32,16 +32,16 @@ export default function SettingsPage() {
 
   useEffect(() => {
     if (!isAuth) return;
-    api.get<Person[]>('/users').then((r) => setUsers(r.data));
-    api.get<Payment[]>('/payments').then((r) => setPayments(r.data));
+    api.get<Person[]>("/users").then((r) => setUsers(r.data));
+    api.get<Payment[]>("/payments").then((r) => setPayments(r.data));
   }, [isAuth]);
 
   const handleLogin = () => {
     if (password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
       setIsAuth(true);
-      setAuthError('');
+      setAuthError("");
     } else {
-      setAuthError('Incorrect password');
+      setAuthError("Incorrect password");
     }
   };
 

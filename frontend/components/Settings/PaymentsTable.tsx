@@ -1,5 +1,5 @@
 // components/Settings/PaymentsTable.tsx
-import { Title, Table } from '@mantine/core';
+import { Title, Table } from "@mantine/core";
 
 interface Payment {
   id: number;
@@ -35,12 +35,10 @@ export function PaymentsTable({ payments }: Props) {
             <tr key={p.id}>
               <td>{p.id}</td>
               <td>{p.person_id}</td>
-              <td>{p.amount ? Number(p.amount).toFixed(2) : '–'}</td>
+              <td>{p.amount ? Number(p.amount).toFixed(2) : "–"}</td>
               <td>{p.status}</td>
               <td>
-                {p.created_at
-                  ? new Date(p.created_at).toLocaleString()
-                  : '–'}
+                {p.created_at ? new Date(p.created_at).toLocaleString() : "–"}
               </td>
             </tr>
           ))}

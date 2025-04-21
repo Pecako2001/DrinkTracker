@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { TextInput, Button, Group, Paper, Title, Stack } from '@mantine/core';
-import api from '../api/api';
+import React, { useState } from "react";
+import { useRouter } from "next/router";
+import { TextInput, Button, Group, Paper, Title, Stack } from "@mantine/core";
+import api from "../api/api";
 
 export default function AddUserPage() {
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await api.post('/users', { name });
-    router.push('/');
+    await api.post("/users", { name });
+    router.push("/");
   };
 
   return (

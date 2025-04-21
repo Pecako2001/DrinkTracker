@@ -1,8 +1,8 @@
 // pages/_app.tsx
-import '@mantine/core/styles.css';
-import type { AppProps } from 'next/app';
-import { MantineProvider, createTheme } from '@mantine/core';
-import WebLayout from '../components/WebLayout';
+import "@mantine/core/styles.css";
+import type { AppProps } from "next/app";
+import { MantineProvider, createTheme } from "@mantine/core";
+import WebLayout from "../components/WebLayout";
 
 // Optional: customize the theme if needed
 const theme = createTheme({

@@ -1,14 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import {
-  Card,
-  Grid,
-  Group,
-  Text,
-  ThemeIcon,
-  Title,
-} from '@mantine/core';
-import { IconArrowUpRight, IconArrowDownRight } from '@tabler/icons-react';
-import api from '../../api/api';
+import React, { useEffect, useState } from "react";
+import { Card, Grid, Group, Text, ThemeIcon, Title } from "@mantine/core";
+import { IconArrowUpRight, IconArrowDownRight } from "@tabler/icons-react";
+import api from "../../api/api";
 
 interface OverallStatsProps {}
 
@@ -19,10 +12,10 @@ export function OverallStats() {
   const [lastYear, setLastYear] = useState(0);
 
   useEffect(() => {
-    api.get('/stats/drinks_this_month').then((res) => setThisMonth(res.data));
-    api.get('/stats/drinks_last_month').then((res) => setLastMonth(res.data));
-    api.get('/stats/drinks_this_year').then((res) => setThisYear(res.data));
-    api.get('/stats/drinks_last_year').then((res) => setLastYear(res.data));
+    api.get("/stats/drinks_this_month").then((res) => setThisMonth(res.data));
+    api.get("/stats/drinks_last_month").then((res) => setLastMonth(res.data));
+    api.get("/stats/drinks_this_year").then((res) => setThisYear(res.data));
+    api.get("/stats/drinks_last_year").then((res) => setLastYear(res.data));
   }, []);
 
   const calcChange = (curr: number, prev: number) => {
@@ -31,9 +24,13 @@ export function OverallStats() {
     const positive = diff >= 0;
 
     return {
-      value: `${positive ? '+' : ''}${perc}%`,
-      icon: positive ? <IconArrowUpRight size={16} /> : <IconArrowDownRight size={16} />,
-      color: positive ? 'teal' : 'red',
+      value: `${positive ? "+" : ""}${perc}%`,
+      icon: positive ? (
+        <IconArrowUpRight size={16} />
+      ) : (
+        <IconArrowDownRight size={16} />
+      ),
+      color: positive ? "teal" : "red",
     };
   };
 
