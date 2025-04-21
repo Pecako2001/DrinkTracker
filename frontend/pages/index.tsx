@@ -105,12 +105,13 @@ export default function HomePage() {
     <Container size={750} py="md">
       <TextInput
         placeholder="Search users..."
-        icon={<IconSearch size={16} />}
+        leftSection={<IconSearch size={16} />}
         mb="md"
         value={search}
         onChange={(e) => setSearch(e.currentTarget.value)}
-        clearable
+        __clearable
       />
+
 
       <TopUpModal
         opened={modalOpened}
@@ -124,7 +125,7 @@ export default function HomePage() {
       <SimpleGrid
         cols={2}
         spacing="md"
-        breakpoints={[{ maxWidth: 600, cols: 1, spacing: 'sm' }]}
+        style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}
       >
         {filtered.map((user) => (
           <UserCardImage
@@ -145,7 +146,6 @@ export default function HomePage() {
             icon={<IconX size={16} />}
             color="teal"
             title="Drink added"
-            disallowClose={false}
           >
             +1 drink added to <strong>{notif.user.name}</strong>
             <Button size="xs" ml="sm" variant="light" onClick={() => handleUndoDrink(notif)}>

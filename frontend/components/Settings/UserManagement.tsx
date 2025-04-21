@@ -62,18 +62,18 @@ import {
                 </td>
                 <td>{u.total_drinks}</td>
                 <td>
-                  <Group spacing="xs">
-                    <Button
-                      color="red"
-                      variant="subtle"
-                      onClick={() => {
-                        setTargetUser(u);
-                        setConfirmOpen(true);
-                      }}
-                      leftIcon={<IconTrash size={16} />}
-                    >
-                      Delete
-                    </Button>
+                  <Group gap="xs">
+                  <Button
+                    color="red"
+                    variant="subtle"
+                    onClick={() => {
+                      setTargetUser(u);
+                      setConfirmOpen(true);
+                    }}
+                    leftSection={<IconTrash size={16} />}
+                  >
+                    Delete
+                  </Button>
                   </Group>
                 </td>
               </tr>
