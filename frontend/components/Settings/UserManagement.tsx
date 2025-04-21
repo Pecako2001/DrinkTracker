@@ -51,14 +51,17 @@ import {
               <tr key={u.id}>
                 <td>{u.name}</td>
                 <td>
-                  <NumberInput
-                    defaultValue={u.balance}
-                    precision={2}
-                    step={1}
-                    onBlur={(e) =>
-                      updateBalance(u.id, Number(e.currentTarget.value))
-                    }
-                  />
+                <NumberInput
+                  defaultValue={u.balance}
+                  step={1}
+                  formatter={(value) =>
+                    !Number.isNaN(parseFloat(value || '')) ? `€ ${parseFloat(value).toFixed(2)}` : ''
+                  }
+                  parser={(value) => value.replace(/€\s?|(,*)/g, '')}
+                  onBlur={(e) =>
+                    updateBalance(u.id, Number(e.currentTarget.value))
+                  }
+                />
                 </td>
                 <td>{u.total_drinks}</td>
                 <td>
