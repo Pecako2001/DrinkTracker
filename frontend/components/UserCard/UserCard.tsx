@@ -1,4 +1,3 @@
-// frontend/components/UserCard/UserCard.tsx
 import React from 'react';
 import { Avatar, Button, Card, Text, Divider, Stack, Group } from '@mantine/core';
 import classes from './UserCardImage.module.css';
@@ -17,9 +16,9 @@ export function UserCardImage({ user, onDrink, onTopUp }: UserCardProps) {
       <Card.Section
         h={120}
         style={{
-          backgroundImage:
-            'url(https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?...&auto=format&fit=crop&w=500&q=80)',
+          backgroundImage: 'url("/images/Logo.png")',
           backgroundSize: 'cover',
+          backgroundPosition: 'center',
         }}
       />
 
