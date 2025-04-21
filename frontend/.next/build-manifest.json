@@ -23,11 +23,6 @@
       "static/chunks/main.js",
       "static/chunks/pages/SettingsPage.js"
     ],
-    "/StatsPage": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/StatsPage.js"
-    ],
     "/_app": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
