@@ -52,3 +52,5 @@ logs/
 # ---- PostgreSQL dumps ----
 *.sql
 *.dump
+
+frontend/.next/
