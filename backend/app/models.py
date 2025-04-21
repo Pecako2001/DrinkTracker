@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, String, Numeric, DateTime, ForeignKey, func
+from sqlalchemy import Column, Integer, String, Numeric, DateTime, ForeignKey, func, DECIMAL
 from sqlalchemy.orm import relationship
+from datetime import datetime
 from .database import Base
 
 class Person(Base):
@@ -20,10 +21,12 @@ class DrinkEvent(Base):
 
 class Payment(Base):
     __tablename__ = "payments"
+
     id = Column(Integer, primary_key=True, index=True)
-    mollie_id = Column(String, unique=True, nullable=False)
+    mollie_id = Column(String, unique=True, index=True)
     person_id = Column(Integer, ForeignKey("persons.id"))
-    amount = Column(Numeric(10,2), nullable=False)
-    status = Column(String, nullable=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    amount = Column(DECIMAL(10, 2))
+    status = Column(String)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
     person = relationship("Person", back_populates="payments")
