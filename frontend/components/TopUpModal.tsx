@@ -34,10 +34,9 @@ export function TopUpModal({
       onClose={onClose}
       centered
       size="sm"
-      overlayBlur={3}
       title={<Title order={4}>Top up {userName}</Title>}
     >
-      <Stack spacing="lg">
+      <Stack gap={20}>
         <Text size="sm" color="dimmed">
           Choose a preset amount or enter a custom value below.
         </Text>
@@ -58,13 +57,11 @@ export function TopUpModal({
           label="Custom amount"
           min={1}
           value={amount}
-          onChange={(val) => val !== undefined && onChangeAmount(val)}
-          parser={(value) => value.replace(/[^0-9]/g, '')}
-          formatter={(value) => (value ? `€ ${value}` : '')}
-          hideControls
-n        />
+          onChange={(val) => typeof val === 'number' && onChangeAmount(val)}
+  hideControls
+/>
 
-        <Group position="apart" mt="md">
+        <Group justify="space-between" mt="md">
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>

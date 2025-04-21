@@ -33,8 +33,8 @@ export function UserCardImage({ user, onDrink, onTopUp }: UserCardProps) {
       />
 
       {/* Name + Nickname */}
-      <Stack spacing={2} align="center" mt="sm">
-        <Text weight={600} size="lg">{user.name}</Text>
+      <Stack gap={2} align="center" mt="sm">
+        <Text fw={600} size="lg">{user.name}</Text>
         {user.nickname && (
           <Text color="dimmed" size="sm">“{user.nickname}”</Text>
         )}
@@ -43,15 +43,15 @@ export function UserCardImage({ user, onDrink, onTopUp }: UserCardProps) {
       <Divider my="sm" />
 
       {/* Single Stat: Balance */}
-      <Group position="center" spacing="xs" mb="md">
-        <Text size="lg" weight={500}>€{user.balance.toFixed(2)}</Text>
+      <Group justify="center" gap={4} mb="md">
+        <Text size="lg" fw={500}>€{user.balance.toFixed(2)}</Text>
         <Text color="dimmed" size="sm">Balance</Text>
       </Group>
 
       <Divider />
 
       {/* Actions: +1 Drink, Top Up */}
-      <Stack spacing="xs" mt="md">
+      <Stack gap={8} mt="md">
         <Button fullWidth variant="outline" onClick={onDrink}>
           +1 Drink
         </Button>
