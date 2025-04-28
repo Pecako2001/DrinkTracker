@@ -1,19 +1,18 @@
 FROM node:23
 
-# Create app directory
 WORKDIR /app
 
-# Copy package.json and yarn.lock (important!)
-COPY package.json yarn.lock ./
+# Copy only package.json and package-lock.json first
+COPY package.json package-lock.json ./
 
-# Install dependencies with Yarn (correct tool)
-RUN corepack enable && yarn install
+# Install dependencies cleanly
+RUN npm install
 
-# Copy the rest of your app
+# Now copy the rest of the application
 COPY . .
 
-# Expose frontend port
+# Expose port (optional, good habit)
 EXPOSE 3000
 
-# Start Next.js
-CMD ["yarn", "dev"]
+# Start the application
+CMD ["npm", "run", "dev"]
