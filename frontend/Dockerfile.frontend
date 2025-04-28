@@ -1,0 +1,7 @@
+FROM node:23
+WORKDIR /app
+COPY . .
+RUN npm install
+RUN npm install next
+RUN npm install react react-dom
+CMD ["npm", "run", "dev"]

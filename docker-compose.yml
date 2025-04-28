@@ -3,16 +3,66 @@ version: '3.8'
 services:
   db:
     image: postgres:15
-    container_name: drinktracker-db
+    container_name: qube-db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: drinktracker
+      POSTGRES_DB: qube
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: qube
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+    ports:
+      - "8000:8000"
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ./backend:/app
+      - ./data/raw:/data/raw
+      - ./data/datasets:/data/datasets
+      - ./data/models:/data/models
+      - ./runs:/runs
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    runtime: nvidia
+    shm_size: '128G'
+    tmpfs:
+      - /dev/shm:size=128G
+    user: "${UID}:${GID}"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - HOST=0.0.0.0
+    volumes:
+      - ./frontend:/app
 
 volumes:
   postgres_data:
