@@ -1,7 +1,19 @@
 FROM node:23
+
+# Create app directory
 WORKDIR /app
+
+# Copy package.json and yarn.lock (important!)
+COPY package.json yarn.lock ./
+
+# Install dependencies with Yarn (correct tool)
+RUN corepack enable && yarn install
+
+# Copy the rest of your app
 COPY . .
-RUN npm install
-RUN npm install next
-RUN npm install react react-dom
-CMD ["npm", "run", "dev"]
+
+# Expose frontend port
+EXPOSE 3000
+
+# Start Next.js
+CMD ["yarn", "dev"]
