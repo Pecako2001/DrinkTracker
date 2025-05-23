@@ -5,12 +5,15 @@ import { Container, Title, Loader, Button, Box, Text, Stack } from '@mantine/cor
 import api from '../api/api';
 import { Person } from '../types';
 import UserQuickActionsDisplay from '../components/Mobile/UserQuickActionsDisplay';
+import MobileTopUpModal from '../components/Mobile/MobileTopUpModal';
 
 const MobileQuickActionsPage: React.FC = () => {
   const [user, setUser] = useState<Person | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState({ drink: false, topup: false });
+  const [topUpModalOpen, setTopUpModalOpen] = useState(false);
+  const [topUpAmount, setTopUpAmount] = useState(5);
   const router = useRouter();
 
   const fetchUserData = useCallback(async (userId: string) => {
@@ -40,14 +43,16 @@ const MobileQuickActionsPage: React.FC = () => {
 
   const handleAddDrink = async () => {
     if (!user) return;
+    if (user.balance <= 0) {
+      setTopUpModalOpen(true);
+      return;
+    }
     setActionLoading(prev => ({ ...prev, drink: true }));
     try {
       await api.post(`/users/${user.id}/drinks`);
-      await fetchUserData(user.id.toString()); // Refresh user data
+      await fetchUserData(user.id.toString());
     } catch (err) {
-      console.error("Failed to add drink:", err);
       setError('Failed to add drink. Please try again.');
-      // Optionally, you might want to show a more specific error to the user
     } finally {
       setActionLoading(prev => ({ ...prev, drink: false }));
     }
@@ -57,15 +62,18 @@ const MobileQuickActionsPage: React.FC = () => {
     if (!user) return;
     setActionLoading(prev => ({ ...prev, topup: true }));
     try {
-      // The backend's simulated create_payment updates the balance directly
-      await api.post('/payments/topup', { user_id: user.id, amount: 5 });
-      await fetchUserData(user.id.toString()); // Refresh user data
+      // Call backend to create payment and get checkout URL
+      const { data } = await api.post<{ checkoutUrl: string }>(
+        '/payments/topup',
+        { user_id: user.id, amount: topUpAmount }
+      );
+      // Redirect to payment provider
+      window.location.href = data.checkoutUrl;
     } catch (err) {
-      console.error("Failed to top up:", err);
-      setError('Failed to top up balance. Please try again.');
-      // Optionally, show specific error
+      setError('Failed to initiate top up. Please try again.');
     } finally {
       setActionLoading(prev => ({ ...prev, topup: false }));
+      setTopUpModalOpen(false);
     }
   };
 
@@ -128,19 +136,27 @@ const MobileQuickActionsPage: React.FC = () => {
           +1 Drink
         </Button>
         <Button
-          onClick={handleTopUp}
+          onClick={() => setTopUpModalOpen(true)}
           loading={actionLoading.topup}
-          disabled={actionLoading.drink} // Disable if other action is in progress
+          disabled={actionLoading.drink}
           size="lg"
           variant="outline"
         >
-          Top Up (5 EUR)
+          Top Up
         </Button>
       </Stack>
       
       <Button onClick={() => router.push('/MobileUserSelect')} mt="xl" variant="light" fullWidth>
         Change User
       </Button>
+
+      <MobileTopUpModal
+        opened={topUpModalOpen}
+        amount={topUpAmount}
+        onChangeAmount={setTopUpAmount}
+        onConfirm={handleTopUp}
+        onClose={() => setTopUpModalOpen(false)}
+      />
     </Container>
   );
 };

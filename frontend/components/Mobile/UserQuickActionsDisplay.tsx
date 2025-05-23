@@ -27,7 +27,7 @@ const UserQuickActionsDisplay: React.FC<UserQuickActionsDisplayProps> = ({ user 
             size="xxl" 
             fw={700} 
             ta="center" 
-            c={user.balance > 0 ? 'teal.600' : user.balance < 0 ? 'red.600' : 'dimmed'}
+            c={user.balance > 0 ? 'teal' : user.balance < 0 ? 'red' : 'dimmed'}
           >
             €{user.balance.toFixed(2)}
           </Text>
