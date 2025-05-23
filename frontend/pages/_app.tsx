@@ -1,5 +1,6 @@
 // pages/_app.tsx
 import "@mantine/core/styles.css";
+import "../styles/global.css";
 import type { AppProps } from "next/app";
 import { MantineProvider, createTheme } from "@mantine/core";
 import WebLayout from "../components/WebLayout";
