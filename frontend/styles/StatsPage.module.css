@@ -1,0 +1,33 @@
+.statsContainer {
+  /* border: 1px solid blue; */
+  /* Add any overall container specific styles if needed */
+}
+
+.leaderboardSection {
+  /* border: 1px solid green; */
+  /* background-color: #f9f9f9; */ /* Example light background */
+}
+
+.userInsightSection {
+  /* border: 1px solid orange; */
+  /* background-color: #fefefe; */ /* Example light background */
+}
+
+.leaderboardCard {
+  /* Add any specific styles here, e.g., */
+  /* background-color: #f8f9fa; */
+  /* border-left: 3px solid var(--mantine-color-blue-6); */
+  height: 100%; /* Ensure it fills the Grid.Col height */
+}
+
+.userInsightPanel {
+  /* padding: var(--mantine-spacing-md); */
+  /* Add specific styles if needed */
+}
+
+.userStatsCard {
+  /* background-color: var(--mantine-color-gray-0); */
+  /* border-radius: var(--mantine-radius-md); */
+  /* padding: var(--mantine-spacing-sm); */
+  /* Ensure cards take full height or have min-height if desired */
+}

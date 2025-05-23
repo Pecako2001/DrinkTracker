@@ -1,7 +1,7 @@
-import axios from 'axios';
+import axios from "axios";
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000', // adjust if your FastAPI runs elsewhere
+  baseURL: "http://localhost:8000", // adjust if your FastAPI runs elsewhere
 });
 
 export default api;
