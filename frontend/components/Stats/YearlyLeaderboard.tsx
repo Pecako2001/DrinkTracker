@@ -1,17 +1,25 @@
 import React from "react";
 import { Card, ScrollArea, Table, Title } from "@mantine/core";
 import { Person } from "../../types";
+import classes from "../../styles/StatsPage.module.css"; // Import CSS module
 
 interface LeaderboardProps {
   users: Person[];
 }
 
 export function YearlyLeaderboard({ users }: LeaderboardProps) {
-  // sort by total_drinks desc, replace with year-specific count
+  // TODO: Update to use actual yearly drink data when available
   const sorted = [...users].sort((a, b) => b.total_drinks - a.total_drinks);
 
   return (
-    <Card shadow="sm" p="md" radius="md" withBorder style={{ flex: 1 }}>
+    <Card
+      shadow="sm"
+      p="md"
+      radius="md"
+      withBorder
+      style={{ flex: 1 }}
+      className={classes.leaderboardCard}
+    >
       <Title order={4} mb="sm">
         This Year
       </Title>
@@ -29,7 +37,10 @@ export function YearlyLeaderboard({ users }: LeaderboardProps) {
               <tr key={u.id}>
                 <td>{i + 1}</td>
                 <td>{u.name}</td>
-                <td>{u.total_drinks}</td>
+                <td>
+                  {u.total_drinks.toLocaleString()}{" "}
+                  {/* TODO: Display actual yearly drink count */}
+                </td>
               </tr>
             ))}
           </tbody>

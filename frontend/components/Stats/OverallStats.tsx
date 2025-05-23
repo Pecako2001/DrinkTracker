@@ -3,8 +3,6 @@ import { Card, Grid, Group, Text, ThemeIcon, Title } from "@mantine/core";
 import { IconArrowUpRight, IconArrowDownRight } from "@tabler/icons-react";
 import api from "../../api/api";
 
-interface OverallStatsProps {}
-
 export function OverallStats() {
   const [thisMonth, setThisMonth] = useState(0);
   const [lastMonth, setLastMonth] = useState(0);
@@ -38,9 +36,9 @@ export function OverallStats() {
   const yearChange = calcChange(thisYear, lastYear);
 
   return (
-    <Grid gutter="md" mb="lg">
+    <Grid gutter="md">
       <Grid.Col span={{ base: 12, sm: 6, md: 3 }}>
-        <Card withBorder shadow="sm" radius="md" p="md">
+        <Card radius="md">
           <Text size="xs" fw={700} c="dimmed" mb={5}>
             DRINKS THIS MONTH
           </Text>
@@ -62,7 +60,7 @@ export function OverallStats() {
       </Grid.Col>
 
       <Grid.Col span={{ base: 12, sm: 6, md: 3 }}>
-        <Card withBorder shadow="sm" radius="md" p="md">
+        <Card radius="md">
           <Text size="xs" fw={700} c="dimmed" mb={5}>
             DRINKS THIS YEAR
           </Text>
