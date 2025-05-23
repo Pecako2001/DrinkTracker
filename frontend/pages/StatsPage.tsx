@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Container, Grid, Paper } from "@mantine/core"; // Removed Text, Flex, added Grid, Paper
 import api from "../api/api"; // ✅ correct path from 'pages' dir
 import { Person } from "../types";
-import { OverallStats } from "../components/Stats/OverallStats";
 import { MonthlyLeaderboard } from "../components/Stats/MonthlyLeaderboard";
 import { YearlyLeaderboard } from "../components/Stats/YearlyLeaderboard";
 import { UserInsightPanel } from "../components/Stats/UserInsightPanel"; // New import
@@ -17,11 +16,6 @@ function StatsPage() {
 
   return (
     <Container py="md" className={classes.statsContainer}>
-      {/* Overall Stats - wrapped in Paper */}
-      <Paper withBorder shadow="sm" p="md" mb="lg">
-        <OverallStats />
-      </Paper>
-
       {/* Leaderboards Section */}
       <Paper
         withBorder

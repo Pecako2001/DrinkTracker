@@ -26,6 +26,7 @@
     "@next/bundle-analyzer": "^15.2.3",
     "@tabler/icons-react": "^3.31.0",
     "axios": "^1.8.4",
+    "framer-motion": "^12.12.1",
     "next": "15.2.3",
     "react": "19.0.0",
     "react-dom": "19.0.0"
@@ -64,4 +65,4 @@
     "typescript-eslint": "^8.27.0"
   },
   "packageManager": "yarn@4.8.1"
-}
+  }

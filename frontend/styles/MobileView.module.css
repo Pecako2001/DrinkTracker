@@ -1,0 +1,21 @@
+/* General container styles for mobile views, if needed */
+/* .mobileContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; // Ensure it takes at least full viewport height
+  padding: var(--mantine-spacing-md);
+} */
+
+/* Styles for ensuring full width and touch-friendly buttons/cards if Mantine props are insufficient */
+/* .fullWidthButton {
+  width: 100%;
+  min-height: 48px; // Ensure good touch target height
+  font-size: var(--mantine-font-size-lg); // Larger font for readability
+} */
+
+/* .userCard {
+  width: 100%;
+  margin-bottom: var(--mantine-spacing-sm);
+} */
+
+/* Add other specific styles as identified during review */

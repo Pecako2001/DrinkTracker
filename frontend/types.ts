@@ -5,3 +5,7 @@ export interface Person {
   total_drinks: number;
   avatarUrl?: string; // Added avatarUrl property
 }
+
+export interface TopUpResponse {
+  checkoutUrl: string;
+}
