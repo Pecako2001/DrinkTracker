@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/router";
+import Cookies from "js-cookie";
+import { useMediaQuery } from "@mantine/hooks";
 import {
   Container,
   TextInput,
@@ -6,6 +9,7 @@ import {
   Notification,
   Button,
   Stack,
+  LoadingOverlay, // Added for loading state
 } from "@mantine/core";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import api from "../api/api";
@@ -19,6 +23,10 @@ interface DrinkNotification {
 }
 
 export default function HomePage() {
+  const router = useRouter();
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const [loading, setLoading] = useState(true); // Added for loading state
+
   const [users, setUsers] = useState<Person[]>([]);
   const [search, setSearch] = useState("");
   const [modalOpened, setModalOpened] = useState(false);
@@ -29,11 +37,24 @@ export default function HomePage() {
   const [notifications, setNotifications] = useState<DrinkNotification[]>([]);
 
   useEffect(() => {
-    api.get<Person[]>("/users").then((r) => {
-      setUsers(r.data);
-      originalOrderRef.current = r.data.map((u) => u.id);
-    });
-  }, []);
+    if (isMobile) {
+      // setLoading(true) is already done at initialization
+      const selectedUserId = Cookies.get("selected_user_id");
+      if (selectedUserId) {
+        router.push("/MobileQuickActions");
+      } else {
+        router.push("/MobileUserSelect");
+      }
+      // No need to setLoading(false) here as the component will unmount after push
+    } else {
+      // Not mobile, proceed to load desktop content
+      api.get<Person[]>("/users").then((r) => {
+        setUsers(r.data);
+        originalOrderRef.current = r.data.map((u) => u.id);
+        setLoading(false); // Desktop content loaded
+      });
+    }
+  }, [isMobile, router]); // Removed 'loading' from dependency array to avoid potential loops
 
   const fetchUsersSorted = async () => {
     const updatedUsers = (await api.get<Person[]>("/users")).data;
@@ -103,6 +124,21 @@ export default function HomePage() {
     u.name.toLowerCase().includes(search.toLowerCase()),
   );
 
+  if (loading) {
+    // Show loading overlay if isMobile is true (and redirection is happening)
+    // or if isMobile is false and desktop content is still loading.
+    return <LoadingOverlay visible />;
+  }
+
+  // If !loading and isMobile, it means redirection should have happened.
+  // This state ideally shouldn't be reached if redirection logic is correct.
+  // However, to be safe, we can return a loading overlay or null.
+  if (isMobile) {
+    return <LoadingOverlay visible />;
+  }
+
+  // Render desktop UI if not mobile and not loading
+  // This part of the code will only be reached if !isMobile and !loading
   return (
     <Container size={750} py="md">
       <TextInput
