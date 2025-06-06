@@ -39,15 +39,22 @@ const UserQuickActionsDisplay: React.FC<UserQuickActionsDisplayProps> = ({
                   onChangeAvatar(e.currentTarget.files?.[0] ?? null)
                 }
               />
-                <Button
+              <Button
                 size="xs"
                 className={classes.changeBtn}
                 onClick={triggerFile}
-                style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: 0, width: 36, height: 36 }}
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  padding: 0,
+                  width: 36,
+                  height: 36,
+                }}
                 variant="subtle"
-                >
+              >
                 <IconCamera size={26} />
-                </Button>
+              </Button>
             </>
           )}
         </div>

@@ -12,7 +12,7 @@ import {
 } from "@mantine/core"; // Removed Paper, Group as they are now encapsulated in UserQuickActionsDisplay
 import api from "../api/api";
 import { Person } from "../types";
-import { IconCoffee, IconCreditCardPay, IconUser } from '@tabler/icons-react';
+import { IconCoffee, IconCreditCardPay, IconUser } from "@tabler/icons-react";
 import UserQuickActionsDisplay from "../components/Mobile/UserQuickActionsDisplay";
 import MobileTopUpModal from "../components/Mobile/MobileTopUpModal";
 
