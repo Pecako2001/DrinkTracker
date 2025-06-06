@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Numeric, DateTime, ForeignKey, func, DECIMAL
+from sqlalchemy import Column, Integer, String, Numeric, DateTime, ForeignKey, func, DECIMAL, Boolean
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from .database import Base
@@ -32,3 +32,12 @@ class Payment(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     person = relationship("Person", back_populates="payments")
+
+
+class BackupLog(Base):
+    __tablename__ = "backups"
+
+    id = Column(Integer, primary_key=True, index=True)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    success = Column(Boolean)
+    message = Column(String, nullable=True)

@@ -5,6 +5,9 @@ from sqlalchemy import func, and_
 from . import models, schemas, crud
 from .database import engine, Base, get_db
 import os
+import subprocess
+import threading
+import time
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -14,7 +17,6 @@ from .auth import router as auth_router, get_current_admin
 import dotenv
 from . import database
 from uuid import uuid4
-import os
 
 dotenv.load_dotenv()
 
@@ -27,6 +29,40 @@ app.include_router(auth_router)
 avatars_dir = os.path.join(os.path.dirname(__file__), "avatars")
 os.makedirs(avatars_dir, exist_ok=True)
 app.mount("/avatars", StaticFiles(directory=avatars_dir), name="avatars")
+
+
+def perform_backup(db: Session, remote_name: str, remote_path: str):
+    script = os.path.join(
+        os.path.dirname(os.path.dirname(__file__)), "scripts", "backup_db.sh"
+    )
+    try:
+        subprocess.run([script, remote_name, remote_path], check=True)
+        crud.create_backup_log(db, True, None)
+    except subprocess.CalledProcessError as e:
+        crud.create_backup_log(db, False, str(e))
+
+
+def schedule_backups():
+    if os.getenv("ENABLE_BACKUPS") != "1":
+        return
+    remote_name = os.getenv("BACKUP_REMOTE_NAME", "gdrive")
+    remote_path = os.getenv("BACKUP_REMOTE_PATH", "DrinkTrackerBackups")
+    hour = int(os.getenv("BACKUP_HOUR", "2"))
+
+    def worker():
+        while True:
+            now = datetime.utcnow()
+            run_at = now.replace(hour=hour, minute=0, second=0, microsecond=0)
+            if run_at <= now:
+                run_at += timedelta(days=1)
+            time.sleep((run_at - now).total_seconds())
+            with database.SessionLocal() as db:
+                perform_backup(db, remote_name, remote_path)
+
+    threading.Thread(target=worker, daemon=True).start()
+
+
+schedule_backups()
 
 class UpdateUser(BaseModel):
     balance: float
@@ -389,3 +425,22 @@ def monthly_drinks(user_id: int, db: Session = Depends(get_db)):
         {"userId": user_id, "month": r.month, "count": int(r.count)}
         for r in rows
     ]
+
+
+@app.get("/backups", response_model=list[schemas.BackupLog])
+def list_backups(
+    db: Session = Depends(get_db),
+    admin: None = Depends(get_current_admin),
+):
+    return crud.get_backups(db)
+
+
+@app.post("/backups/run")
+def run_backup(
+    remote_name: str = os.getenv("BACKUP_REMOTE_NAME", "gdrive"),
+    remote_path: str = os.getenv("BACKUP_REMOTE_PATH", "DrinkTrackerBackups"),
+    db: Session = Depends(get_db),
+    admin: None = Depends(get_current_admin),
+):
+    perform_backup(db, remote_name, remote_path)
+    return {"ok": True}

@@ -83,3 +83,13 @@ class PersonOut(BaseModel):
         fields = {
             "avatarUrl": "avatar_url",
         }
+
+
+class BackupLog(BaseModel):
+    id: int
+    timestamp: datetime
+    success: bool
+    message: Optional[str] = None
+
+    class Config:
+        orm_mode = True
