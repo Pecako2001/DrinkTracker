@@ -41,7 +41,11 @@ app.add_middleware(
 )
 
 
-@app.get("/users", response_model=list[schemas.Person])
+@app.get(
+    "/users",
+    response_model=list[schemas.PersonOut],
+    response_model_by_alias=False,
+)
 def read_users(db: Session = Depends(get_db)):
     return crud.get_persons(db)
 
