@@ -59,6 +59,9 @@ export default function HomePage() {
       headers: { "Content-Type": "multipart/form-data" },
     });
     await fetchUsers();
+    if (typeof window !== "undefined") {
+      window.location.reload();
+    }
   };
 
   const handleDrink = async (userId: number) => {

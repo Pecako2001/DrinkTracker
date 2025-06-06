@@ -60,12 +60,7 @@ export function PeakThirstHoursChart({
       <Title order={4} mb="sm">
         Peak Thirst Hours
       </Title>
-      <BarChart
-        h={300}
-        data={chartData}
-        dataKey="x"
-        series={series}
-      />
+      <BarChart h={300} data={chartData} dataKey="x" series={series} />
     </div>
   );
 }

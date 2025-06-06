@@ -33,6 +33,9 @@ export default function AvatarPage() {
     });
     const { data } = await api.get<Person[]>("/users");
     setUsers(data);
+    if (typeof window !== "undefined") {
+      window.location.reload();
+    }
   };
 
   const handleNickname = async (userId: number, nickname: string) => {
