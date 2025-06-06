@@ -58,11 +58,11 @@
   &[data-active] {
     &,
     &:hover {
-      background-color: var(--color-main-lightest);
-      color: var(--color-main);
+      background-color: var(--color-main);
+      color: var(--color-main-contrast);
 
       .linkIcon {
-        color: var(--color-main);
+        color: var(--color-main-contrast);
       }
     }
   }
