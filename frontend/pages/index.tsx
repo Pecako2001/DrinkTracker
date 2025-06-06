@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Container,
   TextInput,
@@ -6,47 +6,70 @@ import {
   Notification,
   Button,
   Stack,
-} from '@mantine/core';
-import { IconSearch, IconX } from '@tabler/icons-react';
-import api from '../api/api';
-import { Person } from '../types';
-import { UserCardImage } from '../components/UserCard/UserCard';
-import { TopUpModal } from '../components/TopUpModal';
+  LoadingOverlay, // Added for loading state
+} from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
+import { useRouter } from "next/router";
+import { IconSearch, IconX } from "@tabler/icons-react";
+import api from "../api/api";
+import { Person } from "../types";
+import { UserCardImage } from "../components/UserCard/UserCard";
+import { TopUpModal } from "../components/TopUpModal";
 
 interface DrinkNotification {
   user: Person;
   id: number;
 }
-
 export default function HomePage() {
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isMobile) {
+      router.replace("/MobileUserSelect");
+    }
+  }, [isMobile, router]);
+
   const [users, setUsers] = useState<Person[]>([]);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [modalOpened, setModalOpened] = useState(false);
   const [topUpUser, setTopUpUser] = useState<Person | null>(null);
   const [amount, setAmount] = useState<number>(5);
-  const originalOrderRef = useRef<number[]>([]);
 
   const [notifications, setNotifications] = useState<DrinkNotification[]>([]);
 
   useEffect(() => {
-    api.get<Person[]>('/users').then((r) => {
+    api.get<Person[]>("/users").then((r) => {
       setUsers(r.data);
-      originalOrderRef.current = r.data.map((u) => u.id);
     });
   }, []);
 
-  const fetchUsersSorted = async () => {
-    const updatedUsers = (await api.get<Person[]>('/users')).data;
-    const sorted = originalOrderRef.current.map((id) =>
-      updatedUsers.find((u) => u.id === id)!
-    );
-    setUsers(sorted);
+  const fetchUsers = async () => {
+    const updatedUsers = (await api.get<Person[]>("/users")).data;
+    setUsers(updatedUsers);
+  };
+
+  const handleAvatarChange = async (userId: number, file: File | null) => {
+    if (!file) {
+      return;
+    }
+    const form = new FormData();
+    form.append("file", file);
+    await api.post(`/users/${userId}/avatar`, form, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    await fetchUsers();
+    if (typeof window !== "undefined") {
+      window.location.reload();
+    }
   };
 
   const handleDrink = async (userId: number) => {
     const user = users.find((u) => u.id === userId);
-    if (!user) return;
-  
+    if (!user) {
+      return;
+    }
+
     if (user.balance <= 0) {
       // Open top-up modal instead
       setTopUpUser(user);
@@ -54,7 +77,7 @@ export default function HomePage() {
       setModalOpened(true);
       return;
     }
-  
+
     // Add drink and show notification
     const freshUser = (await api.get<Person>(`/users/${userId}`)).data;
     setNotifications((prev) => [
@@ -64,23 +87,16 @@ export default function HomePage() {
         user: freshUser,
       },
     ]);
-  
+
     await api.post(`/users/${userId}/drinks`);
-    await fetchUsersSorted();
+    await fetchUsers();
   };
-  
+
   const handleUndoDrink = async (notif: DrinkNotification) => {
-    const freshUser = (await api.get<Person>(`/users/${notif.user.id}`)).data;
-  
-    await api.patch(`/users/${notif.user.id}`, {
-      balance: freshUser.balance + 1,
-      total_drinks: freshUser.total_drinks - 1,
-    });
-  
-    await fetchUsersSorted();
+    await api.post(`/users/${notif.user.id}/drinks/undo`);
+    await fetchUsers();
     setNotifications((prev) => prev.filter((n) => n.id !== notif.id));
   };
-  
 
   const openTopUp = (user: Person) => {
     setTopUpUser(user);
@@ -89,32 +105,44 @@ export default function HomePage() {
   };
 
   const confirmTopUp = async () => {
-    if (!topUpUser) return;
-    const { data } = await api.post<{ checkoutUrl: string }>('/payments/topup', {
-      user_id: topUpUser.id,
-      amount,
-    });
+    if (!topUpUser) {
+      return;
+    }
+    const { data } = await api.post<{ checkoutUrl: string }>(
+      "/payments/topup",
+      {
+        user_id: topUpUser.id,
+        amount,
+      },
+    );
     window.location.href = data.checkoutUrl;
   };
 
-  const filtered = users.filter((u) =>
-    u.name.toLowerCase().includes(search.toLowerCase())
+  const searchLower = search.toLowerCase();
+  const filtered = users.filter(
+    (u) =>
+      u.name.toLowerCase().includes(searchLower) ||
+      (u.nickname ?? "").toLowerCase().includes(searchLower),
   );
 
+  if (isMobile) {
+    return <LoadingOverlay visible />;
+  }
+
+  // Render desktop UI when not on a mobile device
   return (
     <Container size={750} py="md">
       <TextInput
         placeholder="Search users..."
-        icon={<IconSearch size={16} />}
+        leftSection={<IconSearch size={16} />}
         mb="md"
         value={search}
         onChange={(e) => setSearch(e.currentTarget.value)}
-        clearable
       />
 
       <TopUpModal
         opened={modalOpened}
-        userName={topUpUser?.name ?? ''}
+        userName={topUpUser?.name ?? ""}
         amount={amount}
         onChangeAmount={setAmount}
         onConfirm={confirmTopUp}
@@ -124,7 +152,7 @@ export default function HomePage() {
       <SimpleGrid
         cols={2}
         spacing="md"
-        breakpoints={[{ maxWidth: 600, cols: 1, spacing: 'sm' }]}
+        style={{ gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}
       >
         {filtered.map((user) => (
           <UserCardImage
@@ -132,6 +160,7 @@ export default function HomePage() {
             user={user}
             onDrink={() => handleDrink(user.id)}
             onTopUp={() => openTopUp(user)}
+            onChangeAvatar={(file) => handleAvatarChange(user.id, file)}
           />
         ))}
       </SimpleGrid>
@@ -140,15 +169,21 @@ export default function HomePage() {
         {notifications.map((notif) => (
           <Notification
             key={notif.id}
-            onClose={() => setNotifications((prev) => prev.filter((n) => n.id !== notif.id))}
+            onClose={() =>
+              setNotifications((prev) => prev.filter((n) => n.id !== notif.id))
+            }
             withCloseButton
             icon={<IconX size={16} />}
             color="teal"
             title="Drink added"
-            disallowClose={false}
           >
             +1 drink added to <strong>{notif.user.name}</strong>
-            <Button size="xs" ml="sm" variant="light" onClick={() => handleUndoDrink(notif)}>
+            <Button
+              size="xs"
+              ml="sm"
+              variant="light"
+              onClick={() => handleUndoDrink(notif)}
+            >
               Undo
             </Button>
           </Notification>

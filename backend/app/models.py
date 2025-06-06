@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Numeric, DateTime, ForeignKey, func, DECIMAL
+from sqlalchemy import Column, Integer, String, Numeric, DateTime, ForeignKey, func, DECIMAL, Boolean
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from .database import Base
@@ -7,6 +7,8 @@ class Person(Base):
     __tablename__ = "persons"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, nullable=False)
+    avatar_url = Column(String, nullable=True)
+    nickname = Column(String, nullable=True)
     balance = Column(Numeric(10,2), default=0)
     total_drinks = Column(Integer, default=0)
     drinks = relationship("DrinkEvent", back_populates="person")
@@ -30,3 +32,12 @@ class Payment(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     person = relationship("Person", back_populates="payments")
+
+
+class BackupLog(Base):
+    __tablename__ = "backups"
+
+    id = Column(Integer, primary_key=True, index=True)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    success = Column(Boolean)
+    message = Column(String, nullable=True)

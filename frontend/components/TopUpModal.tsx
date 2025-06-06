@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Modal,
   SegmentedControl,
@@ -9,7 +9,7 @@ import {
   Text,
   Divider,
   Group,
-} from '@mantine/core';
+} from "@mantine/core";
 
 interface TopUpModalProps {
   opened: boolean;
@@ -34,19 +34,19 @@ export function TopUpModal({
       onClose={onClose}
       centered
       size="sm"
-      overlayBlur={3}
+      radius="md"
       title={<Title order={4}>Top up {userName}</Title>}
     >
-      <Stack spacing="lg">
+      <Stack gap={20}>
         <Text size="sm" color="dimmed">
           Choose a preset amount or enter a custom value below.
         </Text>
 
         <SegmentedControl
           data={[
-            { label: '€5', value: '5' },
-            { label: '€10', value: '10' },
-            { label: '€25', value: '25' },
+            { label: "€5", value: "5" },
+            { label: "€10", value: "10" },
+            { label: "€25", value: "25" },
           ]}
           value={amount.toString()}
           onChange={(value) => onChangeAmount(Number(value))}
@@ -58,17 +58,18 @@ export function TopUpModal({
           label="Custom amount"
           min={1}
           value={amount}
-          onChange={(val) => val !== undefined && onChangeAmount(val)}
-          parser={(value) => value.replace(/[^0-9]/g, '')}
-          formatter={(value) => (value ? `€ ${value}` : '')}
+          onChange={(val) => typeof val === "number" && onChangeAmount(val)}
           hideControls
-n        />
+        />
 
-        <Group position="apart" mt="md">
-          <Button variant="outline" onClick={onClose}>
+        <Text size="sm" color="dimmed">
+          Note: €0.30 fee applies to all top-ups
+        </Text>
+        <Group justify="space-between" mt="md">
+          <Button variant="light" color="gray" onClick={onClose}>
             Cancel
           </Button>
-          <Button onClick={onConfirm}>
+          <Button color="teal" onClick={onConfirm}>
             Proceed to Checkout
           </Button>
         </Group>
