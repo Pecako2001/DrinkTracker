@@ -58,7 +58,7 @@ export default function HomePage() {
     await api.post(`/users/${userId}/avatar`, form, {
       headers: { "Content-Type": "multipart/form-data" },
     });
-    await fetchUsersSorted();
+    await fetchUsers();
   };
 
   const handleDrink = async (userId: number) => {
