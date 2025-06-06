@@ -4,11 +4,9 @@ import { Person } from "../../types";
 import api from "../../api/api";
 import classes from "../../styles/StatsPage.module.css";
 
-// Define a more specific type for user stats later
 interface UserStatsData {
   drinks_last_30_days: number;
   favorite_drink: string;
-  // Add more fields as needed
 }
 
 export function UserInsightPanel() {
@@ -40,7 +38,7 @@ export function UserInsightPanel() {
       });
   }, []);
 
-  // Fetch (mock) stats for the selected user
+  // Fetch stats for the selected user
   useEffect(() => {
     if (selectedUserId) {
       setLoading(true);
@@ -50,18 +48,18 @@ export function UserInsightPanel() {
       const selectedUser = users.find((user) => user.value === selectedUserId);
       setSelectedUserName(selectedUser ? selectedUser.label : null);
 
-      // Simulate API call
-      // Replace with actual API call: api.get(`/users/${selectedUserId}/stats`)
-      setTimeout(() => {
-        const mockStats: UserStatsData = {
-          drinks_last_30_days: Math.floor(Math.random() * 100) + 1,
-          favorite_drink: ["Beer", "Wine", "Cocktail", "Coffee", "Water"][
-            Math.floor(Math.random() * 5)
-          ],
-        };
-        setUserData(mockStats);
-        setLoading(false);
-      }, 750); // Simulate network delay
+      api
+        .get<UserStatsData>(`/users/${selectedUserId}/stats`)
+        .then((response) => {
+          setUserData(response.data);
+        })
+        .catch(() => {
+          // Optionally handle error state
+          setUserData(null);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     } else {
       setUserData(null);
       setSelectedUserName(null);
