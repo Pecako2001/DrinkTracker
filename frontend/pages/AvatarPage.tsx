@@ -12,6 +12,7 @@ import {
 import { IconUpload } from "@tabler/icons-react";
 import api from "../api/api";
 import { Person } from "../types";
+import { resolveAvatarUrl } from "../lib/resolveAvatarUrl";
 import classes from "../styles/AvatarPage.module.css";
 
 export default function AvatarPage() {
@@ -55,7 +56,7 @@ export default function AvatarPage() {
           {users.map((user) => (
             <Table.Tr key={user.id}>
               <Table.Td>
-                <Avatar src={user.avatarUrl} radius="xl" />
+                <Avatar src={resolveAvatarUrl(user.avatarUrl)} radius="xl" />
               </Table.Td>
               <Table.Td>
                 <Text>{user.name}</Text>
