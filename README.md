@@ -70,3 +70,32 @@ To access the admin panel, enter the password defined in your `.env.local`:
 
 ```env
 NEXT_PUBLIC_ADMIN_PASSWORD=your_secure_password
+```
+
+<h2>🗄 Database Backup</h2>
+
+A helper script <code>scripts/backup_db.sh</code> is available to dump the PostgreSQL
+ database and upload the archive to Google Drive or OneDrive using
+<a href="https://rclone.org">rclone</a>. The script keeps only the two most recent
+backups on the remote storage.
+
+Usage example:
+
+```bash
+# Configure rclone with a remote named "gdrive" or "onedrive"
+./scripts/backup_db.sh gdrive DrinkTrackerBackups
+```
+
+To run the backup every day at 2 AM via cron:
+
+```cron
+0 2 * * * /path/to/DrinkTracker/scripts/backup_db.sh gdrive DrinkTrackerBackups
+```
+
+You can automate the setup using `scripts/install_backup_cron.sh`, which
+creates a daily cron entry. The following command installs a job that runs at
+2 AM every day:
+
+```bash
+./scripts/install_backup_cron.sh gdrive DrinkTrackerBackups 2
+```
