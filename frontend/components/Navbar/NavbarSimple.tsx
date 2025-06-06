@@ -33,16 +33,13 @@ export default function NavbarSimpleContent() {
 
   return (
     <>
-      <Group justify="center" mb="md" className={classes.logoGroup}>
-        <img
-          src="/icon.png"
-          alt="Drink Tracker Logo"
-          style={{ width: 32, height: 32, marginRight: 8 }}
-        />
-        <Text fw={700} size="lg, xl" className={classes.logo}>
-          Drink Tracker
-        </Text>
-      </Group>
+      <div className={classes.header}>
+        <Group justify="center">
+          <Text fw={700} size="lg">
+            Drink Tracker
+          </Text>
+        </Group>
+      </div>
 
       {/* main navigation */}
       {mainLinks.map((item) => (

@@ -1,14 +1,6 @@
-import React, { useState, useEffect, useMemo } from "react";
-import {
-  Select,
-  Text,
-  Title,
-  Card,
-  Loader,
-  MultiSelect,
-  Table,
-} from "@mantine/core";
-import { Person, BuddyScore } from "../../types";
+import React, { useState, useEffect } from "react";
+import { Select, Text, Title, SimpleGrid, Card, Loader } from "@mantine/core";
+import { Person } from "../../types";
 import api from "../../api/api";
 import PeakThirstHoursChart from "./PeakThirstHoursChart";
 import MonthlyDrinkVolumeChart from "./MonthlyDrinkVolumeChart";
@@ -41,7 +33,13 @@ export function UserInsightPanel() {
           res.data.map((u) => ({ value: u.id.toString(), label: u.name })),
         );
       })
-      .finally(() => setLoadingUsers(false));
+      .catch((_error) => {
+        // Optionally set an error state here
+        // console.error("Error fetching users:", error);
+      })
+      .finally(() => {
+        setLoadingUsers(false);
+      });
   }, []);
 
   return (
