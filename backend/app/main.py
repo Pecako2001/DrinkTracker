@@ -42,10 +42,18 @@ app.add_middleware(
 )
 
 
-@app.get("/users", response_model=List[schemas.PersonOut])
-def read_users(db: Session = Depends(database.get_db)):
+@app.get(
+    "/users",
+    response_model=list[schemas.PersonOut],
+    response_model_by_alias=False,
+)
+def read_users(db: Session = Depends(get_db)):
     persons = crud.get_persons(db)
+    for p in persons:
+        # Print whichever columns you care about:
+        print(f"id={p.id}  name={p.name}  avatar_url={p.avatar_url}  balance={p.balance}  total_drinks={p.total_drinks}")
     return persons
+
 
 @app.post("/users", response_model=schemas.Person)
 def create_user(

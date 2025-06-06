@@ -23,6 +23,19 @@ class Person(PersonBase):
         allow_population_by_field_name = True
 
 
+class PersonOut(BaseModel):
+    id: int
+    name: str
+    avatarUrl: str | None = Field(default=None, alias="avatar_url")
+    nickname: str | None = None
+    balance: Decimal
+    total_drinks: int
+
+    class Config:
+        orm_mode = True
+        allow_population_by_field_name = True
+
+
 class DrinkEvent(BaseModel):
     id: int
     person_id: int
@@ -60,14 +73,13 @@ class BuddyScore(BaseModel):
 class PersonOut(BaseModel):
     id: int
     name: str
-    avatarUrl: Optional[str] = None   # NOTE: camelCase here
+    avatarUrl: Optional[str] = Field(None, alias="avatar_url")
     nickname: Optional[str] = None
     balance: Decimal
     total_drinks: int
 
     class Config:
         orm_mode = True
-        # Map Pydantic’s "avatarUrl" → SQLAlchemy’s "avatar_url"
         fields = {
             "avatarUrl": "avatar_url",
         }

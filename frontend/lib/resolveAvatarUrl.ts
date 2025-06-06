@@ -10,7 +10,7 @@ export function resolveAvatarUrl(avatarUrl?: string): string | undefined {
   }
 
   try {
-    const fullUrl = new URL(avatarUrl, process.env.NEXT_PUBLIC_API_URL).href;
+    const fullUrl = new URL(avatarUrl, "http://localhost:8000").href;
     console.log("[resolveAvatarUrl] built full URL →", fullUrl);
     return fullUrl;
   } catch (err) {

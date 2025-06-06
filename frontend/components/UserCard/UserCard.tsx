@@ -42,7 +42,7 @@ export function UserCardImage({
       {/* Avatar */}
       <div className={classes.avatarWrapper}>
         <Avatar
-          src="http://localhost:8000/avatars/40_5a7d2222d2d145ef95ac5bbc2603c5d3.png"
+          src={resolveAvatarUrl(user.avatarUrl)} 
           size={80}
           radius={80}
           mx="auto"
@@ -78,7 +78,7 @@ export function UserCardImage({
       {/* Single Stat: Balance */}
       <Group justify="center" gap={4} mb="md">
         <Text size="lg" fw={500}>
-          €{user.balance.toFixed(2)}
+          €{Number(user.balance ?? 0).toFixed(2)}
         </Text>
         <Text color="dimmed" size="sm">
           Balance

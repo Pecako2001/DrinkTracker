@@ -19,7 +19,12 @@ export default function AvatarPage() {
   const [users, setUsers] = useState<Person[]>([]);
 
   useEffect(() => {
-    api.get<Person[]>("/users").then((r) => setUsers(r.data));
+    api.get<Person[]>("/users").then((r) => {
+      setUsers(r.data);
+      // Reload or rebuild the React app and inspect the console to ensure
+      // user.avatarUrl is now populated and avatars render correctly.
+      // console.log(r.data.map((u) => u.avatarUrl));
+    });
   }, []);
 
   const handleUpload = async (userId: number, file: File | null) => {
