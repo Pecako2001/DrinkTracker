@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Select,
-  Text,
-  Title,
-  SimpleGrid,
-  Card,
-  Loader,
-} from "@mantine/core";
+import { Select, Text, Title, SimpleGrid, Card, Loader } from "@mantine/core";
 import { Person } from "../../types";
 import api from "../../api/api";
 import classes from "../../styles/StatsPage.module.css";
@@ -47,7 +40,7 @@ export function UserInsightPanel() {
       })
       .catch((_error) => {
         // Optionally set an error state here
-        // console.error("Error fetching users:", error); 
+        // console.error("Error fetching users:", error);
       })
       .finally(() => {
         setLoadingUsers(false);

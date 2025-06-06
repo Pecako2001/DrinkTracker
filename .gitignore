@@ -53,3 +53,5 @@ logs/
 *.sql
 *.dump
 frontend/.next/*
+.stylelintcache
+frontend/tsconfig.tsbuildinfo
