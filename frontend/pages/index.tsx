@@ -121,8 +121,11 @@ export default function HomePage() {
     window.location.href = data.checkoutUrl;
   };
 
-  const filtered = users.filter((u) =>
-    u.name.toLowerCase().includes(search.toLowerCase()),
+  const searchLower = search.toLowerCase();
+  const filtered = users.filter(
+    (u) =>
+      u.name.toLowerCase().includes(searchLower) ||
+      (u.nickname ?? "").toLowerCase().includes(searchLower),
   );
 
   if (isMobile) {
