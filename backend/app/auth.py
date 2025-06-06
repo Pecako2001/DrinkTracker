@@ -6,9 +6,12 @@ from jose import jwt, JWTError
 from passlib.context import CryptContext
 from pydantic import BaseModel
 
+import dotenv
+dotenv.load_dotenv()
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 ALGORITHM = "HS256"
-SECRET_KEY = os.getenv("ADMIN_SECRET_KEY", "change_me")
+SECRET_KEY = os.getenv("ADMIN_SECRET_KEY", "change_me_secret")
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 router = APIRouter()
