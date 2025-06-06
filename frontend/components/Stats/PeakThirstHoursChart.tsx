@@ -9,7 +9,10 @@ interface PeakThirstHoursChartProps {
   idToName: Record<number, string>;
 }
 
-export function PeakThirstHoursChart({ userIds, idToName }: PeakThirstHoursChartProps) {
+export function PeakThirstHoursChart({
+  userIds,
+  idToName,
+}: PeakThirstHoursChartProps) {
   const theme = useMantineTheme();
   const [data, setData] = useState<PeakThirstHoursResponse>([]);
   const [loading, setLoading] = useState(false);
@@ -57,7 +60,13 @@ export function PeakThirstHoursChart({ userIds, idToName }: PeakThirstHoursChart
       <Title order={4} mb="sm">
         Peak Thirst Hours
       </Title>
-      <BarChart data={chartData} dataKey="x" series={series} h={300} withLegend />
+      <BarChart
+        data={chartData}
+        dataKey="x"
+        series={series}
+        h={300}
+        withLegend
+      />
     </div>
   );
 }

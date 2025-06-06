@@ -11,10 +11,7 @@ afterEach(() => {
 });
 
 test("renders social sip data", async () => {
-  mock.onGet("/users/1/buddies").reply(200, [
-    { id: 2, name: "Bob", count: 3 },
-  ]);
+  mock.onGet("/users/1/buddies").reply(200, [{ id: 2, name: "Bob", count: 3 }]);
   render(<SocialSipChart userId="1" />);
   expect(await screen.findByText(/Bob/)).toBeInTheDocument();
 });
-

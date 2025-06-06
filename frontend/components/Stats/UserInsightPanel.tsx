@@ -1,5 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { Select, Text, Title, Card, Loader, MultiSelect, Table } from "@mantine/core";
+import React, { useState, useEffect, useMemo } from "react";
+import {
+  Select,
+  Text,
+  Title,
+  Card,
+  Loader,
+  MultiSelect,
+  Table,
+} from "@mantine/core";
 import { Person, BuddyScore } from "../../types";
 import api from "../../api/api";
 import classes from "../../styles/StatsPage.module.css";
@@ -15,6 +23,14 @@ export function UserInsightPanel() {
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingUsers, setLoadingUsers] = useState<boolean>(true);
   const [chartUsers, setChartUsers] = useState<string[]>([]);
+
+  const idToName = useMemo(() => {
+    const map: Record<number, string> = {};
+    users.forEach((u) => {
+      map[parseInt(u.value, 10)] = u.label;
+    });
+    return map;
+  }, [users]);
 
   // Fetch all users for the dropdown
   useEffect(() => {

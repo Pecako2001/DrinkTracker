@@ -54,4 +54,3 @@ export function SocialSipChart({ userId }: Props) {
 }
 
 export default SocialSipChart;
-
