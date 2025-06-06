@@ -49,6 +49,18 @@ export default function HomePage() {
     setUsers(updatedUsers);
   };
 
+  const handleAvatarChange = async (userId: number, file: File | null) => {
+    if (!file) {
+      return;
+    }
+    const form = new FormData();
+    form.append("file", file);
+    await api.post(`/users/${userId}/avatar`, form, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    await fetchUsersSorted();
+  };
+
   const handleDrink = async (userId: number) => {
     const user = users.find((u) => u.id === userId);
     if (!user) {
@@ -149,6 +161,7 @@ export default function HomePage() {
             user={user}
             onDrink={() => handleDrink(user.id)}
             onTopUp={() => openTopUp(user)}
+            onChangeAvatar={(file) => handleAvatarChange(user.id, file)}
           />
         ))}
       </SimpleGrid>

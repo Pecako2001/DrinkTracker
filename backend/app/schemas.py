@@ -1,13 +1,12 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import datetime
 from decimal import Decimal
 
 
 class PersonBase(BaseModel):
     name: str
-    avatar_url: str | None = None
+    avatarUrl: str | None = Field(default=None, alias="avatar_url")
     nickname: str | None = None
-
 
 class PersonCreate(PersonBase):
     pass
@@ -20,6 +19,7 @@ class Person(PersonBase):
 
     class Config:
         orm_mode = True
+        allow_population_by_field_name = True
 
 
 class DrinkEvent(BaseModel):

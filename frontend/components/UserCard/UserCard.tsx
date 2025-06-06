@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   Avatar,
   Button,
@@ -15,9 +15,19 @@ interface UserCardProps {
   user: Person & { nickname?: string };
   onDrink: () => void;
   onTopUp: () => void;
+  onChangeAvatar?: (file: File | null) => void;
 }
 
-export function UserCardImage({ user, onDrink, onTopUp }: UserCardProps) {
+export function UserCardImage({
+  user,
+  onDrink,
+  onTopUp,
+  onChangeAvatar,
+}: UserCardProps) {
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const triggerFile = () => fileRef.current?.click();
+
   return (
     <Card withBorder radius="md" className={classes.card}>
       {/* Header Image */}
@@ -31,14 +41,26 @@ export function UserCardImage({ user, onDrink, onTopUp }: UserCardProps) {
       />
 
       {/* Avatar */}
-      <Avatar
-        src={user.avatarUrl}
-        size={80}
-        radius={80}
-        mx="auto"
-        mt={-40}
-        className={classes.avatar}
-      />
+      <div className={classes.avatarWrapper}>
+        <Avatar
+          src={user.avatarUrl}
+          size={80}
+          radius={80}
+          mx="auto"
+          mt={-40}
+          className={classes.avatar}
+        />
+        <Button size="xs" className={classes.changeBtn} onClick={triggerFile}>
+          <span>📷</span>
+        </Button>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          style={{ display: "none" }}
+          onChange={(e) => onChangeAvatar?.(e.target.files?.[0] ?? null)}
+        />
+      </div>
 
       {/* Name + Nickname */}
       <Stack gap={2} align="center" mt="sm">

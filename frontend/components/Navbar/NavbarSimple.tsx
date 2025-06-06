@@ -23,6 +23,7 @@ const mainLinks = [
   { href: "/StatsPage", label: "Stats", icon: IconDeviceDesktopAnalytics },
 ];
 const footerLinks = [
+  { href: "/AvatarPage", label: "Avatar", icon: IconBeer },
   { href: "/AddUserPage", label: "Add User", icon: IconUserPlus },
   { href: "/SettingsPage", label: "Admin", icon: IconShield },
 ];
