@@ -169,7 +169,7 @@ export function UserInsightPanel() {
             </Card>
             {/* Add more stat cards here */}
           </SimpleGrid>
-          <SocialSipChart userId={selectedUserId} />
+          {/* <SocialSipChart userId={selectedUserId} /> */}
         </>
       )}
       {/* <LongestHydrationStreakChart />
@@ -183,7 +183,6 @@ export function UserInsightPanel() {
         idToName={idToName}
       /> */}
       {/* <SocialSipScoreChart /> */}
-      )}
 
       <MonthlyDrinkVolumeChart userIds={chartUsers.map(Number)} />
     </div>
