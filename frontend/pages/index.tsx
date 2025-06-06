@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect  } from "react";
 import {
   Container,
   TextInput,
@@ -8,6 +8,7 @@ import {
   Stack,
   LoadingOverlay, // Added for loading state
 } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import api from "../api/api";
 import { Person } from "../types";
@@ -18,16 +19,15 @@ interface DrinkNotification {
   user: Person;
   id: number;
 }
-
 export default function HomePage() {
-  const router = useRouter();
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const [loading, setLoading] = useState(true); // Added for loading state
+  const loading = false; // Set loading to false since setLoading is unused
 
   const [users, setUsers] = useState<Person[]>([]);
   const [search, setSearch] = useState("");
   const [modalOpened, setModalOpened] = useState(false);
   const [topUpUser, setTopUpUser] = useState<Person | null>(null);
+  const [amount, setAmount] = useState<number>(5);
   const [amount, setAmount] = useState<number>(5);
 
   const [notifications, setNotifications] = useState<DrinkNotification[]>([]);
