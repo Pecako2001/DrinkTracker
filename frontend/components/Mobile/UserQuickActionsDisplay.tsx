@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { Person } from "../../types";
-import { Paper, Avatar, Text, Stack, Box, Button } from "@mantine/core";
+import { Card, Avatar, Text, Stack, Box, Button } from "@mantine/core";
 import { resolveAvatarUrl } from "../../lib/resolveAvatarUrl";
 import classes from "../UserCard/UserCardImage.module.css";
 import { IconCamera } from "@tabler/icons-react";
@@ -17,14 +17,26 @@ const UserQuickActionsDisplay: React.FC<UserQuickActionsDisplayProps> = ({
   const fileRef = useRef<HTMLInputElement>(null);
   const triggerFile = () => fileRef.current?.click();
   return (
-    <Paper shadow="md" p="lg" radius="md" withBorder>
-      <Stack align="center" gap="md">
-        <div style={{ position: "relative" }}>
+    <Card withBorder radius="md" className={classes.card}>
+      {/* Header Image */}
+      <Card.Section
+        h={120}
+        style={{
+          backgroundImage: 'url("/images/Logo.png")',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+
+      <Stack align="center" gap="md" px="lg" pb="lg">
+        <div className={classes.avatarWrapper}>
           <Avatar
             src={resolveAvatarUrl(user.avatarUrl)}
-            size="xl"
-            color="blue"
-            radius="xl"
+            size={80}
+            radius={80}
+            mx="auto"
+            mt={-40}
+            className={classes.avatar}
           >
             {user.name.charAt(0).toUpperCase()}
           </Avatar>
@@ -76,7 +88,7 @@ const UserQuickActionsDisplay: React.FC<UserQuickActionsDisplayProps> = ({
           </Text>
         </Box>
       </Stack>
-    </Paper>
+    </Card>
   );
 };
 
