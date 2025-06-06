@@ -1,5 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { Select, Text, Title, Card, Loader, MultiSelect, Table } from "@mantine/core";
+import React, { useState, useEffect, useMemo } from "react";
+import {
+  Select,
+  Text,
+  Title,
+  Card,
+  Loader,
+  MultiSelect,
+  Table,
+} from "@mantine/core";
 import { Person, BuddyScore } from "../../types";
 import api from "../../api/api";
 import PeakThirstHoursChart from "./PeakThirstHoursChart";
@@ -15,7 +23,15 @@ export function UserInsightPanel() {
   const [chartUsers, setChartUsers] = useState<string[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(true);
 
-  // load users for dropdown
+  const idToName = useMemo(() => {
+    const map: Record<number, string> = {};
+    users.forEach((u) => {
+      map[parseInt(u.value, 10)] = u.label;
+    });
+    return map;
+  }, [users]);
+
+  // Fetch all users for the dropdown
   useEffect(() => {
     setLoadingUsers(true);
     api
@@ -27,10 +43,6 @@ export function UserInsightPanel() {
       })
       .finally(() => setLoadingUsers(false));
   }, []);
-
-  const idToName = Object.fromEntries(
-    users.map((u) => [parseInt(u.value, 10), u.label]),
-  );
 
   return (
     <div className={classes.userInsightPanel}>
