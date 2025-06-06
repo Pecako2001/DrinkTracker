@@ -45,6 +45,7 @@ def test_monthly_drinks():
     db.add(user)
     db.commit()
     db.refresh(user)
+    user_id = user.id
     base = datetime.utcnow().replace(day=15, hour=0, minute=0, second=0, microsecond=0)
     events = [
         DrinkEvent(person_id=user.id, timestamp=base),
@@ -55,7 +56,7 @@ def test_monthly_drinks():
     db.commit()
     db.close()
 
-    resp = client.get(f"/users/{user.id}/monthly_drinks")
+    resp = client.get(f"/users/{user_id}/monthly_drinks")
     assert resp.status_code == 200
     data = resp.json()
     months = {row["month"]: row["count"] for row in data}
