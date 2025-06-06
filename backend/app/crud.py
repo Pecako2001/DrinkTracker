@@ -13,7 +13,11 @@ def get_person(db: Session, person_id: int):
     return db.query(models.Person).filter(models.Person.id == person_id).first()
 
 def create_person(db: Session, person: schemas.PersonCreate):
-    db_person = models.Person(name=person.name)
+    db_person = models.Person(
+        name=person.name,
+        avatar_url=person.avatar_url,
+        nickname=person.nickname,
+    )
     db.add(db_person)
     db.commit()
     db.refresh(db_person)
