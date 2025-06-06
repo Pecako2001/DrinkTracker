@@ -1,15 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, ScrollArea, Table, Title } from "@mantine/core";
-import { Person } from "../../types";
+import api from "../../api/api";
 import classes from "../../styles/StatsPage.module.css"; // Import CSS module
 
-interface LeaderboardProps {
-  users: Person[];
+interface LeaderboardEntry {
+  id: number;
+  name: string;
+  drinks: number;
 }
 
-export function YearlyLeaderboard({ users }: LeaderboardProps) {
-  // TODO: Update to use actual yearly drink data when available
-  const sorted = [...users].sort((a, b) => b.total_drinks - a.total_drinks);
+export function YearlyLeaderboard() {
+  const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
+
+  useEffect(() => {
+    api.get<LeaderboardEntry[]>("/stats/yearly_leaderboard").then((r) => {
+      setEntries(r.data);
+    });
+  }, []);
+
+  const sorted = [...entries].sort((a, b) => b.drinks - a.drinks);
 
   return (
     <Card
@@ -21,29 +30,26 @@ export function YearlyLeaderboard({ users }: LeaderboardProps) {
       className={classes.leaderboardCard}
     >
       <Title order={4} mb="sm">
-        This Year
+        Most Drinks This Year
       </Title>
       <ScrollArea>
-        <Table striped highlightOnHover>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Drinks</th>
-            </tr>
-          </thead>
-          <tbody>
+        <Table highlightOnHover>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Standing</Table.Th>
+              <Table.Th>Name</Table.Th>
+              <Table.Th>Drinks</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
             {sorted.map((u, i) => (
-              <tr key={u.id}>
-                <td>{i + 1}</td>
-                <td>{u.name}</td>
-                <td>
-                  {u.total_drinks.toLocaleString()}{" "}
-                  {/* TODO: Display actual yearly drink count */}
-                </td>
-              </tr>
+              <Table.Tr key={u.id}>
+                <Table.Td>{i + 1}</Table.Td>
+                <Table.Td>{u.name}</Table.Td>
+                <Table.Td>{u.drinks.toLocaleString()}</Table.Td>
+              </Table.Tr>
             ))}
-          </tbody>
+          </Table.Tbody>
         </Table>
       </ScrollArea>
     </Card>

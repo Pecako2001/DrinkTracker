@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   TextInput,
@@ -6,7 +6,10 @@ import {
   Notification,
   Button,
   Stack,
+  LoadingOverlay, // Added for loading state
 } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
+import { useRouter } from "next/router";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import api from "../api/api";
 import { Person } from "../types";
@@ -17,30 +20,48 @@ interface DrinkNotification {
   user: Person;
   id: number;
 }
-
 export default function HomePage() {
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isMobile) {
+      router.replace("/MobileUserSelect");
+    }
+  }, [isMobile, router]);
+
   const [users, setUsers] = useState<Person[]>([]);
   const [search, setSearch] = useState("");
   const [modalOpened, setModalOpened] = useState(false);
   const [topUpUser, setTopUpUser] = useState<Person | null>(null);
   const [amount, setAmount] = useState<number>(5);
-  const originalOrderRef = useRef<number[]>([]);
 
   const [notifications, setNotifications] = useState<DrinkNotification[]>([]);
 
   useEffect(() => {
     api.get<Person[]>("/users").then((r) => {
       setUsers(r.data);
-      originalOrderRef.current = r.data.map((u) => u.id);
     });
   }, []);
 
-  const fetchUsersSorted = async () => {
+  const fetchUsers = async () => {
     const updatedUsers = (await api.get<Person[]>("/users")).data;
-    const sorted = originalOrderRef.current.map(
-      (id) => updatedUsers.find((u) => u.id === id)!,
-    );
-    setUsers(sorted);
+    setUsers(updatedUsers);
+  };
+
+  const handleAvatarChange = async (userId: number, file: File | null) => {
+    if (!file) {
+      return;
+    }
+    const form = new FormData();
+    form.append("file", file);
+    await api.post(`/users/${userId}/avatar`, form, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    await fetchUsers();
+    if (typeof window !== "undefined") {
+      window.location.reload();
+    }
   };
 
   const handleDrink = async (userId: number) => {
@@ -68,18 +89,12 @@ export default function HomePage() {
     ]);
 
     await api.post(`/users/${userId}/drinks`);
-    await fetchUsersSorted();
+    await fetchUsers();
   };
 
   const handleUndoDrink = async (notif: DrinkNotification) => {
-    const freshUser = (await api.get<Person>(`/users/${notif.user.id}`)).data;
-
-    await api.patch(`/users/${notif.user.id}`, {
-      balance: freshUser.balance + 1,
-      total_drinks: freshUser.total_drinks - 1,
-    });
-
-    await fetchUsersSorted();
+    await api.post(`/users/${notif.user.id}/drinks/undo`);
+    await fetchUsers();
     setNotifications((prev) => prev.filter((n) => n.id !== notif.id));
   };
 
@@ -103,10 +118,18 @@ export default function HomePage() {
     window.location.href = data.checkoutUrl;
   };
 
-  const filtered = users.filter((u) =>
-    u.name.toLowerCase().includes(search.toLowerCase()),
+  const searchLower = search.toLowerCase();
+  const filtered = users.filter(
+    (u) =>
+      u.name.toLowerCase().includes(searchLower) ||
+      (u.nickname ?? "").toLowerCase().includes(searchLower),
   );
 
+  if (isMobile) {
+    return <LoadingOverlay visible />;
+  }
+
+  // Render desktop UI when not on a mobile device
   return (
     <Container size={750} py="md">
       <TextInput
@@ -115,7 +138,6 @@ export default function HomePage() {
         mb="md"
         value={search}
         onChange={(e) => setSearch(e.currentTarget.value)}
-        __clearable
       />
 
       <TopUpModal
@@ -138,6 +160,7 @@ export default function HomePage() {
             user={user}
             onDrink={() => handleDrink(user.id)}
             onTopUp={() => openTopUp(user)}
+            onChangeAvatar={(file) => handleAvatarChange(user.id, file)}
           />
         ))}
       </SimpleGrid>

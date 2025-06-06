@@ -34,6 +34,7 @@ export function TopUpModal({
       onClose={onClose}
       centered
       size="sm"
+      radius="md"
       title={<Title order={4}>Top up {userName}</Title>}
     >
       <Stack gap={20}>
@@ -61,11 +62,16 @@ export function TopUpModal({
           hideControls
         />
 
+        <Text size="sm" color="dimmed">
+          Note: €0.30 fee applies to all top-ups
+        </Text>
         <Group justify="space-between" mt="md">
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="light" color="gray" onClick={onClose}>
             Cancel
           </Button>
-          <Button onClick={onConfirm}>Proceed to Checkout</Button>
+          <Button color="teal" onClick={onConfirm}>
+            Proceed to Checkout
+          </Button>
         </Group>
       </Stack>
     </Modal>

@@ -1,7 +1,50 @@
 .card {
-    background-color: var(--mantine-color-body);
+  background-color: var(--mantine-color-body);
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--mantine-shadow-lg);
+  transform: translateY(-2px);
+}
+
+.avatar {
+  border: 2px solid var(--mantine-color-body);
+}
+
+.avatarWrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.changeBtn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  transform: translate(25%, 25%);
+  border-radius: 50%;
+  padding: 4px;
+}
+
+.drinkButton {
+  transition: transform 0.2s ease;
+}
+
+.animate {
+  animation: drinkBounce 0.3s ease;
+}
+
+@keyframes drinkBounce {
+  0% {
+    transform: scale(1);
   }
-  
-  .avatar {
-    border: 2px solid var(--mantine-color-body);
+  50% {
+    transform: scale(1.1);
   }
+  100% {
+    transform: scale(1);
+  }
+}

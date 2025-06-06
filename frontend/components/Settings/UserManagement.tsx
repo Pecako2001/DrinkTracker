@@ -6,12 +6,15 @@ import {
   Button,
   Group,
   Modal,
+  ScrollArea,
+  Card,
   Text,
 } from "@mantine/core";
 import { IconTrash } from "@tabler/icons-react";
 import { useState } from "react";
 import { Person } from "../../types";
 import api from "../../api/api";
+import classes from "./UserManagement.module.css";
 
 interface Props {
   users: Person[];
@@ -39,72 +42,79 @@ export function UserManagement({ users, setUsers }: Props) {
   };
 
   return (
-    <>
-      <Title order={2}>User Management</Title>
-      <Table striped highlightOnHover>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Balance (€)</th>
-            <th>Drinks</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((u) => (
-            <tr key={u.id}>
-              <td>{u.name}</td>
-              <td>
-                <NumberInput
-                  defaultValue={Math.round(u.balance * 100) / 100}
-                  step={1}
-                  onBlur={(e) =>
-                    updateBalance(
-                      u.id,
-                      Math.round(Number(e.currentTarget.value) * 100) / 100,
-                    )
-                  }
-                />
-              </td>
-              <td>{u.total_drinks}</td>
-              <td>
-                <Group gap="xs">
+    <Card
+      shadow="sm"
+      p="md"
+      radius="md"
+      withBorder
+      style={{ flex: 1 }}
+      className={classes.leaderboardCard}
+    >
+      <Title order={4} mb="sm">
+        Users Insight
+      </Title>
+      <ScrollArea>
+        <Table highlightOnHover>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Name</Table.Th>
+              <Table.Th>Saldo</Table.Th>
+              <Table.Th>Drinks</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {users.map((u) => (
+              <Table.Tr key={u.id}>
+                <Table.Td>{u.name}</Table.Td>
+                <Table.Td>
+                  <NumberInput
+                    defaultValue={Math.round(u.balance * 100) / 100}
+                    step={1}
+                    onBlur={(e) =>
+                      updateBalance(
+                        u.id,
+                        Math.round(Number(e.currentTarget.value) * 100) / 100,
+                      )
+                    }
+                  />
+                </Table.Td>
+                <Table.Td>{u.total_drinks}</Table.Td>
+                <Table.Td>
                   <Button
-                    color="red"
                     variant="subtle"
+                    color="red"
+                    leftSection={<IconTrash />}
                     onClick={() => {
                       setTargetUser(u);
                       setConfirmOpen(true);
                     }}
-                    leftSection={<IconTrash size={16} />}
                   >
                     Delete
                   </Button>
-                </Group>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-
-      <Modal
-        opened={confirmOpen}
-        onClose={() => setConfirmOpen(false)}
-        title="Confirm deletion"
-        centered
-      >
-        <Text>
-          Are you sure you want to delete <strong>{targetUser?.name}</strong>?
-        </Text>
-        <Group mt="md" justify="flex-end">
-          <Button variant="default" onClick={() => setConfirmOpen(false)}>
-            Cancel
-          </Button>
-          <Button color="red" onClick={deleteUser}>
-            Yes, delete
-          </Button>
-        </Group>
-      </Modal>
-    </>
+                </Table.Td>
+              </Table.Tr>
+            ))}
+          </Table.Tbody>
+        </Table>
+        <Modal
+          opened={confirmOpen}
+          onClose={() => setConfirmOpen(false)}
+          title="Confirm deletion"
+          centered
+        >
+          <Text>
+            Are you sure you want to delete <strong>{targetUser?.name}</strong>?
+          </Text>
+          <Group mt="md" justify="flex-end">
+            <Button variant="default" onClick={() => setConfirmOpen(false)}>
+              Cancel
+            </Button>
+            <Button color="red" onClick={deleteUser}>
+              Yes, delete
+            </Button>
+          </Group>
+        </Modal>
+      </ScrollArea>
+    </Card>
   );
 }

@@ -3,5 +3,16 @@ export interface Person {
   name: string;
   balance: number;
   total_drinks: number;
-  avatarUrl?: string; // Added avatarUrl property
+  avatarUrl?: string;
+  nickname?: string | null;
+}
+
+export interface TopUpResponse {
+  checkoutUrl: string;
+}
+
+export interface BuddyScore {
+  buddy_id: number;
+  buddy_name: string;
+  score: number;
 }

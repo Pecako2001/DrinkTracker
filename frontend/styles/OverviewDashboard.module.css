@@ -1,0 +1,138 @@
+/* General Container for the entire dashboard page */
+.dashboardContainer {
+  padding: var(--mantine-spacing-md);
+  background-color: var(--mantine-color-gray-0); /* Light theme background */
+}
+
+[data-mantine-color-scheme='dark'] .dashboardContainer {
+  background-color: var(--mantine-color-dark-8); /* Dark theme background */
+}
+
+/* Common styling for Paper components used as section containers */
+.sectionPaper {
+  border-radius: var(--mantine-radius-lg); /* Larger radius for a modern look */
+  box-shadow: var(--mantine-shadow-md); /* Softer, more modern shadow */
+  /* background-color is handled by Mantine's Paper, which is theme-aware */
+  /* Ensure padding is consistent if not directly on Paper component */
+}
+
+/* Styling for individual stat cards (e.g., "Drinks this month") */
+.statCard {
+  border: 1px solid transparent; /* Base border */
+  border-radius: var(--mantine-radius-md);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: var(--mantine-color-body); /* Theme-aware background */
+}
+
+/* Theme-specific stat card adjustments */
+[data-mantine-color-scheme='light'] .statCard {
+  border-color: var(--mantine-color-gray-2);
+}
+
+[data-mantine-color-scheme='dark'] .statCard {
+  border-color: var(--mantine-color-dark-5);
+}
+
+.statCard:hover {
+  border-color: var(--mantine-color-primary-light-color); /* Use theme's primary color on hover */
+  box-shadow: var(--mantine-shadow-lg);
+}
+
+/* Styling for the User Select dropdown area, if needed */
+.userSelectContainer {
+  margin-bottom: var(--mantine-spacing-lg);
+  /* Additional styles if the Flex container needs specific alignment or background */
+}
+
+/* Typography for section titles, if Paper's Title needs override */
+.sectionTitle {
+  font-weight: 600; /* Slightly bolder */
+  margin-bottom: var(--mantine-spacing-md); /* Consistent spacing */
+  color: var(--mantine-color-text);
+}
+
+/* Leaderboard specific styles */
+.leaderboardTable th {
+  background-color: var(--mantine-color-gray-1);
+  font-size: var(--mantine-font-size-sm);
+  font-weight: 600;
+  padding-top: var(--mantine-spacing-sm);
+  padding-bottom: var(--mantine-spacing-sm);
+}
+
+[data-mantine-color-scheme='dark'] .leaderboardTable th {
+  background-color: var(--mantine-color-dark-6);
+}
+
+.leaderboardTable td {
+  font-size: var(--mantine-font-size-sm);
+  border-bottom: 1px solid var(--mantine-color-gray-2);
+}
+
+[data-mantine-color-scheme='dark'] .leaderboardTable td {
+  border-bottom: 1px solid var(--mantine-color-dark-4);
+}
+
+.leaderboardRow:hover {
+  background-color: var(--mantine-color-gray-0);
+}
+
+[data-mantine-color-scheme='dark'] .leaderboardRow:hover {
+  background-color: var(--mantine-color-dark-5);
+}
+
+.leaderboardTable th:first-of-type,
+.leaderboardTable td:first-of-type {
+  border-top-left-radius: var(--mantine-radius-sm);
+  border-bottom-left-radius: var(--mantine-radius-sm);
+}
+
+.leaderboardTable th:last-of-type,
+.leaderboardTable td:last-of-type {
+  border-top-right-radius: var(--mantine-radius-sm);
+  border-bottom-right-radius: var(--mantine-radius-sm);
+}
+
+.leaderboardAnchor {
+  color: var(--mantine-color-primary-text-color); /* Use Mantine's primary text color */
+  font-weight: 500;
+}
+
+.leaderboardAnchor:hover {
+  text-decoration: none;
+  color: var(--mantine-color-primary-filled-hover);
+}
+
+.userDetailAvatar {
+  box-shadow: var(--mantine-shadow-xs);
+}
+
+.userDetailName {
+  font-size: var(--mantine-font-size-xl);
+  font-weight: 600;
+}
+
+.userDetailEmail {
+  color: var(--mantine-color-dimmed);
+  font-size: var(--mantine-font-size-sm);
+}
+
+.userDetailStatItem {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-xs);
+  margin-top: var(--mantine-spacing-sm);
+}
+
+.userDetailStatIcon {
+  color: var(--mantine-color-primary-filled);
+}
+
+[data-mantine-color-scheme='dark'] .userDetailStatIcon {
+  color: var(--mantine-color-primary-text-color);
+}
+
+.userDetailPlaceholder {
+  color: var(--mantine-color-dimmed);
+  font-style: italic;
+}

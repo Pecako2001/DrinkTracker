@@ -1,92 +1,68 @@
-import React, { useState, useEffect } from "react";
-import {
-  Select,
-  Text,
-  Title,
-  SimpleGrid,
-  Card,
-  Loader,
-} from "@mantine/core";
-import { Person } from "../../types";
+import React, { useEffect, useState, useMemo } from "react";
 import api from "../../api/api";
+import MonthlyDrinkVolumeChart from "./MonthlyDrinkVolumeChart";
+import PeakThirstHours from "./PeakThirstHours";
+import { Select, Loader, Text } from "@mantine/core";
+import { Person } from "../../types";
+import type { MonthlyVolumeEntry } from "../../types/insights";
 import classes from "../../styles/StatsPage.module.css";
-
-// Define a more specific type for user stats later
-interface UserStatsData {
-  drinks_last_30_days: number;
-  favorite_drink: string;
-  // Add more fields as needed
-}
-
-// Define a more specific type for user stats later
-interface UserStatsData {
-  drinks_last_30_days: number;
-  favorite_drink: string;
-  // Add more fields as needed
-}
 
 export function UserInsightPanel() {
   const [users, setUsers] = useState<{ value: string; label: string }[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [userData, setUserData] = useState<UserStatsData | null>(null);
-  const [selectedUserName, setSelectedUserName] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [loadingUsers, setLoadingUsers] = useState<boolean>(true);
+  const [loadingUsers, setLoadingUsers] = useState(true);
+  const [monthlyData, setMonthlyData] = useState<MonthlyVolumeEntry[]>([]);
+  const [loadingMonthly, setLoadingMonthly] = useState(false);
+
+  const idToName = useMemo(() => {
+    const map: Record<number, string> = {};
+    users.forEach((u) => {
+      map[parseInt(u.value, 10)] = u.label;
+    });
+    return map;
+  }, [users]);
+
+  useEffect(() => {
+    if (!selectedUserId) {
+      setMonthlyData([]);
+      return;
+    }
+    setLoadingMonthly(true);
+    api
+      .get<MonthlyVolumeEntry[]>(`/users/${selectedUserId}/monthly_drinks`)
+      .then((res) => setMonthlyData(res.data))
+      .catch(() => {
+        const base = new Date();
+        base.setDate(1);
+        const mock: MonthlyVolumeEntry[] = [];
+        for (let i = 5; i >= 0; i--) {
+          const d = new Date(base.getFullYear(), base.getMonth() - i, 1);
+          mock.push({
+            userId: parseInt(selectedUserId, 10),
+            month: d.toISOString().slice(0, 7),
+            count: 0,
+          });
+        }
+        setMonthlyData(mock);
+      })
+      .finally(() => setLoadingMonthly(false));
+  }, [selectedUserId]);
 
   // Fetch all users for the dropdown
   useEffect(() => {
     setLoadingUsers(true);
     api
       .get<Person[]>("/users")
-      .then((response) => {
-        const transformedUsers = response.data.map((user) => ({
-          value: user.id.toString(),
-          label: user.name,
-        }));
-        setUsers(transformedUsers);
-      })
-      .catch((_error) => {
-        // Optionally set an error state here
-        // console.error("Error fetching users:", error); 
-      })
-      .finally(() => {
-        setLoadingUsers(false);
-      });
+      .then((res) =>
+        setUsers(
+          res.data.map((u) => ({ value: u.id.toString(), label: u.name })),
+        ),
+      )
+      .finally(() => setLoadingUsers(false));
   }, []);
-
-  // Fetch (mock) stats for the selected user
-  useEffect(() => {
-    if (selectedUserId) {
-      setLoading(true);
-      setUserData(null); // Clear previous data
-
-      // Find user name for display
-      const selectedUser = users.find((user) => user.value === selectedUserId);
-      setSelectedUserName(selectedUser ? selectedUser.label : null);
-
-      // Simulate API call
-      // Replace with actual API call: api.get(`/users/${selectedUserId}/stats`)
-      setTimeout(() => {
-        const mockStats: UserStatsData = {
-          drinks_last_30_days: Math.floor(Math.random() * 100) + 1,
-          favorite_drink: ["Beer", "Wine", "Cocktail", "Coffee", "Water"][
-            Math.floor(Math.random() * 5)
-          ],
-        };
-        setUserData(mockStats);
-        setLoading(false);
-      }, 750); // Simulate network delay
-    } else {
-      setUserData(null);
-      setSelectedUserName(null);
-    }
-  }, [selectedUserId, users]); // Add users to dependency array in case it's initially empty
 
   return (
     <div className={classes.userInsightPanel}>
-      <Title order={3} mb="md">
-        User Insights
-      </Title>
       <Select
         label="Select User"
         placeholder="Search or pick a user"
@@ -101,53 +77,12 @@ export function UserInsightPanel() {
           loadingUsers ? "Loading users..." : "No users found"
         }
       />
-
-      {loading && <Loader />}
-
-      {!loading && !selectedUserId && (
-        <Text c="dimmed">Select a user to see their insights.</Text>
-      )}
-
-      {!loading && selectedUserId && userData && selectedUserName && (
-        <>
-          <Title order={4} mb="sm">
-            Stats for {selectedUserName}
-          </Title>
-          <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="md">
-            <Card
-              shadow="sm"
-              p="md"
-              radius="md"
-              className={classes.userStatsCard}
-            >
-              <Text size="xs" c="dimmed" fw={700}>
-                DRINKS (LAST 30 DAYS)
-              </Text>
-              <Text size="xl" fw={500}>
-                {userData.drinks_last_30_days}
-              </Text>
-            </Card>
-            <Card
-              shadow="sm"
-              p="md"
-              radius="md"
-              className={classes.userStatsCard}
-            >
-              <Text size="xs" c="dimmed" fw={700}>
-                FAVORITE DRINK (MOCK)
-              </Text>
-              <Text size="xl" fw={500}>
-                {userData.favorite_drink}
-              </Text>
-            </Card>
-            {/* Add more stat cards here */}
-          </SimpleGrid>
-        </>
-      )}
-      {!loading && selectedUserId && !userData && !selectedUserName && (
-        // This case might happen briefly if user name isn't found before mock data is set
-        <Text c="dimmed">Loading user data...</Text>
-      )}
+      {selectedUserId &&
+        (loadingMonthly ? (
+          <Loader />
+        ) : (
+          <MonthlyDrinkVolumeChart data={monthlyData} />
+        ))}
     </div>
   );
 }

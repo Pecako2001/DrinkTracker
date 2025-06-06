@@ -10,6 +10,7 @@ import {
 import { useEffect } from "react";
 import WebLayout from "../components/WebLayout";
 import { theme, colorSchemeStorageKey } from "../theme";
+import { useRouter } from "next/router";
 
 const manager = localStorageColorSchemeManager({ key: colorSchemeStorageKey });
 
@@ -22,6 +23,9 @@ function Providers({ children }: { children: React.ReactNode }) {
 }
 
 export default function App({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+  const isMobilePage = router.pathname.startsWith("/Mobile");
+
   return (
     <MantineProvider
       theme={theme}
@@ -30,9 +34,13 @@ export default function App({ Component, pageProps }: AppProps) {
       withCssVariables
     >
       <Providers>
-        <WebLayout>
+        {isMobilePage ? (
           <Component {...pageProps} />
-        </WebLayout>
+        ) : (
+          <WebLayout>
+            <Component {...pageProps} />
+          </WebLayout>
+        )}
       </Providers>
     </MantineProvider>
   );
