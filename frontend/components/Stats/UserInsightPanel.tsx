@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo} from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import api from "../../api/api";
 import MonthlyDrinkVolumeChart from "./MonthlyDrinkVolumeChart";
 import PeakThirstHours from "./PeakThirstHours";

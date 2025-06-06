@@ -30,8 +30,8 @@ export default function MonthlyDrinkVolumeChart({ data }: Props) {
 
   const series = seriesIds.map((id) => ({
     name: `user-${id}`,
-    color: 'blue.6',
-}));
+    color: "blue.6",
+  }));
 
   return (
     <BarChart

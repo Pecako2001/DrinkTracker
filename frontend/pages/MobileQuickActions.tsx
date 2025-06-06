@@ -40,7 +40,7 @@ const MobileQuickActionsPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, []); 
+  }, []);
 
   useEffect(() => {
     const userId = Cookies.get("selected_user_id");
@@ -137,7 +137,7 @@ const MobileQuickActionsPage: React.FC = () => {
         >
           Select Different User
         </Button>
-          {/* TODO: Actual trigger for avatar */}
+        {/* TODO: Actual trigger for avatar */}
         {/* <Button size="xs" className={classes.changeBtn} onClick={triggerFile}>
           <span>📷</span>
         </Button> */}

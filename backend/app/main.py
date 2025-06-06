@@ -12,6 +12,7 @@ from datetime import datetime, timedelta
 from typing import List
 from .auth import router as auth_router, get_current_admin
 import dotenv
+from . import database
 from uuid import uuid4
 import os
 
@@ -41,9 +42,17 @@ app.add_middleware(
 )
 
 
-@app.get("/users", response_model=list[schemas.Person])
+@app.get(
+    "/users",
+    response_model=list[schemas.PersonOut],
+    response_model_by_alias=False,
+)
 def read_users(db: Session = Depends(get_db)):
-    return crud.get_persons(db)
+    persons = crud.get_persons(db)
+    for p in persons:
+        # Print whichever columns you care about:
+        print(f"id={p.id}  name={p.name}  avatar_url={p.avatar_url}  balance={p.balance}  total_drinks={p.total_drinks}")
+    return persons
 
 
 @app.post("/users", response_model=schemas.Person)
