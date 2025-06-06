@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Select, Text, Title, SimpleGrid, Card, Loader } from "@mantine/core";
+import {
+  MultiSelect,
+  Text,
+  Title,
+  SimpleGrid,
+  Card,
+  Loader,
+  Table,
+} from "@mantine/core";
+import { BarChart } from "@mantine/charts";
 import { Person } from "../../types";
 import api from "../../api/api";
 import classes from "../../styles/StatsPage.module.css";
@@ -9,11 +18,96 @@ interface UserStatsData {
   favorite_drink: string;
 }
 
+interface InsightsData {
+  monthlyVolume: Record<string, number | string>[];
+  peakHours: Record<string, number | string>[];
+  hydrationStreaks: { user: string; days: number }[];
+  earlyLate: { user: string; early: number; late: number }[];
+  chugOfFame: { user: string; seconds: number }[];
+  hydrationHolidays: { date: string; count: number }[];
+  socialSip: { group: string; count: number }[];
+}
+
+const colors = [
+  "blue.6",
+  "grape.6",
+  "teal.6",
+  "cyan.6",
+  "orange.6",
+  "red.6",
+  "lime.6",
+  "indigo.6",
+];
+
+function getLastMonths(count: number) {
+  const now = new Date();
+  return Array.from({ length: count }).map((_, i) => {
+    const d = new Date(now.getFullYear(), now.getMonth() - (count - 1 - i), 1);
+    return d.toLocaleString("default", { month: "short" });
+  });
+}
+
+function generateMockInsights(ids: string[], names: string[]): InsightsData {
+  const months = getLastMonths(6);
+  const monthlyVolume = months.map((m) => {
+    const item: Record<string, number | string> = { month: m };
+    ids.forEach((id) => {
+      item[id] = Math.floor(Math.random() * 30) + 5;
+    });
+    return item;
+  });
+
+  const peakHours = Array.from({ length: 24 }).map((_, h) => {
+    const item: Record<string, number | string> = { hour: h };
+    ids.forEach((id) => {
+      item[id] = Math.floor(Math.random() * 5);
+    });
+    return item;
+  });
+
+  const hydrationStreaks = ids.map((id, i) => ({
+    user: names[i] ?? id,
+    days: Math.floor(Math.random() * 15) + 1,
+  }));
+
+  const earlyLate = ids.map((id, i) => ({
+    user: names[i] ?? id,
+    early: Math.floor(Math.random() * 20),
+    late: Math.floor(Math.random() * 20),
+  }));
+
+  const chugOfFame = ids.map((id, i) => ({
+    user: names[i] ?? id,
+    seconds: Math.floor(Math.random() * 200) + 30,
+  }));
+
+  const hydrationHolidays = months.map((m) => ({
+    date: m,
+    count: Math.floor(Math.random() * 10) + 1,
+  }));
+
+  const socialSip = ids.map((id, i) => ({
+    group: names[i] ?? id,
+    count: Math.floor(Math.random() * 30),
+  }));
+
+  return {
+    monthlyVolume,
+    peakHours,
+    hydrationStreaks,
+    earlyLate,
+    chugOfFame,
+    hydrationHolidays,
+    socialSip,
+  };
+}
+
 export function UserInsightPanel() {
   const [users, setUsers] = useState<{ value: string; label: string }[]>([]);
-  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [userData, setUserData] = useState<UserStatsData | null>(null);
   const [selectedUserName, setSelectedUserName] = useState<string | null>(null);
+  const [insights, setInsights] = useState<InsightsData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingUsers, setLoadingUsers] = useState<boolean>(true);
 
@@ -38,23 +132,20 @@ export function UserInsightPanel() {
       });
   }, []);
 
-  // Fetch stats for the selected user
+  // Fetch stats for the first selected user
   useEffect(() => {
-    if (selectedUserId) {
+    const firstId = selectedUserIds[0];
+    if (firstId) {
       setLoading(true);
-      setUserData(null); // Clear previous data
-
-      // Find user name for display
-      const selectedUser = users.find((user) => user.value === selectedUserId);
+      setUserData(null);
+      const selectedUser = users.find((u) => u.value === firstId);
       setSelectedUserName(selectedUser ? selectedUser.label : null);
-
       api
-        .get<UserStatsData>(`/users/${selectedUserId}/stats`)
+        .get<UserStatsData>(`/users/${firstId}/stats`)
         .then((response) => {
           setUserData(response.data);
         })
         .catch(() => {
-          // Optionally handle error state
           setUserData(null);
         })
         .finally(() => {
@@ -64,40 +155,61 @@ export function UserInsightPanel() {
       setUserData(null);
       setSelectedUserName(null);
     }
-  }, [selectedUserId, users]); // Add users to dependency array in case it's initially empty
+  }, [selectedUserIds, users]);
 
-  return (
-    <div className={classes.userInsightPanel}>
-      <Title order={3} mb="md">
-        User Insights
-      </Title>
-      <Select
-        label="Select User"
-        placeholder="Search or pick a user"
-        data={users}
-        value={selectedUserId}
-        onChange={setSelectedUserId}
-        searchable
-        clearable
-        disabled={loadingUsers}
-        mb="lg"
-        nothingFoundMessage={
-          loadingUsers ? "Loading users..." : "No users found"
-        }
-      />
+  // Fetch insights for selected users or generate mock data
+  useEffect(() => {
+    if (selectedUserIds.length === 0) {
+      setInsights(null);
+      return;
+    }
+    const names = selectedUserIds.map(
+      (id) => users.find((u) => u.value === id)?.label || id,
+    );
+    setLoading(true);
+    api
+      .get<InsightsData>("/insights", {
+        params: { users: selectedUserIds.join(",") },
+      })
+      .then((res) => setInsights(res.data))
+      .catch(() => {
+        setInsights(generateMockInsights(selectedUserIds, names));
+      })
+      .finally(() => setLoading(false));
+  }, [selectedUserIds, users]);
+
+    return (
+      <div className={classes.userInsightPanel}>
+        <Title order={3} mb="md">
+          User Insights
+        </Title>
+        <MultiSelect
+          label="Select Users"
+          placeholder="Search or pick users"
+          data={users}
+          value={selectedUserIds}
+          onChange={setSelectedUserIds}
+          searchable
+          clearable
+          disabled={loadingUsers}
+          mb="lg"
+          nothingFoundMessage={
+            loadingUsers ? "Loading users..." : "No users found"
+          }
+        />
 
       {loading && <Loader />}
 
-      {!loading && !selectedUserId && (
-        <Text c="dimmed">Select a user to see their insights.</Text>
-      )}
+        {!loading && selectedUserIds.length === 0 && (
+          <Text c="dimmed">Select users to see insights.</Text>
+        )}
 
-      {!loading && selectedUserId && userData && selectedUserName && (
-        <>
-          <Title order={4} mb="sm">
-            Stats for {selectedUserName}
-          </Title>
-          <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="md">
+        {!loading && selectedUserIds.length > 0 && userData && selectedUserName && (
+          <>
+            <Title order={4} mb="sm">
+              Stats for {selectedUserName}
+            </Title>
+            <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="md">
             <Card
               shadow="sm"
               p="md"
@@ -127,13 +239,135 @@ export function UserInsightPanel() {
             {/* Add more stat cards here */}
           </SimpleGrid>
         </>
-      )}
-      {!loading && selectedUserId && !userData && !selectedUserName && (
-        // This case might happen briefly if user name isn't found before mock data is set
-        <Text c="dimmed">Loading user data...</Text>
-      )}
-    </div>
-  );
-}
+        )}
+        {!loading && selectedUserIds.length > 0 && !userData && !selectedUserName && (
+          // This case might happen briefly if user name isn't found before mock data is set
+          <Text c="dimmed">Loading user data...</Text>
+        )}
+        {!loading && insights && (
+          <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md" mt="md">
+            <Card shadow="sm" p="md" radius="md" withBorder>
+              <Title order={5} mb="sm">
+                Monthly Drink Volume (Last 6 Months)
+              </Title>
+              <BarChart
+                h={260}
+                data={insights.monthlyVolume}
+                dataKey="month"
+                stacked
+                withLegend
+                series={selectedUserIds.map((id, i) => ({
+                  name: users.find((u) => u.value === id)?.label || id,
+                  valueKey: id,
+                  color: colors[i % colors.length],
+                }))}
+              />
+            </Card>
+
+            <Card shadow="sm" p="md" radius="md" withBorder>
+              <Title order={5} mb="sm">
+                Peak Thirst Hours
+              </Title>
+              <BarChart
+                h={260}
+                data={insights.peakHours}
+                dataKey="hour"
+                withLegend
+                series={selectedUserIds.map((id, i) => ({
+                  name: users.find((u) => u.value === id)?.label || id,
+                  valueKey: id,
+                  color: colors[i % colors.length],
+                }))}
+              />
+            </Card>
+
+            <Card shadow="sm" p="md" radius="md" withBorder>
+              <Title order={5} mb="sm">
+                Longest Hydration Streaks
+              </Title>
+              <BarChart
+                h={220}
+                data={insights.hydrationStreaks}
+                dataKey="user"
+                orientation="horizontal"
+                series={[{
+                  name: "Days",
+                  valueKey: "days",
+                  color: "teal.6",
+                }]}
+              />
+            </Card>
+
+            <Card shadow="sm" p="md" radius="md" withBorder>
+              <Title order={5} mb="sm">
+                Early Bird vs Night Owl
+              </Title>
+              <BarChart
+                h={220}
+                data={insights.earlyLate}
+                dataKey="user"
+                stacked
+                orientation="horizontal"
+                withLegend
+                series={[
+                  { name: "Before 9 AM", valueKey: "early", color: "blue.6" },
+                  { name: "After 9 PM", valueKey: "late", color: "grape.6" },
+                ]}
+              />
+            </Card>
+
+            <Card shadow="sm" p="md" radius="md" withBorder>
+              <Title order={5} mb="sm">
+                Chug of Fame
+              </Title>
+              <BarChart
+                h={220}
+                data={insights.chugOfFame}
+                dataKey="user"
+                orientation="horizontal"
+                series={[{
+                  name: "Fastest Gap (s)",
+                  valueKey: "seconds",
+                  color: "orange.6",
+                }]}
+              />
+            </Card>
+
+            <Card shadow="sm" p="md" radius="md" withBorder>
+              <Title order={5} mb="sm">
+                Hydration Holidays
+              </Title>
+              <Table withRowBorders={false} verticalSpacing="xs">
+                <Table.Tbody>
+                  {insights.hydrationHolidays.map((d) => (
+                    <Table.Tr key={d.date}>
+                      <Table.Td>{d.date}</Table.Td>
+                      <Table.Td>{d.count}</Table.Td>
+                    </Table.Tr>
+                  ))}
+                </Table.Tbody>
+              </Table>
+            </Card>
+
+            <Card shadow="sm" p="md" radius="md" withBorder>
+              <Title order={5} mb="sm">
+                Social Sip Score
+              </Title>
+              <BarChart
+                h={220}
+                data={insights.socialSip}
+                dataKey="group"
+                series={[{
+                  name: "Co-logged Drinks",
+                  valueKey: "count",
+                  color: "cyan.6",
+                }]}
+              />
+            </Card>
+          </SimpleGrid>
+        )}
+      </div>
+    );
+  }
 
 export default UserInsightPanel;

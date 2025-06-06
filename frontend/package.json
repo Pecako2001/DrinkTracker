@@ -21,6 +21,7 @@
     "storybook:build": "storybook build"
   },
   "dependencies": {
+    "@mantine/charts": "7.17.8",
     "@mantine/core": "^7.17.4",
     "@mantine/hooks": "^7.17.4",
     "@next/bundle-analyzer": "^15.2.3",
@@ -29,7 +30,8 @@
     "js-cookie": "^3.0.5",
     "next": "15.2.3",
     "react": "19.0.0",
-    "react-dom": "19.0.0"
+    "react-dom": "19.0.0",
+    "recharts": "2.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",
