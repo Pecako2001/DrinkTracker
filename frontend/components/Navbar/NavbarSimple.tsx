@@ -7,6 +7,7 @@ import {
   IconSettings,
   IconUserPlus, // if you don’t have this, pick another add‑user icon
   IconSun,
+  IconAdmin,
   IconMoon,
 } from "@tabler/icons-react";
 import { Group, Text, ActionIcon, useMantineColorScheme } from "@mantine/core";
@@ -17,6 +18,7 @@ const mainLinks = [
   { href: "/StatsPage", label: "Statistieken", icon: IconChartDots3 },
 ];
 const footerLinks = [
+  // { href: "/AdminPage", label: "Admin", icon: IconAdmin },
   { href: "/AddUserPage", label: "Add User", icon: IconUserPlus },
   { href: "/SettingsPage", label: "Settings", icon: IconSettings },
 ];
@@ -27,8 +29,8 @@ export default function NavbarSimpleContent() {
 
   return (
     <>
-      <Group justify="center" mb="md">
-        <Text fw={700} size="lg">
+      <Group justify="center" mb="md" className={classes.logoGroup}>
+        <Text fw={700} size="lg, xl" className={classes.logo}>
           Drink Tracker
         </Text>
       </Group>

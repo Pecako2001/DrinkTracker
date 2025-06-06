@@ -1,5 +1,6 @@
 import React from "react";
-import { Container, Paper, Tabs, Title } from "@mantine/core";
+import { useState } from 'react';
+import { Container, Paper, Tabs, Title, FloatingIndicator } from "@mantine/core";
 import { OverallStats } from "../components/Stats/OverallStats";
 import { MonthlyLeaderboard } from "../components/Stats/MonthlyLeaderboard";
 import { YearlyLeaderboard } from "../components/Stats/YearlyLeaderboard";
@@ -8,6 +9,14 @@ import { UserInsightPanel } from "../components/Stats/UserInsightPanel";
 import classes from "../styles/StatsPage.module.css";
 
 function StatsPage() {
+  const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
+  const [value, setValue] = useState<string | null>('monthly');
+  const [controlsRefs, setControlsRefs] = useState<Record<string, HTMLButtonElement | null>>({});
+  const setControlRef = (val: string) => (node: HTMLButtonElement) => {
+    controlsRefs[val] = node;
+    setControlsRefs(controlsRefs);
+  };
+
   return (
     <Container size="xl" py="md" className={classes.statsContainer}>
       <Title order={1} mb="sm">
@@ -17,11 +26,20 @@ function StatsPage() {
       <Title order={2} mt="sm" mb="xs">
         Leaderboard
       </Title>
-      <Tabs defaultValue="monthly" variant="outline" radius="xs">
-        <Tabs.List mb="md">
-          <Tabs.Tab value="monthly">Monthly</Tabs.Tab>
-          <Tabs.Tab value="yearly">Yearly</Tabs.Tab>
-          <Tabs.Tab value="all">All Time</Tabs.Tab>
+      <Tabs value={value} onChange={setValue} ClassName={classes.list}>
+        <Tabs.List mb="md"  ref={setRootRef}>
+          <Tabs.Tab value="monthly" ref={setControlRef('monthly')} className={classes.tab}>
+            Monthly</Tabs.Tab>
+          <Tabs.Tab value="yearly" ref={setControlRef('yearly')} className={classes.tab}>
+            Yearly</Tabs.Tab>
+          <Tabs.Tab value="all" ref={setControlRef('all')} className={classes.tab}>
+            All Time</Tabs.Tab>
+
+          <FloatingIndicator
+            target={value ? controlsRefs[value] : null}
+            parent={rootRef}
+            className={classes.indicator}
+          />
         </Tabs.List>
 
         <Tabs.Panel value="monthly">
@@ -38,9 +56,9 @@ function StatsPage() {
       <Title order={2} mt="lg" mb="sm">
         Your Insights
       </Title>
-      <Paper withBorder shadow="sm" p="md" mb="md">
+      {/* <Paper withBorder shadow="sm" p="md" mb="md">
         <OverallStats />
-      </Paper>
+      </Paper> */}
       <Paper
         withBorder
         shadow="sm"

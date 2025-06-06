@@ -33,27 +33,23 @@ export function MonthlyLeaderboard() {
         This Month
       </Title>
       <ScrollArea>
-        <Table verticalSpacing="sm" highlightOnHover>
-          <thead style={{ fontWeight: 700 }}>
-            <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th style={{ textAlign: "right" }}>Drinks</th>
-            </tr>
-          </thead>
-          <tbody>
+        <Table highlightOnHover>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Standing</Table.Th>
+              <Table.Th>Name</Table.Th>
+              <Table.Th>Drinks</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
             {sorted.map((u, i) => (
-              <tr key={u.id}>
-                <td>{i + 1}</td>
-                <td>
-                  <Anchor component="button">{u.name}</Anchor>
-                </td>
-                <td style={{ textAlign: "right" }}>
-                  {u.drinks.toLocaleString()}
-                </td>
-              </tr>
+              <Table.Tr key={u.id}>
+                <Table.Td>{i + 1}</Table.Td>
+                <Table.Td>{u.name}</Table.Td>
+                <Table.Td>{u.drinks.toLocaleString()}</Table.Td>
+              </Table.Tr>
             ))}
-          </tbody>
+          </Table.Tbody>
         </Table>
       </ScrollArea>
     </Card>

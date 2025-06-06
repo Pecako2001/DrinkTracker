@@ -33,23 +33,23 @@ export function YearlyLeaderboard() {
         This Year
       </Title>
       <ScrollArea>
-        <Table striped highlightOnHover>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Drinks</th>
-            </tr>
-          </thead>
-          <tbody>
+        <Table highlightOnHover>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Standing</Table.Th>
+              <Table.Th>Name</Table.Th>
+              <Table.Th>Drinks</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
             {sorted.map((u, i) => (
-              <tr key={u.id}>
-                <td>{i + 1}</td>
-                <td>{u.name}</td>
-                <td>{u.drinks.toLocaleString()}</td>
-              </tr>
+              <Table.Tr key={u.id}>
+                <Table.Td>{i + 1}</Table.Td>
+                <Table.Td>{u.name}</Table.Td>
+                <Table.Td>{u.drinks.toLocaleString()}</Table.Td>
+              </Table.Tr>
             ))}
-          </tbody>
+          </Table.Tbody>
         </Table>
       </ScrollArea>
     </Card>

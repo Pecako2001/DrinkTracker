@@ -61,6 +61,9 @@ export function TopUpModal({
           hideControls
         />
 
+        <Text size="sm" color="dimmed">
+          Note: €0.30 fee applies to all top-ups
+        </Text>
         <Group justify="space-between" mt="md">
           <Button variant="outline" onClick={onClose}>
             Cancel
