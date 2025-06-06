@@ -66,6 +66,14 @@ def add_drink(user_id: int, db: Session = Depends(get_db)):
     return person
 
 
+@router.post("/users/{user_id}/drinks/undo", response_model=schemas.Person)
+def undo_drink(user_id: int, db: Session = Depends(get_db)):
+    person = crud.undo_last_drink(db, user_id)
+    if not person:
+        raise HTTPException(status_code=404, detail="User or drink not found")
+    return person
+
+
 @router.patch("/users/{user_id}")
 def update_user(
     user_id: int,
