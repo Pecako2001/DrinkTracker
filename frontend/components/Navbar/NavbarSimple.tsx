@@ -6,8 +6,10 @@ import {
   IconChartDots3,
   IconSettings,
   IconUserPlus, // if you don’t have this, pick another add‑user icon
+  IconSun,
+  IconMoon,
 } from "@tabler/icons-react";
-import { Group, Text } from "@mantine/core";
+import { Group, Text, ActionIcon, useMantineColorScheme } from "@mantine/core";
 import classes from "./NavbarSimple.module.css";
 
 const mainLinks = [
@@ -21,6 +23,7 @@ const footerLinks = [
 
 export default function NavbarSimpleContent() {
   const [active, setActive] = useState("Home");
+  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 
   return (
     <>
@@ -32,15 +35,15 @@ export default function NavbarSimpleContent() {
 
       {/* main navigation */}
       {mainLinks.map((item) => (
-        <Link key={item.label} href={item.href} passHref legacyBehavior>
-          <a
-            className={classes.link}
-            data-active={item.label === active || undefined}
-            onClick={() => setActive(item.label)}
-          >
-            <item.icon className={classes.linkIcon} stroke={1.5} />
-            <span>{item.label}</span>
-          </a>
+        <Link
+          key={item.label}
+          href={item.href}
+          className={classes.link}
+          data-active={item.label === active || undefined}
+          onClick={() => setActive(item.label)}
+        >
+          <item.icon className={classes.linkIcon} stroke={1.5} />
+          <span>{item.label}</span>
         </Link>
       ))}
 
@@ -50,17 +53,30 @@ export default function NavbarSimpleContent() {
       {/* footer navigation */}
       <div className={classes.footer}>
         {footerLinks.map((item) => (
-          <Link key={item.label} href={item.href} passHref legacyBehavior>
-            <a
-              className={classes.link}
-              data-active={item.label === active || undefined}
-              onClick={() => setActive(item.label)}
-            >
-              <item.icon className={classes.linkIcon} stroke={1.5} />
-              <span>{item.label}</span>
-            </a>
+          <Link
+            key={item.label}
+            href={item.href}
+            className={classes.link}
+            data-active={item.label === active || undefined}
+            onClick={() => setActive(item.label)}
+          >
+            <item.icon className={classes.linkIcon} stroke={1.5} />
+            <span>{item.label}</span>
           </Link>
         ))}
+        <ActionIcon
+          aria-label="Toggle color scheme"
+          onClick={() => toggleColorScheme()}
+          variant="default"
+          size="lg"
+          className={classes.link}
+        >
+          {colorScheme === "dark" ? (
+            <IconSun className={classes.linkIcon} stroke={1.5} />
+          ) : (
+            <IconMoon className={classes.linkIcon} stroke={1.5} />
+          )}
+        </ActionIcon>
       </div>
     </>
   );

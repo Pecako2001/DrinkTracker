@@ -30,7 +30,9 @@ export function UserManagement({ users, setUsers }: Props) {
   };
 
   const deleteUser = async () => {
-    if (!targetUser) return;
+    if (!targetUser) {
+      return;
+    }
     await api.delete(`/users/${targetUser.id}`);
     setUsers(users.filter((u) => u.id !== targetUser.id));
     setConfirmOpen(false);
