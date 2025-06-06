@@ -10,6 +10,7 @@ import {
   Text,
   Stack,
 } from "@mantine/core"; // Removed Paper, Group as they are now encapsulated in UserQuickActionsDisplay
+import classes from "../styles/MobileQuickActions.module.css";
 import api from "../api/api";
 import { Person } from "../types";
 import { IconCoffee, IconCreditCardPay, IconUser } from "@tabler/icons-react";
@@ -180,7 +181,7 @@ const MobileQuickActionsPage: React.FC = () => {
   }
 
   return (
-    <Container py="xl">
+    <Box className={classes.page}>
       <Box mb="xl">
         {" "}
         <UserQuickActionsDisplay
@@ -229,7 +230,7 @@ const MobileQuickActionsPage: React.FC = () => {
         onConfirm={handleTopUp}
         onClose={() => setTopUpModalOpen(false)}
       />
-    </Container>
+    </Box>
   );
 };
 
