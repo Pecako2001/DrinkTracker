@@ -12,6 +12,7 @@ import { Person } from "../../types";
 import api from "../../api/api";
 import classes from "../../styles/StatsPage.module.css";
 import PeakThirstHoursChart from "./PeakThirstHoursChart";
+import SocialSipScoreChart from "./SocialSipScoreChart";
 
 interface UserStatsData {
   drinks_last_30_days: number;
@@ -161,6 +162,7 @@ export function UserInsightPanel() {
         userIds={selectedChartUsers.map((id) => parseInt(id, 10))}
         idToName={idToName}
       />
+      <SocialSipScoreChart />
     </div>
   );
 }
