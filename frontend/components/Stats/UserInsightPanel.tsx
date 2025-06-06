@@ -1,48 +1,26 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { Select, Text, Title, SimpleGrid, MultiSelect, Card, Loader } from "@mantine/core";
-import { Person } from "../../types";
+import React, { useEffect, useState } from "react";
+import { Select } from "@mantine/core";
 import api from "../../api/api";
-import PeakThirstHoursChart from "./PeakThirstHoursChart";
+import { Person } from "../../types";
 import MonthlyDrinkVolumeChart from "./MonthlyDrinkVolumeChart";
+import PeakThirstHours from "./PeakThirstHours";
 import classes from "../../styles/StatsPage.module.css";
-
-// Define BuddyScore type if not imported from elsewhere
-type BuddyScore = {
-  // Replace these fields with the actual structure as needed
-  userId: number;
-  score: number;
-};
 
 export function UserInsightPanel() {
   const [users, setUsers] = useState<{ value: string; label: string }[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [buddyScores, setBuddyScores] = useState<BuddyScore[] | null>(null);
-  const [selectedUserName, setSelectedUserName] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [chartUsers, setChartUsers] = useState<string[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(true);
 
-  const idToName = useMemo(() => {
-    const map: Record<number, string> = {};
-    users.forEach((u) => {
-      map[parseInt(u.value, 10)] = u.label;
-    });
-    return map;
-  }, [users]);
-
-  // Fetch all users for the dropdown
   useEffect(() => {
     setLoadingUsers(true);
     api
       .get<Person[]>("/users")
-      .then((res) => {
+      .then((res) =>
         setUsers(
           res.data.map((u) => ({ value: u.id.toString(), label: u.name })),
-        );
-      })
-      .finally(() => {
-        setLoadingUsers(false);
-      });
+        ),
+      )
+      .finally(() => setLoadingUsers(false));
   }, []);
 
   return (
@@ -62,12 +40,11 @@ export function UserInsightPanel() {
         }
       />
       {selectedUserId && (
-         <MonthlyDrinkVolumeChart userIds={[parseInt(selectedUserId, 10)]} />
-
-        <PeakThirstHoursChart 
+        <>
+          <MonthlyDrinkVolumeChart userIds={[parseInt(selectedUserId, 10)]} />
+          <PeakThirstHours userId={selectedUserId} />
+        </>
       )}
-
-
     </div>
   );
 }
