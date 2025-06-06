@@ -116,7 +116,6 @@ def update_nickname(
     user_id: int,
     update: UpdateNickname,
     db: Session = Depends(get_db),
-    admin: None = Depends(get_current_admin),
 ):
     person = crud.update_user_nickname(db, user_id, update.nickname)
     if not person:
@@ -371,17 +370,16 @@ def monthly_drinks(user_id: int, db: Session = Depends(get_db)):
         datetime.utcnow().replace(day=1, hour=0, minute=0, second=0, microsecond=0),
         5,
     )
-    rows = (
-        db.query(
-            func.to_char(func.date_trunc("month", models.DrinkEvent.timestamp), "YYYY-MM").label("month"),
-            func.count(models.DrinkEvent.id).label("count"),
-        )
+    events = (
+        db.query(models.DrinkEvent.timestamp)
         .filter(models.DrinkEvent.person_id == user_id, models.DrinkEvent.timestamp >= start)
-        .group_by("month")
-        .order_by("month")
         .all()
     )
+    counts: dict[str, int] = {}
+    for (ts,) in events:
+        month = ts.strftime("%Y-%m")
+        counts[month] = counts.get(month, 0) + 1
     return [
-        {"userId": user_id, "month": r.month, "count": int(r.count)}
-        for r in rows
+        {"userId": user_id, "month": month, "count": count}
+        for month, count in sorted(counts.items())
     ]
