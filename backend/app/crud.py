@@ -7,7 +7,8 @@ from mollie.api.client import Client as MollieClient
 import os
 
 def get_persons(db: Session):
-    return db.query(models.Person).all()
+    """Return all persons sorted by name for deterministic ordering."""
+    return db.query(models.Person).order_by(models.Person.name.asc()).all()
 
 
 def create_person(db: Session, person: schemas.PersonCreate):

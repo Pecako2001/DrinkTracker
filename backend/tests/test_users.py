@@ -73,3 +73,14 @@ def test_create_user_without_optional_fields(client):
     data = resp.json()
     assert data["avatar_url"] is None
     assert data["nickname"] is None
+
+
+def test_users_sorted_by_name(client):
+    client.post("/users", json={"name": "Charlie"})
+    client.post("/users", json={"name": "Alice"})
+    client.post("/users", json={"name": "Bob"})
+
+    resp = client.get("/users")
+    assert resp.status_code == 200
+    names = [u["name"] for u in resp.json()]
+    assert names == sorted(names)
