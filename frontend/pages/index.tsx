@@ -93,13 +93,7 @@ export default function HomePage() {
   };
 
   const handleUndoDrink = async (notif: DrinkNotification) => {
-    const freshUser = (await api.get<Person>(`/users/${notif.user.id}`)).data;
-
-    await api.patch(`/users/${notif.user.id}`, {
-      balance: freshUser.balance + 1,
-      total_drinks: freshUser.total_drinks - 1,
-    });
-
+    await api.post(`/users/${notif.user.id}/drinks/undo`);
     await fetchUsers();
     setNotifications((prev) => prev.filter((n) => n.id !== notif.id));
   };

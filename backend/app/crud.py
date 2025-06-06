@@ -42,6 +42,29 @@ def record_drink(db: Session, person_id: int):
     return person
 
 
+def undo_last_drink(db: Session, person_id: int):
+    """Revert the most recent drink event for a user."""
+    person = get_person(db, person_id)
+    if not person or person.total_drinks <= 0:
+        return None
+
+    last_event = (
+        db.query(models.DrinkEvent)
+        .filter(models.DrinkEvent.person_id == person_id)
+        .order_by(models.DrinkEvent.id.desc())
+        .first()
+    )
+    if not last_event:
+        return None
+
+    person.balance += Decimal("1.00")
+    person.total_drinks -= 1
+    db.delete(last_event)
+    db.commit()
+    db.refresh(person)
+    return person
+
+
 # crud.py
 def update_user_balance(
     db: Session, user_id: int, new_balance: float, new_total_drinks: int | None = None

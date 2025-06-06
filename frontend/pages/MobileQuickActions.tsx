@@ -9,12 +9,23 @@ import {
   Box,
   Text,
   Stack,
+  Notification,
 } from "@mantine/core"; // Removed Paper, Group as they are now encapsulated in UserQuickActionsDisplay
 import api from "../api/api";
 import { Person } from "../types";
-import { IconCoffee, IconCreditCardPay, IconUser } from "@tabler/icons-react";
+import {
+  IconCoffee,
+  IconCreditCardPay,
+  IconUser,
+  IconX,
+} from "@tabler/icons-react";
 import UserQuickActionsDisplay from "../components/Mobile/UserQuickActionsDisplay";
 import MobileTopUpModal from "../components/Mobile/MobileTopUpModal";
+
+interface DrinkNotification {
+  user: Person;
+  id: number;
+}
 
 const MobileQuickActionsPage: React.FC = () => {
   const [user, setUser] = useState<Person | null>(null);
@@ -26,6 +37,7 @@ const MobileQuickActionsPage: React.FC = () => {
   });
   const [topUpModalOpen, setTopUpModalOpen] = useState(false);
   const [topUpAmount, setTopUpAmount] = useState(5);
+  const [notifications, setNotifications] = useState<DrinkNotification[]>([]);
   const router = useRouter();
 
   const fetchUserData = useCallback(async (userId: string) => {
@@ -61,6 +73,14 @@ const MobileQuickActionsPage: React.FC = () => {
     }
     setActionLoading((prev) => ({ ...prev, drink: true }));
     try {
+      const freshUser = (await api.get<Person>(`/users/${user.id}`)).data;
+      setNotifications((prev) => [
+        ...prev,
+        {
+          id: Date.now(),
+          user: freshUser,
+        },
+      ]);
       await api.post(`/users/${user.id}/drinks`);
       await fetchUserData(user.id.toString());
     } catch (err) {
@@ -68,6 +88,12 @@ const MobileQuickActionsPage: React.FC = () => {
     } finally {
       setActionLoading((prev) => ({ ...prev, drink: false }));
     }
+  };
+
+  const handleUndoDrink = async (notif: DrinkNotification) => {
+    await api.post(`/users/${notif.user.id}/drinks/undo`);
+    await fetchUserData(notif.user.id.toString());
+    setNotifications((prev) => prev.filter((n) => n.id !== notif.id));
   };
 
   const handleTopUp = async () => {
@@ -229,6 +255,31 @@ const MobileQuickActionsPage: React.FC = () => {
         onConfirm={handleTopUp}
         onClose={() => setTopUpModalOpen(false)}
       />
+
+      <Stack pos="fixed" bottom={16} right={16} gap="sm">
+        {notifications.map((notif) => (
+          <Notification
+            key={notif.id}
+            onClose={() =>
+              setNotifications((prev) => prev.filter((n) => n.id !== notif.id))
+            }
+            withCloseButton
+            icon={<IconX size={16} />}
+            color="teal"
+            title="Drink added"
+          >
+            +1 drink added to <strong>{notif.user.name}</strong>
+            <Button
+              size="xs"
+              ml="sm"
+              variant="light"
+              onClick={() => handleUndoDrink(notif)}
+            >
+              Undo
+            </Button>
+          </Notification>
+        ))}
+      </Stack>
     </Container>
   );
 };
