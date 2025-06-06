@@ -1,0 +1,75 @@
+import os
+import sys
+import pytest
+from fastapi import FastAPI, Depends
+from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+import sqlalchemy
+from sqlalchemy.orm import sessionmaker
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+os.environ.setdefault("POSTGRES_USER", "test")
+os.environ.setdefault("POSTGRES_PASSWORD", "test")
+os.environ.setdefault("POSTGRES_DB", "test")
+os.environ.setdefault("POSTGRES_HOST", "localhost")
+os.environ.setdefault("POSTGRES_PORT", "5432")
+
+from app.database import Base, get_db
+from app import crud, schemas
+
+
+@pytest.fixture
+def client():
+    engine = create_engine(
+        "sqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=sqlalchemy.pool.StaticPool,
+    )
+    TestingSessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
+    Base.metadata.create_all(bind=engine)
+
+    app = FastAPI()
+
+    def override_get_db():
+        db = TestingSessionLocal()
+        try:
+            yield db
+        finally:
+            db.close()
+
+    app.dependency_overrides[get_db] = override_get_db
+
+    @app.post("/users", response_model=schemas.Person)
+    def create_user(person: schemas.PersonCreate, db=Depends(get_db)):
+        return crud.create_person(db, person)
+
+    @app.get("/users", response_model=list[schemas.Person])
+    def read_users(db=Depends(get_db)):
+        return crud.get_persons(db)
+
+    return TestClient(app)
+
+
+def test_create_user_with_avatar_and_nickname(client):
+    resp = client.post(
+        "/users",
+        json={"name": "Alice", "avatar_url": "http://example.com/a.png", "nickname": "Al"},
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["avatar_url"] == "http://example.com/a.png"
+    assert data["nickname"] == "Al"
+
+    resp = client.get("/users")
+    assert resp.status_code == 200
+    users = resp.json()
+    assert any(u["avatar_url"] == "http://example.com/a.png" and u["nickname"] == "Al" for u in users)
+
+
+def test_create_user_without_optional_fields(client):
+    resp = client.post("/users", json={"name": "Bob"})
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["avatar_url"] is None
+    assert data["nickname"] is None

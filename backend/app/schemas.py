@@ -4,6 +4,8 @@ from decimal import Decimal
 
 class PersonBase(BaseModel):
     name: str
+    avatar_url: str | None = None
+    nickname: str | None = None
 
 class PersonCreate(PersonBase):
     pass
