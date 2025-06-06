@@ -7,6 +7,7 @@ const mock = new MockAdapter(api);
 
 afterEach(() => {
   mock.reset();
+  mock.restore();
   localStorage.clear();
 });
 

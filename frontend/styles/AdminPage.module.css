@@ -1,0 +1,183 @@
+.root {
+  --primary-color: #359dff;
+  --text-color: #0c151d;
+  --secondary-color: #4574a1;
+  --border-color: #cddcea;
+  --bg-color: #f8fafc;
+
+  font-family: "Epilogue", "Noto Sans", sans-serif;
+  background-color: var(--bg-color);
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 20rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: var(--bg-color);
+}
+
+.logo {
+  color: var(--text-color);
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  color: var(--text-color);
+}
+
+.menuItemActive {
+  background-color: #e6edf4;
+  border-radius: 0.5rem;
+}
+
+.content {
+  flex: 1;
+  max-width: 960px;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  padding: 1rem;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.tabs {
+  display: flex;
+  gap: 2rem;
+  border-bottom: 1px solid var(--border-color);
+  padding: 0 1rem;
+}
+
+.tab {
+  padding: 1rem 0;
+  border-bottom: 3px solid transparent;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--secondary-color);
+  cursor: pointer;
+}
+
+.tabActive {
+  border-color: var(--primary-color);
+  color: var(--text-color);
+}
+
+.sectionHeading {
+  padding: 1rem;
+  padding-bottom: 0.75rem;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.searchArea {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
+  padding: 1rem;
+  max-width: 480px;
+}
+
+.searchInput {
+  flex: 1;
+  height: 3.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.tableContainer {
+  padding: 1rem;
+}
+
+.tableWrapper {
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  background-color: var(--bg-color);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 0.75rem;
+  text-align: left;
+}
+
+th {
+  color: var(--text-color);
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+td {
+  color: var(--secondary-color);
+  font-size: 0.875rem;
+}
+
+tbody tr + tr {
+  border-top: 1px solid var(--border-color);
+}
+
+.actionCell {
+  color: var(--secondary-color);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.addUser {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem;
+}
+
+.addUserButton {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+@media (width <= 640px) {
+  .colEmail {
+    display: none;
+  }
+}
+
+@media (width <= 480px) {
+  .colBalance {
+    display: none;
+  }
+}

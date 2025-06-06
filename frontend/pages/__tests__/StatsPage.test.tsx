@@ -7,20 +7,20 @@ const mock = new MockAdapter(api);
 
 afterEach(() => {
   mock.reset();
+  mock.restore();
 });
 
 test("navigates leaderboard tabs", async () => {
-  mock.onGet("/stats/monthly_leaderboard").reply(200, []);
-  mock.onGet("/stats/yearly_leaderboard").reply(200, []);
+  mock.onGet(/\/stats\//).reply(200, []);
   mock.onGet("/users").reply(200, []);
   render(<StatsPage />);
 
   // Monthly is default
-  expect(await screen.findByText(/this month/i)).toBeInTheDocument();
+  expect(await screen.findAllByText(/this month/i)).toHaveLength(2);
 
   await userEvent.click(screen.getByRole("tab", { name: /yearly/i }));
-  expect(await screen.findByText(/this year/i)).toBeInTheDocument();
+  expect(await screen.findAllByText(/this year/i)).toHaveLength(2);
 
   await userEvent.click(screen.getByRole("tab", { name: /all time/i }));
-  expect(await screen.findByText(/all time/i)).toBeInTheDocument();
+  expect(await screen.findAllByText(/all time/i)).toHaveLength(2);
 });
