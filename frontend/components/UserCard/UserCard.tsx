@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import {
   Avatar,
   Button,
@@ -27,6 +27,13 @@ export function UserCardImage({
   onChangeAvatar,
 }: UserCardProps) {
   const fileRef = useRef<HTMLInputElement>(null);
+  const [animateDrink, setAnimateDrink] = useState(false);
+
+  const handleDrink = () => {
+    onDrink();
+    setAnimateDrink(true);
+    setTimeout(() => setAnimateDrink(false), 300);
+  };
 
   return (
     <Card withBorder radius="md" className={classes.card}>
@@ -93,7 +100,8 @@ export function UserCardImage({
         <Button
           fullWidth
           leftSection={<IconCoffee size={25} />}
-          onClick={onDrink}
+          onClick={handleDrink}
+          className={`${classes.drinkButton} ${animateDrink ? classes.animate : ""}`}
         >
           +1 Drink
         </Button>
