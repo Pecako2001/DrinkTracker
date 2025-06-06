@@ -12,6 +12,7 @@ import {
 } from "@mantine/core"; // Removed Paper, Group as they are now encapsulated in UserQuickActionsDisplay
 import api from "../api/api";
 import { Person } from "../types";
+import { IconCoffee, IconCreditCardPay, IconUser } from '@tabler/icons-react';
 import UserQuickActionsDisplay from "../components/Mobile/UserQuickActionsDisplay";
 import MobileTopUpModal from "../components/Mobile/MobileTopUpModal";
 
@@ -154,10 +155,6 @@ const MobileQuickActionsPage: React.FC = () => {
         >
           Select Different User
         </Button>
-        {/* TODO: Actual trigger for avatar */}
-        {/* <Button size="xs" className={classes.changeBtn} onClick={triggerFile}>
-          <span>📷</span>
-        </Button> */}
       </Container>
     );
   }
@@ -202,6 +199,7 @@ const MobileQuickActionsPage: React.FC = () => {
           loading={actionLoading.drink}
           disabled={actionLoading.topup} // Disable if other action is in progress
           size="lg"
+          leftSection={<IconCoffee size={25} />}
           variant="filled"
         >
           +1 Drink
@@ -211,6 +209,7 @@ const MobileQuickActionsPage: React.FC = () => {
           loading={actionLoading.topup}
           disabled={actionLoading.drink}
           size="lg"
+          leftSection={<IconCreditCardPay size={25} />}
           variant="outline"
         >
           Top Up
@@ -222,6 +221,7 @@ const MobileQuickActionsPage: React.FC = () => {
         mt="xl"
         variant="light"
         fullWidth
+        leftSection={<IconUser size={20} />}
       >
         Change User
       </Button>
