@@ -62,7 +62,8 @@ export function UserInsightPanel() {
         }
       />
       {selectedUserId && (
-        <MonthlyDrinkVolumeChart userIds={chartUsers.map(Number)} />
+         <MonthlyDrinkVolumeChart userIds={[parseInt(selectedUserId, 10)]} />
+
       )}
 
 
@@ -71,14 +72,3 @@ export function UserInsightPanel() {
 }
 
 export default UserInsightPanel;
-
-  {/* <PeakThirstHoursChart
-    userIds={[parseInt(selectedUserId, 10)]}
-    idToName={idToName}
-  /> */}
-  {/* <MonthlyDrinkVolumeChart userIds={[parseInt(selectedUserId, 10)]} /> */}
-
-        {/* <PeakThirstHoursChart
-userIds={chartUsers.map((id) => parseInt(id, 10))}
-idToName={idToName}
-/> */}
