@@ -40,6 +40,8 @@ client = TestClient(app)
 
 
 def test_user_stats_last_30_days():
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
     db = TestingSessionLocal()
     # create user and events
     user = Person(name="Test")
@@ -61,3 +63,36 @@ def test_user_stats_last_30_days():
     data = response.json()
     assert data["drinks_last_30_days"] == 1
     assert "favorite_drink" in data
+
+
+def test_chug_of_fame():
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
+    db = TestingSessionLocal()
+
+    alice = Person(name="Alice2")
+    bob = Person(name="Bob2")
+    db.add_all([alice, bob])
+    db.commit()
+    db.refresh(alice)
+    db.refresh(bob)
+    alice_id = alice.id
+    bob_id = bob.id
+
+    events = [
+        DrinkEvent(person_id=alice.id, timestamp=datetime(2024, 1, 1, 10, 0, 0)),
+        DrinkEvent(person_id=alice.id, timestamp=datetime(2024, 1, 1, 10, 0, 20)),
+        DrinkEvent(person_id=bob.id, timestamp=datetime(2024, 1, 1, 9, 0, 0)),
+        DrinkEvent(person_id=bob.id, timestamp=datetime(2024, 1, 1, 9, 0, 30)),
+    ]
+    db.add_all(events)
+    db.commit()
+    db.close()
+
+    resp = client.get("/stats/chug_of_fame")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data[0]["id"] == alice_id
+    assert data[0]["fastest_seconds"] == 20
+    assert data[1]["id"] == bob_id
+    assert data[1]["fastest_seconds"] == 30

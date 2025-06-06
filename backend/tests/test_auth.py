@@ -2,6 +2,10 @@ import os
 from fastapi.testclient import TestClient
 from jose import jwt
 from passlib.context import CryptContext
+import sys
+
+# Ensure backend/app is in path
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 os.environ["ADMIN_SECRET_KEY"] = "testsecret"
 os.environ.setdefault("POSTGRES_USER", "test")

@@ -2,9 +2,13 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, and_
 from sqlalchemy.orm import sessionmaker
+import os
+import sys
+
+# Ensure backend/app is in path
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from sqlalchemy.pool import StaticPool
 from datetime import timedelta
-import sys
 import types
 from unittest import mock
 

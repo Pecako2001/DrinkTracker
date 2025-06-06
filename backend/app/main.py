@@ -246,3 +246,37 @@ def user_stats(user_id: int, db: Session = Depends(get_db)):
         .count()
     )
     return {"drinks_last_30_days": drinks_count, "favorite_drink": "Beer"}
+
+
+@app.get("/stats/chug_of_fame")
+def chug_of_fame(db: Session = Depends(get_db)):
+    """Return fastest drinking interval per user in seconds."""
+    users = db.query(models.Person).all()
+
+    results = []
+    for user in users:
+        timestamps = (
+            db.query(models.DrinkEvent.timestamp)
+            .filter(models.DrinkEvent.person_id == user.id)
+            .order_by(models.DrinkEvent.timestamp.asc())
+            .all()
+        )
+
+        fastest: int | None = None
+        prev = None
+        for (ts,) in timestamps:
+            if prev is not None:
+                diff = int((ts - prev).total_seconds())
+                if fastest is None or diff < fastest:
+                    fastest = diff
+            prev = ts
+
+        if fastest is not None:
+            results.append({
+                "id": user.id,
+                "name": user.name,
+                "fastest_seconds": fastest,
+            })
+
+    results.sort(key=lambda r: r["fastest_seconds"])
+    return results
