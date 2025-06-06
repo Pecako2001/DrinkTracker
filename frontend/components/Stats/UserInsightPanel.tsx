@@ -1,8 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Select, Text, Title, SimpleGrid, Card, Loader } from "@mantine/core";
+import {
+  Select,
+  MultiSelect,
+  Text,
+  Title,
+  SimpleGrid,
+  Card,
+  Loader,
+} from "@mantine/core";
 import { Person } from "../../types";
 import api from "../../api/api";
 import classes from "../../styles/StatsPage.module.css";
+import PeakThirstHoursChart from "./PeakThirstHoursChart";
 
 interface UserStatsData {
   drinks_last_30_days: number;
@@ -16,6 +25,7 @@ export function UserInsightPanel() {
   const [selectedUserName, setSelectedUserName] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingUsers, setLoadingUsers] = useState<boolean>(true);
+  const [selectedChartUsers, setSelectedChartUsers] = useState<string[]>([]);
 
   // Fetch all users for the dropdown
   useEffect(() => {
@@ -37,6 +47,8 @@ export function UserInsightPanel() {
         setLoadingUsers(false);
       });
   }, []);
+
+  const idToName = Object.fromEntries(users.map((u) => [Number(u.value), u.label]));
 
   // Fetch stats for the selected user
   useEffect(() => {
@@ -86,6 +98,18 @@ export function UserInsightPanel() {
         }
       />
 
+      <MultiSelect
+        label="Compare Users"
+        placeholder="Select users"
+        data={users}
+        value={selectedChartUsers}
+        onChange={setSelectedChartUsers}
+        searchable
+        clearable
+        disabled={loadingUsers}
+        mb="lg"
+      />
+
       {loading && <Loader />}
 
       {!loading && !selectedUserId && (
@@ -132,6 +156,11 @@ export function UserInsightPanel() {
         // This case might happen briefly if user name isn't found before mock data is set
         <Text c="dimmed">Loading user data...</Text>
       )}
+
+      <PeakThirstHoursChart
+        userIds={selectedChartUsers.map((id) => parseInt(id, 10))}
+        idToName={idToName}
+      />
     </div>
   );
 }

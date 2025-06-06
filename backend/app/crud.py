@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from . import models, schemas
 from fastapi import HTTPException
 from decimal import Decimal
@@ -76,6 +77,28 @@ def create_payment(db: Session, payment: schemas.PaymentCreate):
 
     # Simulate redirect URL
     return "http://localhost:3000/?success=true"
+
+
+def drinks_per_hour(db: Session, user_ids: list[int]):
+    """Return count of drinks grouped by hour for each given user."""
+    if not user_ids:
+        return {}
+
+    results = (
+        db.query(
+            models.DrinkEvent.person_id.label("person_id"),
+            func.extract("hour", models.DrinkEvent.timestamp).label("hour"),
+            func.count(models.DrinkEvent.id).label("count"),
+        )
+        .filter(models.DrinkEvent.person_id.in_(user_ids))
+        .group_by(models.DrinkEvent.person_id, "hour")
+        .all()
+    )
+
+    data = {uid: [0] * 24 for uid in user_ids}
+    for row in results:
+        data[row.person_id][int(row.hour)] = int(row.count)
+    return data
 
 # def create_payment(db: Session, payment: schemas.PaymentCreate):
 #     mollie_api_key = os.getenv("MOLLIE_API_KEY")
