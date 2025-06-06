@@ -102,6 +102,22 @@ def update_user(
         raise HTTPException(status_code=404, detail="User not found")
     return person
 
+class UpdateNickname(BaseModel):
+    nickname: str | None
+
+
+@app.patch("/users/{user_id}/nickname", response_model=schemas.Person)
+def update_nickname(
+    user_id: int,
+    update: UpdateNickname,
+    db: Session = Depends(get_db),
+    admin: None = Depends(get_current_admin),
+):
+    person = crud.update_user_nickname(db, user_id, update.nickname)
+    if not person:
+        raise HTTPException(status_code=404, detail="User not found")
+    return person
+
 @app.post("/users/{user_id}/avatar", response_model=schemas.Person)
 async def upload_avatar(user_id: int, file: UploadFile = File(...), db: Session = Depends(get_db)):
     user = crud.get_person(db, user_id)
