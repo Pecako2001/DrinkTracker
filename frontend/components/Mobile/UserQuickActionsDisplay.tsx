@@ -23,9 +23,16 @@ const UserQuickActionsDisplay: React.FC<UserQuickActionsDisplayProps> = ({
         >
           {user.name.charAt(0).toUpperCase()}
         </Avatar>
-        <Text size="xl" fw={700} ta="center">
-          {user.name}
-        </Text>
+        <Stack gap={2} align="center">
+          <Text size="xl" fw={700} ta="center">
+            {user.name}
+          </Text>
+          {user.nickname && (
+            <Text size="sm" c="dimmed" ta="center">
+              “{user.nickname}”
+            </Text>
+          )}
+        </Stack>
         <Box>
           <Text size="lg" c="dimmed" ta="center">
             Current Balance
