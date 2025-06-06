@@ -83,11 +83,11 @@ export function UserInsightPanel() {
 
       {selectedUserId && (
         <>
-          <PeakThirstHoursChart
+          {/* <PeakThirstHoursChart
             userIds={[parseInt(selectedUserId, 10)]}
             idToName={idToName}
-          />
-          <MonthlyDrinkVolumeChart userIds={[parseInt(selectedUserId, 10)]} />
+          /> */}
+          {/* <MonthlyDrinkVolumeChart userIds={[parseInt(selectedUserId, 10)]} /> */}
         </>
       )}
       {!loading && selectedUserId && !buddyScores && !selectedUserName && (
@@ -99,7 +99,7 @@ export function UserInsightPanel() {
         idToName={idToName}
       />
 
-      <MonthlyDrinkVolumeChart userIds={chartUsers.map(Number)} />
+      {/* <MonthlyDrinkVolumeChart userIds={chartUsers.map(Number)} /> */}
     </div>
   );
 }

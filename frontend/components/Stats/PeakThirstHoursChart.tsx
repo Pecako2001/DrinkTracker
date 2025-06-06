@@ -61,11 +61,10 @@ export function PeakThirstHoursChart({
         Peak Thirst Hours
       </Title>
       <BarChart
+        h={300}
         data={chartData}
         dataKey="x"
         series={series}
-        h={300}
-        withLegend
       />
     </div>
   );
