@@ -34,3 +34,35 @@
     }
   }
 }
+
+/* Container wrapping the entire stats page */
+.statsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-md);
+}
+
+/* Paper section that contains the user insight charts */
+.userInsightSection {
+  border-radius: var(--mantine-radius-md);
+  box-shadow: var(--mantine-shadow-sm);
+}
+
+/* Shared card styling for leaderboard widgets */
+.leaderboardCard {
+  border: 1px solid var(--mantine-color-gray-2);
+  border-radius: var(--mantine-radius-md);
+}
+
+/* Wrapper for the user insight panel component */
+.userInsightPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-md);
+}
+
+/* Styling for user statistics table cards */
+.userStatsCard {
+  border: 1px solid var(--mantine-color-gray-2);
+  border-radius: var(--mantine-radius-md);
+}
