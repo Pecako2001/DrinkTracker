@@ -51,11 +51,11 @@
   &[data-active] {
     &,
     &:hover {
-      background-color: var(--mantine-color-blue-light);
-      color: var(--mantine-color-blue-light-color);
+      background-color: var(--color-main);
+      color: var(--color-main-contrast);
 
       .linkIcon {
-        color: var(--mantine-color-blue-light-color);
+        color: var(--color-main-contrast);
       }
     }
   }
