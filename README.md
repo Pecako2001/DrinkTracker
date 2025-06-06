@@ -71,6 +71,7 @@ To access the admin panel, enter the password defined in your `.env.local`:
 ```env
 NEXT_PUBLIC_ADMIN_PASSWORD=your_secure_password
 ```
+Replace `your_secure_password` with a strong secret.
 
 <h2>🗄 Database Backup</h2>
 
