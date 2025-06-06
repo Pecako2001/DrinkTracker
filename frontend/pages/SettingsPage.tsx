@@ -11,6 +11,7 @@ import api from "../api/api";
 import { Person } from "../types";
 import { UserManagement } from "../components/Settings/UserManagement";
 import { PaymentsTable } from "../components/Settings/PaymentsTable";
+import { BackupsTable } from "../components/Settings/BackupsTable";
 import { AdminGate } from "../components/Admin/AdminGate";
 
 import classes from "../styles/SettingsPage.module.css";
@@ -24,10 +25,18 @@ interface Payment {
   created_at: string;
 }
 
+interface BackupLog {
+  id: number;
+  timestamp: string;
+  success: boolean;
+  message: string | null;
+}
+
 export default function SettingsPage() {
   const [isAuth, setIsAuth] = useState(false);
   const [users, setUsers] = useState<Person[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
+  const [backups, setBackups] = useState<BackupLog[]>([]);
 
   useEffect(() => {
     if (!isAuth) {
@@ -35,6 +44,7 @@ export default function SettingsPage() {
     }
     api.get<Person[]>("/users").then((r) => setUsers(r.data));
     api.get<Payment[]>("/payments").then((r) => setPayments(r.data));
+    api.get<BackupLog[]>("/backups").then((r) => setBackups(r.data));
   }, [isAuth]);
 
   const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
@@ -69,6 +79,13 @@ export default function SettingsPage() {
             >
               Payments
             </Tabs.Tab>
+            <Tabs.Tab
+              value="Backups"
+              ref={setControlRef("Backups")}
+              className={classes.tab}
+            >
+              Backups
+            </Tabs.Tab>
             <FloatingIndicator
               target={value ? controlsRefs[value] : null}
               parent={rootRef}
@@ -81,6 +98,9 @@ export default function SettingsPage() {
           </Tabs.Panel>
           <Tabs.Panel value="Payments">
             <PaymentsTable payments={payments} />
+          </Tabs.Panel>
+          <Tabs.Panel value="Backups">
+            <BackupsTable backups={backups} />
           </Tabs.Panel>
         </Tabs>
       </AdminGate>

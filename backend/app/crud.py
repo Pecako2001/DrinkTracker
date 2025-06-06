@@ -235,3 +235,20 @@ def get_social_sip_scores(
         results.append({"buddy_id": buddy_id, "buddy_name": name, "score": score})
 
     return results
+
+
+def create_backup_log(db: Session, success: bool, message: str | None = None):
+    log = models.BackupLog(success=success, message=message)
+    db.add(log)
+    db.commit()
+    db.refresh(log)
+    return log
+
+
+def get_backups(db: Session, limit: int = 20):
+    return (
+        db.query(models.BackupLog)
+        .order_by(models.BackupLog.timestamp.desc())
+        .limit(limit)
+        .all()
+    )

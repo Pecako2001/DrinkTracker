@@ -15,6 +15,7 @@ test("logs in and shows admin tables", async () => {
   mock.onPost("/auth/login").reply(200, { access_token: "tok" });
   mock.onGet("/users").reply(200, []);
   mock.onGet("/payments").reply(200, []);
+  mock.onGet("/backups").reply(200, []);
   render(<SettingsPage />);
   await userEvent.type(
     screen.getByPlaceholderText(/enter admin password/i),
