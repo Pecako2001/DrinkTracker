@@ -4,6 +4,7 @@ export interface Person {
   balance: number;
   total_drinks: number;
   avatarUrl?: string; // Added avatarUrl property
+  nickname?: string | null;
 }
 
 export interface TopUpResponse {

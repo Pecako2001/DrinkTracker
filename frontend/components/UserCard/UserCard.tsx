@@ -12,7 +12,7 @@ import classes from "./UserCardImage.module.css";
 import { Person } from "../../types";
 
 interface UserCardProps {
-  user: Person & { nickname?: string };
+  user: Person;
   onDrink: () => void;
   onTopUp: () => void;
   onChangeAvatar?: (file: File | null) => void;
