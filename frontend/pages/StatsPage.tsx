@@ -27,56 +27,7 @@ function StatsPage() {
 
   return (
     <Container size="xl" py="md" className={classes.statsContainer}>
-      <Title order={1} mb="sm">
-        Stats
-      </Title>
-
-      <Title order={2} mt="sm" mb="xs">
-        Leaderboard
-      </Title>
-      <Tabs value={value} onChange={setValue} className={classes.list}>
-        <Tabs.List mb="md" ref={setRootRef}>
-          <Tabs.Tab
-            value="monthly"
-            ref={setControlRef("monthly")}
-            className={classes.tab}
-          >
-            Monthly
-          </Tabs.Tab>
-          <Tabs.Tab
-            value="yearly"
-            ref={setControlRef("yearly")}
-            className={classes.tab}
-          >
-            Yearly
-          </Tabs.Tab>
-          <Tabs.Tab
-            value="all"
-            ref={setControlRef("all")}
-            className={classes.tab}
-          >
-            All Time
-          </Tabs.Tab>
-
-          <FloatingIndicator
-            target={value ? controlsRefs[value] : null}
-            parent={rootRef}
-            className={classes.indicator}
-          />
-        </Tabs.List>
-
-        <Tabs.Panel value="monthly">
-          <MonthlyLeaderboard />
-        </Tabs.Panel>
-        <Tabs.Panel value="yearly">
-          <YearlyLeaderboard />
-        </Tabs.Panel>
-        <Tabs.Panel value="all">
-          <AllTimeLeaderboard />
-        </Tabs.Panel>
-      </Tabs>
-
-      <Title order={2} mt="lg" mb="sm">
+      <Title>
         Your Insights
       </Title>
       <Paper
