@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
+from typing import Any
 from sqlalchemy import func, and_
 from . import models, schemas, crud
 from .database import engine, Base, get_db
@@ -264,3 +265,38 @@ def peak_thirst_hours(user_ids: str, db: Session = Depends(get_db)):
     data = crud.drinks_per_hour(db, ids)
     results = [{"user_id": uid, "hours": data.get(uid, [0] * 24)} for uid in ids]
     return results
+
+@app.get("/users/{user_id}/buddies")
+def user_buddies(user_id: int, db: Session = Depends(get_db)):
+    """Return how often other users drink within 5 minutes of the given user."""
+    user = crud.get_person(db, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    events = (
+        db.query(models.DrinkEvent.timestamp)
+        .filter(models.DrinkEvent.person_id == user_id)
+        .all()
+    )
+
+    buddy_counts: dict[int, dict[str, Any]] = {}
+    for (timestamp,) in events:
+        start = timestamp - timedelta(minutes=5)
+        end = timestamp + timedelta(minutes=5)
+        buddies = (
+            db.query(models.Person.id, models.Person.name)
+            .join(models.DrinkEvent)
+            .filter(
+                models.DrinkEvent.person_id != user_id,
+                models.DrinkEvent.timestamp >= start,
+                models.DrinkEvent.timestamp <= end,
+            )
+            .all()
+        )
+        for b_id, b_name in buddies:
+            if b_id not in buddy_counts:
+                buddy_counts[b_id] = {"id": b_id, "name": b_name, "count": 0}
+            buddy_counts[b_id]["count"] += 1
+
+    return sorted(buddy_counts.values(), key=lambda x: x["count"], reverse=True)
+

@@ -14,6 +14,7 @@ import classes from "../../styles/StatsPage.module.css";
 import PeakThirstHoursChart from "./PeakThirstHoursChart";
 // import SocialSipScoreChart from "./SocialSipScoreChart";
 import LongestHydrationStreakChart from "./LongestHydrationStreakChart";
+import SocialSipChart from "./SocialSipChart";
 
 interface UserStatsData {
   drinks_last_30_days: number;
@@ -152,6 +153,7 @@ export function UserInsightPanel() {
             </Card>
             {/* Add more stat cards here */}
           </SimpleGrid>
+          <SocialSipChart userId={selectedUserId} />
         </>
       )}
       {/* <LongestHydrationStreakChart />
