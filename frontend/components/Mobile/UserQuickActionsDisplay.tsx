@@ -3,8 +3,7 @@ import { Person } from "../../types";
 import { Paper, Avatar, Text, Stack, Box, Button } from "@mantine/core";
 import { resolveAvatarUrl } from "../../lib/resolveAvatarUrl";
 import classes from "../UserCard/UserCardImage.module.css";
-// Removed ThemeIcon and IconCash as they are not used in the final example from the prompt
-// but good to keep in mind for future enhancements.
+import { IconCamera } from "@tabler/icons-react";
 
 interface UserQuickActionsDisplayProps {
   user: Person;
@@ -40,13 +39,15 @@ const UserQuickActionsDisplay: React.FC<UserQuickActionsDisplayProps> = ({
                   onChangeAvatar(e.currentTarget.files?.[0] ?? null)
                 }
               />
-              <Button
+                <Button
                 size="xs"
                 className={classes.changeBtn}
                 onClick={triggerFile}
-              >
-                <span>📷</span>
-              </Button>
+                style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: 0, width: 36, height: 36 }}
+                variant="subtle"
+                >
+                <IconCamera size={26} />
+                </Button>
             </>
           )}
         </div>
