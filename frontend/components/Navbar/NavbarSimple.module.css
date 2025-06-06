@@ -57,11 +57,11 @@
   &[data-active] {
     &,
     &:hover {
-      background-color: var(--mantine-color-primary-light);
-      color: var(--mantine-color-primary-light-color);
+      background-color: var(--color-main-lightest);
+      color: var(--color-main);
 
       .linkIcon {
-        color: var(--mantine-color-primary-light-color);
+        color: var(--color-main);
       }
     }
   }
