@@ -54,6 +54,7 @@ def test_monthly_drinks():
     ]
     db.add_all(events)
     db.commit()
+    user_id = user.id
     db.close()
 
     resp = client.get(f"/users/{user_id}/monthly_drinks")
