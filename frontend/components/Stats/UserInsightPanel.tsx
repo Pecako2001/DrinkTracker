@@ -12,7 +12,7 @@ import { Person } from "../../types";
 import api from "../../api/api";
 import classes from "../../styles/StatsPage.module.css";
 import PeakThirstHoursChart from "./PeakThirstHoursChart";
-import SocialSipScoreChart from "./SocialSipScoreChart";
+// import SocialSipScoreChart from "./SocialSipScoreChart";
 import LongestHydrationStreakChart from "./LongestHydrationStreakChart";
 
 interface UserStatsData {
@@ -154,17 +154,17 @@ export function UserInsightPanel() {
           </SimpleGrid>
         </>
       )}
-      <LongestHydrationStreakChart />
+      {/* <LongestHydrationStreakChart />
       {!loading && selectedUserId && !userData && !selectedUserName && (
         // This case might happen briefly if user name isn't found before mock data is set
         <Text c="dimmed">Loading user data...</Text>
-      )}
+      )} */}
 
-      <PeakThirstHoursChart
+      {/* <PeakThirstHoursChart
         userIds={selectedChartUsers.map((id) => parseInt(id, 10))}
         idToName={idToName}
-      />
-      <SocialSipScoreChart />
+      /> */}
+      {/* <SocialSipScoreChart /> */}
     </div>
   );
 }

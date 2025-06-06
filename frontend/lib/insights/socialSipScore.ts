@@ -22,7 +22,7 @@ export async function getSocialSipScore(topN = 10): Promise<PairFrequency[]> {
   );
 
   const nameMap = new Map<number, string>();
-  personsRes.rows.forEach((p) => nameMap.set(p.id, p.name));
+  personsRes.rows.forEach((p: { id: number; name: string }) => nameMap.set(p.id, p.name));
 
   const buckets: Record<number, number[]> = {};
   for (const ev of eventsRes.rows) {
