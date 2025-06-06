@@ -48,3 +48,8 @@
     transform: scale(1);
   }
 }
+
+.fullWidth {
+  width: 100%;
+}
+

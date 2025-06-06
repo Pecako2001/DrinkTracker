@@ -17,7 +17,11 @@ const UserQuickActionsDisplay: React.FC<UserQuickActionsDisplayProps> = ({
   const fileRef = useRef<HTMLInputElement>(null);
   const triggerFile = () => fileRef.current?.click();
   return (
-    <Card withBorder radius="md" className={classes.card}>
+    <Card
+      withBorder
+      radius="md"
+      className={`${classes.card} ${classes.fullWidth}`}
+    >
       {/* Header Image */}
       <Card.Section
         h={120}
