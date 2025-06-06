@@ -42,7 +42,7 @@ export function UserInsightPanel() {
       {selectedUserId && (
         <>
           <MonthlyDrinkVolumeChart userIds={[parseInt(selectedUserId, 10)]} />
-          <PeakThirstHours userId={selectedUserId} />
+          {/* <PeakThirstHours userId={selectedUserId} /> */}
         </>
       )}
     </div>

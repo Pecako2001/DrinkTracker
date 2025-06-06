@@ -73,6 +73,7 @@ export default function MonthlyDrinkVolumeChart({ userIds }: Props) {
       dataKey="month"
       series={series}
       withLegend
+      yAxis={{ label: "Drinks" }}
     />
   );
 }
