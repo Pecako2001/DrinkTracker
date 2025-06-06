@@ -30,7 +30,7 @@ export function MonthlyLeaderboard() {
       className={classes.leaderboardCard}
     >
       <Title order={4} mb="sm">
-        This Month
+        Most Drinks This Month
       </Title>
       <ScrollArea>
         <Table highlightOnHover>
