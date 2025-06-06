@@ -31,7 +31,9 @@ export default function SettingsPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
 
   useEffect(() => {
-    if (!isAuth) return;
+    if (!isAuth) {
+      return;
+    }
     api.get<Person[]>("/users").then((r) => setUsers(r.data));
     api.get<Payment[]>("/payments").then((r) => setPayments(r.data));
   }, [isAuth]);

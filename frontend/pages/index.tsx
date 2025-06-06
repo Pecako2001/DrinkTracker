@@ -45,7 +45,9 @@ export default function HomePage() {
 
   const handleDrink = async (userId: number) => {
     const user = users.find((u) => u.id === userId);
-    if (!user) return;
+    if (!user) {
+      return;
+    }
 
     if (user.balance <= 0) {
       // Open top-up modal instead
@@ -88,7 +90,9 @@ export default function HomePage() {
   };
 
   const confirmTopUp = async () => {
-    if (!topUpUser) return;
+    if (!topUpUser) {
+      return;
+    }
     const { data } = await api.post<{ checkoutUrl: string }>(
       "/payments/topup",
       {
