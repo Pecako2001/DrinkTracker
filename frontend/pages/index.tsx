@@ -1,4 +1,4 @@
-import React, { useState, useEffect  } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   TextInput,
@@ -9,6 +9,7 @@ import {
   LoadingOverlay, // Added for loading state
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
+import { useRouter } from "next/router";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import api from "../api/api";
 import { Person } from "../types";
@@ -21,13 +22,18 @@ interface DrinkNotification {
 }
 export default function HomePage() {
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const loading = false; // Set loading to false since setLoading is unused
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isMobile) {
+      router.replace("/MobileUserSelect");
+    }
+  }, [isMobile, router]);
 
   const [users, setUsers] = useState<Person[]>([]);
   const [search, setSearch] = useState("");
   const [modalOpened, setModalOpened] = useState(false);
   const [topUpUser, setTopUpUser] = useState<Person | null>(null);
-  const [amount, setAmount] = useState<number>(5);
   const [amount, setAmount] = useState<number>(5);
 
   const [notifications, setNotifications] = useState<DrinkNotification[]>([]);
@@ -107,21 +113,11 @@ export default function HomePage() {
     u.name.toLowerCase().includes(search.toLowerCase()),
   );
 
-  if (loading) {
-    // Show loading overlay if isMobile is true (and redirection is happening)
-    // or if isMobile is false and desktop content is still loading.
-    return <LoadingOverlay visible />;
-  }
-
-  // If !loading and isMobile, it means redirection should have happened.
-  // This state ideally shouldn't be reached if redirection logic is correct.
-  // However, to be safe, we can return a loading overlay or null.
   if (isMobile) {
     return <LoadingOverlay visible />;
   }
 
-  // Render desktop UI if not mobile and not loading
-  // This part of the code will only be reached if !isMobile and !loading
+  // Render desktop UI when not on a mobile device
   return (
     <Container size={750} py="md">
       <TextInput
