@@ -173,7 +173,6 @@ const MobileQuickActionsPage: React.FC = () => {
 
       <Box mb="xl">
         {" "}
-        {/* Added Box for consistent spacing */}
         <UserQuickActionsDisplay user={user} />
       </Box>
 
