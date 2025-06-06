@@ -27,11 +27,13 @@ export default function NavbarSimpleContent() {
 
   return (
     <>
-      <Group justify="center" mb="md">
-        <Text fw={700} size="lg">
-          Drink Tracker
-        </Text>
-      </Group>
+      <div className={classes.header}>
+        <Group justify="center">
+          <Text fw={700} size="lg">
+            Drink Tracker
+          </Text>
+        </Group>
+      </div>
 
       {/* main navigation */}
       {mainLinks.map((item) => (
