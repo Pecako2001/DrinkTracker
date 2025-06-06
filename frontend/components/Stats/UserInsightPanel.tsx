@@ -64,6 +64,7 @@ export function UserInsightPanel() {
       {selectedUserId && (
          <MonthlyDrinkVolumeChart userIds={[parseInt(selectedUserId, 10)]} />
 
+        <PeakThirstHoursChart 
       )}
 
 
