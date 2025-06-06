@@ -35,7 +35,7 @@ export default function NavbarSimpleContent() {
           style={{ width: 32, height: 32, marginRight: 8 }}
         />
         <Text fw={700} size="lg, xl" className={classes.logo}>
-          Drink Tracker
+          DrinkTracker+
         </Text>
       </Group>
 
