@@ -4,3 +4,9 @@ export interface PeakThirstHoursResult {
 }
 
 export type PeakThirstHoursResponse = PeakThirstHoursResult[];
+
+export interface MonthlyVolumeEntry {
+  userId: number;
+  month: string; // YYYY-MM
+  count: number;
+}
