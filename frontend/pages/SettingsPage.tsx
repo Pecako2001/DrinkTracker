@@ -1,17 +1,11 @@
 // frontend/pages/SettingsPage.tsx
 import React, { useState, useEffect } from "react";
-import {
-  PasswordInput,
-  Button,
-  Paper,
-  Title,
-  Container,
-  Stack,
-} from "@mantine/core";
+import { Container, Stack } from "@mantine/core";
 import api from "../api/api";
 import { Person } from "../types";
 import { UserManagement } from "../components/Settings/UserManagement";
 import { PaymentsTable } from "../components/Settings/PaymentsTable";
+import { AdminGate } from "../components/Admin/AdminGate";
 
 interface Payment {
   id: number;
@@ -23,10 +17,7 @@ interface Payment {
 }
 
 export default function SettingsPage() {
-  const [password, setPassword] = useState("");
-  const [authError, setAuthError] = useState("");
   const [isAuth, setIsAuth] = useState(false);
-
   const [users, setUsers] = useState<Person[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
 
@@ -38,39 +29,14 @@ export default function SettingsPage() {
     api.get<Payment[]>("/payments").then((r) => setPayments(r.data));
   }, [isAuth]);
 
-  const handleLogin = () => {
-    if (password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
-      setIsAuth(true);
-      setAuthError("");
-    } else {
-      setAuthError("Incorrect password");
-    }
-  };
-
   return (
     <Container py="md">
-      {!isAuth ? (
-        <Paper shadow="sm" p="xl" maw={400} mx="auto">
-          <Title order={3} mb="md">
-            Admin Login
-          </Title>
-          <PasswordInput
-            placeholder="Enter admin password"
-            value={password}
-            onChange={(e) => setPassword(e.currentTarget.value)}
-            mb="sm"
-            error={authError}
-          />
-          <Button fullWidth onClick={handleLogin}>
-            Login
-          </Button>
-        </Paper>
-      ) : (
+      <AdminGate onAuthenticated={() => setIsAuth(true)}>
         <Stack gap="lg">
           <UserManagement users={users} setUsers={setUsers} />
           <PaymentsTable payments={payments} />
         </Stack>
-      )}
+      </AdminGate>
     </Container>
   );
 }

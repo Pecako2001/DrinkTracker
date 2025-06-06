@@ -61,7 +61,8 @@
     "stylelint-config-standard-scss": "^14.0.0",
     "ts-jest": "^29.2.6",
     "typescript": "5.8.2",
-    "typescript-eslint": "^8.27.0"
+    "typescript-eslint": "^8.27.0",
+    "axios-mock-adapter": "^1.21.2"
   },
   "packageManager": "yarn@4.8.1"
 }
