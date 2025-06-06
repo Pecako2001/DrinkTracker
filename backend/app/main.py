@@ -7,6 +7,7 @@ import os
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from datetime import datetime, timedelta
+from typing import List
 from .auth import router as auth_router, get_current_admin
 import dotenv
 
@@ -246,3 +247,15 @@ def user_stats(user_id: int, db: Session = Depends(get_db)):
         .count()
     )
     return {"drinks_last_30_days": drinks_count, "favorite_drink": "Beer"}
+
+
+@app.get("/insights/peak_thirst_hours")
+def peak_thirst_hours(user_ids: str, db: Session = Depends(get_db)):
+    """Return drink counts grouped by hour for specified users."""
+    try:
+        ids = [int(u) for u in user_ids.split(",") if u]
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid user_ids")
+    data = crud.drinks_per_hour(db, ids)
+    results = [{"user_id": uid, "hours": data.get(uid, [0] * 24)} for uid in ids]
+    return results
