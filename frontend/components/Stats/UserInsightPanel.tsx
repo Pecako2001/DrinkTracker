@@ -14,7 +14,7 @@ export function UserInsightPanel() {
   const [selectedUserName, setSelectedUserName] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingUsers, setLoadingUsers] = useState<boolean>(true);
-  const [selectedChartUsers, setSelectedChartUsers] = useState<string[]>([]);
+  const [chartUsers, setChartUsers] = useState<string[]>([]);
 
   // Fetch all users for the dropdown
   useEffect(() => {
@@ -89,19 +89,6 @@ export function UserInsightPanel() {
           loadingUsers ? "Loading users..." : "No users found"
         }
       />
-
-      <MultiSelect
-        label="Compare Users"
-        placeholder="Select users"
-        data={users}
-        value={selectedChartUsers}
-        onChange={setSelectedChartUsers}
-        searchable
-        clearable
-        disabled={loadingUsers}
-        mb="lg"
-      />
-
       {!loading && !selectedUserId && (
         <Text c="dimmed">Select a user to see their insights.</Text>
       )}
@@ -141,10 +128,9 @@ export function UserInsightPanel() {
       )}
 
       <PeakThirstHoursChart
-        userIds={selectedChartUsers.map((id) => parseInt(id, 10))}
+        userIds={chartUsers.map((id) => parseInt(id, 10))}
         idToName={idToName}
-      /> 
-      
+      />
 
       <MonthlyDrinkVolumeChart userIds={chartUsers.map(Number)} />
     </div>
