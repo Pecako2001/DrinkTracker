@@ -1,20 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { Container, Grid, Paper } from "@mantine/core"; // Removed Text, Flex, added Grid, Paper
-import api from "../api/api"; // ✅ correct path from 'pages' dir
-import { Person } from "../types";
+import React from "react";
+import { Container, Grid, Paper } from "@mantine/core";
 import { OverallStats } from "../components/Stats/OverallStats";
 import { MonthlyLeaderboard } from "../components/Stats/MonthlyLeaderboard";
 import { YearlyLeaderboard } from "../components/Stats/YearlyLeaderboard";
-import { UserInsightPanel } from "../components/Stats/UserInsightPanel"; // New import
-import classes from "../styles/StatsPage.module.css"; // Import CSS module
+import { UserInsightPanel } from "../components/Stats/UserInsightPanel";
+import classes from "../styles/StatsPage.module.css";
 
 function StatsPage() {
-  const [users, setUsers] = useState<Person[]>([]);
-
-  useEffect(() => {
-    api.get<Person[]>("/users").then((r) => setUsers(r.data));
-  }, []);
-
   return (
     <Container py="md" className={classes.statsContainer}>
       {/* Overall Stats - wrapped in Paper */}
@@ -32,10 +24,10 @@ function StatsPage() {
       >
         <Grid>
           <Grid.Col span={{ base: 12, md: 6 }}>
-            <MonthlyLeaderboard users={users} />
+            <MonthlyLeaderboard />
           </Grid.Col>
           <Grid.Col span={{ base: 12, md: 6 }}>
-            <YearlyLeaderboard users={users} />
+            <YearlyLeaderboard />
           </Grid.Col>
         </Grid>
       </Paper>
