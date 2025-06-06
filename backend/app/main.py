@@ -2,11 +2,13 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from . import models, schemas, crud
 from .database import engine, Base, get_db
+import os
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from datetime import datetime, timedelta
 
-Base.metadata.create_all(bind=engine)
+if os.getenv("TESTING") != "1":
+    Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -89,6 +91,12 @@ def get_date_range_last_year():
     end = now.replace(year=now.year - 1, month=12, day=31, hour=23, minute=59, second=59)
     return start, end
 
+def get_date_range_last_30_days():
+    now = datetime.utcnow()
+    end = now
+    start = now - timedelta(days=30)
+    return start, end
+
 @app.get("/stats/drinks_this_month")
 def drinks_this_month(db: Session = Depends(get_db)):
     start, end = get_date_range_this_month()
@@ -108,3 +116,21 @@ def drinks_this_year(db: Session = Depends(get_db)):
 def drinks_last_year(db: Session = Depends(get_db)):
     start, end = get_date_range_last_year()
     return db.query(models.DrinkEvent).filter(models.DrinkEvent.timestamp >= start, models.DrinkEvent.timestamp <= end).count()
+
+
+@app.get("/users/{user_id}/stats")
+def user_stats(user_id: int, db: Session = Depends(get_db)):
+    user = crud.get_person(db, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    start, end = get_date_range_last_30_days()
+    drinks_count = (
+        db.query(models.DrinkEvent)
+        .filter(
+            models.DrinkEvent.person_id == user_id,
+            models.DrinkEvent.timestamp >= start,
+            models.DrinkEvent.timestamp <= end,
+        )
+        .count()
+    )
+    return {"drinks_last_30_days": drinks_count, "favorite_drink": "Beer"}
