@@ -1,5 +1,6 @@
 # ---- General ----
 package-lock.json
+avatars
 
 # ---- Python (FastAPI) ----
 __pycache__/
