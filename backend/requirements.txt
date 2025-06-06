@@ -5,3 +5,6 @@ psycopg2-binary
 pydantic
 mollie-api-python
 python-dotenv
+python-jose
+passlib[bcrypt]
+pytest

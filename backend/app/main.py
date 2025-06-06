@@ -5,10 +5,12 @@ from .database import engine, Base, get_db
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from datetime import datetime, timedelta
+from .auth import router as auth_router, get_current_admin
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+app.include_router(auth_router)
 
 class UpdateUser(BaseModel):
     balance: float
@@ -25,11 +27,19 @@ def read_users(db: Session = Depends(get_db)):
     return crud.get_persons(db)
 
 @app.post("/users", response_model=schemas.Person)
-def create_user(person: schemas.PersonCreate, db: Session = Depends(get_db)):
+def create_user(
+    person: schemas.PersonCreate,
+    db: Session = Depends(get_db),
+    admin: None = Depends(get_current_admin),
+):
     return crud.create_person(db, person)
 
 @app.delete("/users/{user_id}")
-def delete_user(user_id: int, db: Session = Depends(get_db)):
+def delete_user(
+    user_id: int,
+    db: Session = Depends(get_db),
+    admin: None = Depends(get_current_admin),
+):
     crud.delete_person(db, user_id)
     return {"ok": True}
 
@@ -41,16 +51,27 @@ def add_drink(user_id: int, db: Session = Depends(get_db)):
     return person
 
 @app.post("/payments/topup")
-def top_up(payment: schemas.PaymentCreate, db: Session = Depends(get_db)):
+def top_up(
+    payment: schemas.PaymentCreate,
+    db: Session = Depends(get_db),
+):
     url = crud.create_payment(db, payment)
     return {"checkoutUrl": url}
 
 @app.get("/payments", response_model=list[schemas.Payment])
-def list_payments(db: Session = Depends(get_db)):
+def list_payments(
+    db: Session = Depends(get_db),
+    admin: None = Depends(get_current_admin),
+):
     return db.query(models.Payment).all()
 
 @app.patch("/users/{user_id}")
-def update_user(user_id: int, update: UpdateUser, db: Session = Depends(get_db)):
+def update_user(
+    user_id: int,
+    update: UpdateUser,
+    db: Session = Depends(get_db),
+    admin: None = Depends(get_current_admin),
+):
     person = crud.update_user_balance(db, user_id, update.balance)
     if not person:
         raise HTTPException(status_code=404, detail="User not found")
