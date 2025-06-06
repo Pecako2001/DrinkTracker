@@ -28,10 +28,6 @@ function StatsPage() {
   return (
     <Container size="xl" py="md" className={classes.statsContainer}>
       <Title order={1} mb="sm">
-        Stats
-      </Title>
-
-      <Title order={2} mt="sm" mb="xs">
         Leaderboard
       </Title>
       <Tabs value={value} onChange={setValue} className={classes.list}>

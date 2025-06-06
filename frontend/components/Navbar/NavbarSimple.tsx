@@ -18,7 +18,7 @@ const mainLinks = [
   {
     href: "/LeaderBoardPage",
     label: "Leaderboard",
-    icon: IconDeviceDesktopAnalytics,
+    icon: IconChartBarPopular,
   },
   { href: "/StatsPage", label: "Stats", icon: IconDeviceDesktopAnalytics },
 ];

@@ -13,7 +13,7 @@ import classes from "../styles/StatsPage.module.css";
 function StatsPage() {
   return (
     <Container size="xl" py="md" className={classes.statsContainer}>
-      <Title>Your Insights</Title>
+      <Title>Statistics</Title>
       <Paper
         withBorder
         shadow="sm"

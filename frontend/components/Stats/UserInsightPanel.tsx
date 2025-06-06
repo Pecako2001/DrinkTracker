@@ -46,9 +46,6 @@ export function UserInsightPanel() {
 
   return (
     <div className={classes.userInsightPanel}>
-      <Title order={3} mb="md">
-        User Insights
-      </Title>
       <Select
         label="Select User"
         placeholder="Search or pick a user"
@@ -94,12 +91,12 @@ export function UserInsightPanel() {
         <Text c="dimmed">Loading user data...</Text>
       )}
 
-      <PeakThirstHoursChart
+      {/* <PeakThirstHoursChart
         userIds={chartUsers.map((id) => parseInt(id, 10))}
         idToName={idToName}
-      />
+      /> */}
 
-      {/* <MonthlyDrinkVolumeChart userIds={chartUsers.map(Number)} /> */}
+      <MonthlyDrinkVolumeChart userIds={chartUsers.map(Number)} />
     </div>
   );
 }
