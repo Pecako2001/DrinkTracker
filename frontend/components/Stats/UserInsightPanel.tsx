@@ -1,10 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { Select, Text, Title, SimpleGrid, Card, Loader } from "@mantine/core";
+import React, { useState, useEffect, useMemo } from "react";
+import { Select, Text, Title, SimpleGrid, MultiSelect, Card, Loader } from "@mantine/core";
 import { Person } from "../../types";
 import api from "../../api/api";
 import PeakThirstHoursChart from "./PeakThirstHoursChart";
 import MonthlyDrinkVolumeChart from "./MonthlyDrinkVolumeChart";
 import classes from "../../styles/StatsPage.module.css";
+
+// Define BuddyScore type if not imported from elsewhere
+type BuddyScore = {
+  // Replace these fields with the actual structure as needed
+  userId: number;
+  score: number;
+};
 
 export function UserInsightPanel() {
   const [users, setUsers] = useState<{ value: string; label: string }[]>([]);
@@ -33,10 +40,6 @@ export function UserInsightPanel() {
           res.data.map((u) => ({ value: u.id.toString(), label: u.name })),
         );
       })
-      .catch((_error) => {
-        // Optionally set an error state here
-        // console.error("Error fetching users:", error);
-      })
       .finally(() => {
         setLoadingUsers(false);
       });
@@ -58,45 +61,24 @@ export function UserInsightPanel() {
           loadingUsers ? "Loading users..." : "No users found"
         }
       />
-      <MultiSelect
-        label="Compare Users"
-        placeholder="Pick users to compare"
-        data={users}
-        value={chartUsers}
-        onChange={setChartUsers}
-        searchable
-        clearable
-        disabled={loadingUsers}
-        mb="lg"
-        nothingFoundMessage={
-          loadingUsers ? "Loading users..." : "No users found"
-        }
-      />
-      {!loading && !selectedUserId && (
-        <Text c="dimmed">Select a user to see their insights.</Text>
-      )}
-
       {selectedUserId && (
-        <>
-          {/* <PeakThirstHoursChart
-            userIds={[parseInt(selectedUserId, 10)]}
-            idToName={idToName}
-          /> */}
-          {/* <MonthlyDrinkVolumeChart userIds={[parseInt(selectedUserId, 10)]} /> */}
-        </>
-      )}
-      {!loading && selectedUserId && !buddyScores && !selectedUserName && (
-        <Text c="dimmed">Loading user data...</Text>
+        <MonthlyDrinkVolumeChart userIds={chartUsers.map(Number)} />
       )}
 
-      {/* <PeakThirstHoursChart
-        userIds={chartUsers.map((id) => parseInt(id, 10))}
-        idToName={idToName}
-      /> */}
 
-      <MonthlyDrinkVolumeChart userIds={chartUsers.map(Number)} />
     </div>
   );
 }
 
 export default UserInsightPanel;
+
+  {/* <PeakThirstHoursChart
+    userIds={[parseInt(selectedUserId, 10)]}
+    idToName={idToName}
+  /> */}
+  {/* <MonthlyDrinkVolumeChart userIds={[parseInt(selectedUserId, 10)]} /> */}
+
+        {/* <PeakThirstHoursChart
+userIds={chartUsers.map((id) => parseInt(id, 10))}
+idToName={idToName}
+/> */}
