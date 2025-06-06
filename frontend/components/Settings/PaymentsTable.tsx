@@ -1,6 +1,14 @@
 // components/Settings/PaymentsTable.tsx
 import { Title, Table } from "@mantine/core";
-import { Card, ScrollArea, NumberInput, Button, Modal, Text, Group } from "@mantine/core";
+import {
+  Card,
+  ScrollArea,
+  NumberInput,
+  Button,
+  Modal,
+  Text,
+  Group,
+} from "@mantine/core";
 import classes from "./PaymentsTable.module.css";
 
 interface Payment {
@@ -45,9 +53,13 @@ export function PaymentsTable({ payments }: Props) {
               <Table.Tr key={p.id}>
                 <Table.Td>{p.id}</Table.Td>
                 <Table.Td>{p.person_id}</Table.Td>
-                <Table.Td>{p.amount ? Number(p.amount).toFixed(2) : "–"}</Table.Td>
+                <Table.Td>
+                  {p.amount ? Number(p.amount).toFixed(2) : "–"}
+                </Table.Td>
                 <Table.Td>{p.status}</Table.Td>
-                <Table.Td>{p.created_at ? new Date(p.created_at).toLocaleString() : "–"}</Table.Td>
+                <Table.Td>
+                  {p.created_at ? new Date(p.created_at).toLocaleString() : "–"}
+                </Table.Td>
               </Table.Tr>
             ))}
           </Table.Tbody>

@@ -1,6 +1,6 @@
-import React from 'react';
-import { Person } from '../../types';
-import { Paper, Group, Avatar, Text, Stack, Box } from '@mantine/core';
+import React from "react";
+import { Person } from "../../types";
+import { Paper, Group, Avatar, Text, Stack, Box } from "@mantine/core";
 // Removed ThemeIcon and IconCash as they are not used in the final example from the prompt
 // but good to keep in mind for future enhancements.
 
@@ -8,7 +8,9 @@ interface UserQuickActionsDisplayProps {
   user: Person;
 }
 
-const UserQuickActionsDisplay: React.FC<UserQuickActionsDisplayProps> = ({ user }) => {
+const UserQuickActionsDisplay: React.FC<UserQuickActionsDisplayProps> = ({
+  user,
+}) => {
   return (
     <Paper shadow="md" p="lg" radius="md" withBorder>
       <Stack align="center" gap="md">
@@ -23,11 +25,11 @@ const UserQuickActionsDisplay: React.FC<UserQuickActionsDisplayProps> = ({ user 
             Current Balance
           </Text>
           {/* Conditional coloring for balance */}
-          <Text 
-            size="xxl" 
-            fw={700} 
-            ta="center" 
-            c={user.balance > 0 ? 'teal' : user.balance < 0 ? 'red' : 'dimmed'}
+          <Text
+            size="xxl"
+            fw={700}
+            ta="center"
+            c={user.balance > 0 ? "teal" : user.balance < 0 ? "red" : "dimmed"}
           >
             €{user.balance.toFixed(2)}
           </Text>

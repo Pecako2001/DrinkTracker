@@ -35,13 +35,28 @@ function StatsPage() {
         Leaderboard
       </Title>
       <Tabs value={value} onChange={setValue} className={classes.list}>
-        <Tabs.List mb="md"  ref={setRootRef}>
-          <Tabs.Tab value="monthly" ref={setControlRef('monthly')} className={classes.tab}>
-            Monthly</Tabs.Tab>
-          <Tabs.Tab value="yearly" ref={setControlRef('yearly')} className={classes.tab}>
-            Yearly</Tabs.Tab>
-          <Tabs.Tab value="all" ref={setControlRef('all')} className={classes.tab}>
-            All Time</Tabs.Tab>
+        <Tabs.List mb="md" ref={setRootRef}>
+          <Tabs.Tab
+            value="monthly"
+            ref={setControlRef("monthly")}
+            className={classes.tab}
+          >
+            Monthly
+          </Tabs.Tab>
+          <Tabs.Tab
+            value="yearly"
+            ref={setControlRef("yearly")}
+            className={classes.tab}
+          >
+            Yearly
+          </Tabs.Tab>
+          <Tabs.Tab
+            value="all"
+            ref={setControlRef("all")}
+            className={classes.tab}
+          >
+            All Time
+          </Tabs.Tab>
 
           <FloatingIndicator
             target={value ? controlsRefs[value] : null}

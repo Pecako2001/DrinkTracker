@@ -1,12 +1,32 @@
-import React, { useEffect, useState, useMemo } from 'react'; // Added useMemo
-import { Box, Grid, Flex, Paper, Select, Title, Text, Card, Group, ThemeIcon, Stack, Avatar, Tooltip } from '@mantine/core'; // Added Stack, Avatar, Tooltip
-import { IconUserSearch, IconArrowUpRight, IconArrowDownRight, IconMail, IconGlassFull } from '@tabler/icons-react'; // Added more icons
-import { motion, AnimatePresence } from 'framer-motion'; // Added AnimatePresence
-import classes from '../../styles/OverviewDashboard.module.css';
-import api from '../../api/api';
-import { Person } from '../../types';
-import { MonthlyLeaderboard } from './MonthlyLeaderboard';
-import { YearlyLeaderboard } from './YearlyLeaderboard';
+import React, { useEffect, useState, useMemo } from "react"; // Added useMemo
+import {
+  Box,
+  Grid,
+  Flex,
+  Paper,
+  Select,
+  Title,
+  Text,
+  Card,
+  Group,
+  ThemeIcon,
+  Stack,
+  Avatar,
+  Tooltip,
+} from "@mantine/core"; // Added Stack, Avatar, Tooltip
+import {
+  IconUserSearch,
+  IconArrowUpRight,
+  IconArrowDownRight,
+  IconMail,
+  IconGlassFull,
+} from "@tabler/icons-react"; // Added more icons
+import { motion, AnimatePresence } from "framer-motion"; // Added AnimatePresence
+import classes from "../../styles/OverviewDashboard.module.css";
+import api from "../../api/api";
+import { Person } from "../../types";
+import { MonthlyLeaderboard } from "./MonthlyLeaderboard";
+import { YearlyLeaderboard } from "./YearlyLeaderboard";
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -24,13 +44,17 @@ const leaderboardPaperVariants = {
     scale: 1,
     y: 0,
     transition: { type: "spring", stiffness: 260, damping: 20, delay: 0.2 }, // Changed to spring
-  }
+  },
 };
 
 const panelVariants = {
   initial: { opacity: 0, x: 50 },
-  animate: { opacity: 1, x: 0, transition: { type: 'spring', stiffness: 260, damping: 20 } },
-  exit: { opacity: 0, x: -50, transition: { duration: 0.2 } }
+  animate: {
+    opacity: 1,
+    x: 0,
+    transition: { type: "spring", stiffness: 260, damping: 20 },
+  },
+  exit: { opacity: 0, x: -50, transition: { duration: 0.2 } },
 };
 
 const OverviewDashboard: React.FC = () => {
@@ -43,7 +67,7 @@ const OverviewDashboard: React.FC = () => {
 
   // Derived state for selectedUser
   const selectedUser = useMemo(() => {
-    return users.find(user => user.id.toString() === selectedUserId);
+    return users.find((user) => user.id.toString() === selectedUserId);
   }, [users, selectedUserId]);
 
   useEffect(() => {
@@ -85,11 +109,18 @@ const OverviewDashboard: React.FC = () => {
 
   return (
     <Box p="md" className={classes.dashboardContainer}>
-      <Flex mb="lg" justify="flex-start" className={classes.userSelectContainer}>
+      <Flex
+        mb="lg"
+        justify="flex-start"
+        className={classes.userSelectContainer}
+      >
         <Select
           label="Select User"
           placeholder="Search or select a user"
-          data={users.map(user => ({ value: user.id.toString(), label: user.name }))}
+          data={users.map((user) => ({
+            value: user.id.toString(),
+            label: user.name,
+          }))}
           value={selectedUserId}
           onChange={(value) => {
             if (value) handleUserSelect(value);
@@ -107,7 +138,9 @@ const OverviewDashboard: React.FC = () => {
         {/* Mobile: 1 col (Stats) then (Leaderboards) then (UserDetails) -> all base:12 */}
         <Grid.Col span={{ base: 12, md: 4, lg: 3 }}>
           <Paper p="md" shadow="xs" mb="lg" className={classes.sectionPaper}>
-            <Title order={3} mb="md" className={classes.sectionTitle}>Overall Stats</Title>
+            <Title order={3} mb="md" className={classes.sectionTitle}>
+              Overall Stats
+            </Title>
             <Grid gutter="md">
               {/* Overall Stats Cards: stack on xs, side-by-side on sm+, then stack again on md when section is narrow */}
               <Grid.Col span={{ base: 12, xs: 12, sm: 6, md: 12 }}>
@@ -128,13 +161,17 @@ const OverviewDashboard: React.FC = () => {
                         label="Compared to last month"
                         withArrow
                         position="bottom"
-                        transitionProps={{ transition: 'pop', duration: 300 }}
+                        transitionProps={{ transition: "pop", duration: 300 }}
                       >
                         <Group gap={4}>
                           <Text c={monthChange.color} fw={500} size="sm">
                             {monthChange.value}
                           </Text>
-                          <ThemeIcon size="sm" variant="light" color={monthChange.color}>
+                          <ThemeIcon
+                            size="sm"
+                            variant="light"
+                            color={monthChange.color}
+                          >
                             {monthChange.icon}
                           </ThemeIcon>
                         </Group>
@@ -164,13 +201,17 @@ const OverviewDashboard: React.FC = () => {
                         label="Compared to last year"
                         withArrow
                         position="bottom"
-                        transitionProps={{ transition: 'pop', duration: 300 }}
+                        transitionProps={{ transition: "pop", duration: 300 }}
                       >
                         <Group gap={4}>
                           <Text c={yearChange.color} fw={500} size="sm">
                             {yearChange.value}
                           </Text>
-                          <ThemeIcon size="sm" variant="light" color={yearChange.color}>
+                          <ThemeIcon
+                            size="sm"
+                            variant="light"
+                            color={yearChange.color}
+                          >
                             {yearChange.icon}
                           </ThemeIcon>
                         </Group>
@@ -194,14 +235,22 @@ const OverviewDashboard: React.FC = () => {
             animate="visible"
           >
             <Paper p="md" shadow="xs" mb="lg" className={classes.sectionPaper}>
-              <Title order={3} mb="md" className={classes.sectionTitle}>Leaderboards</Title>
+              <Title order={3} mb="md" className={classes.sectionTitle}>
+                Leaderboards
+              </Title>
               <Grid>
                 {/* Leaderboard Cards: stack on base/xs, side-by-side on sm+ */}
                 <Grid.Col span={{ base: 12, sm: 6 }}>
-                  <MonthlyLeaderboard users={users} onUserClick={handleUserSelect} />
+                  <MonthlyLeaderboard
+                    users={users}
+                    onUserClick={handleUserSelect}
+                  />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, sm: 6 }}>
-                  <YearlyLeaderboard users={users} onUserClick={handleUserSelect} />
+                  <YearlyLeaderboard
+                    users={users}
+                    onUserClick={handleUserSelect}
+                  />
                 </Grid.Col>
               </Grid>
             </Paper>
@@ -210,11 +259,19 @@ const OverviewDashboard: React.FC = () => {
 
         {/* User Detail Panel Section */}
         <Grid.Col span={{ base: 12, md: 12, lg: 3 }}>
-          <Paper p="md" shadow="sm" withBorder mb="lg" className={classes.sectionPaper}>
-            <Title order={3} mb="md" className={classes.sectionTitle}>User Details</Title>
+          <Paper
+            p="md"
+            shadow="sm"
+            withBorder
+            mb="lg"
+            className={classes.sectionPaper}
+          >
+            <Title order={3} mb="md" className={classes.sectionTitle}>
+              User Details
+            </Title>
             <AnimatePresence mode="wait">
               <motion.div
-                key={selectedUser ? selectedUser.id : 'no-user-selected'}
+                key={selectedUser ? selectedUser.id : "no-user-selected"}
                 className={classes.userDetailContent}
                 variants={panelVariants}
                 initial="initial"
@@ -224,26 +281,56 @@ const OverviewDashboard: React.FC = () => {
                 {selectedUser ? (
                   <Stack>
                     <Group>
-                      <Avatar src={selectedUser.profile_picture_url} alt={selectedUser.name} radius="xl" size="lg" className={classes.userDetailAvatar} />
+                      <Avatar
+                        src={selectedUser.profile_picture_url}
+                        alt={selectedUser.name}
+                        radius="xl"
+                        size="lg"
+                        className={classes.userDetailAvatar}
+                      />
                       <Box>
-                        <Title order={4} className={classes.userDetailName}>{selectedUser.name}</Title>
+                        <Title order={4} className={classes.userDetailName}>
+                          {selectedUser.name}
+                        </Title>
                         <Group gap="xs">
-                           <IconMail size="1rem" className={classes.userDetailStatIcon} /> 
-                           <Text c="dimmed" size="sm" className={classes.userDetailEmail}>{selectedUser.email}</Text>
+                          <IconMail
+                            size="1rem"
+                            className={classes.userDetailStatIcon}
+                          />
+                          <Text
+                            c="dimmed"
+                            size="sm"
+                            className={classes.userDetailEmail}
+                          >
+                            {selectedUser.email}
+                          </Text>
                         </Group>
                       </Box>
                     </Group>
                     <Group mt="md" className={classes.userDetailStatItem}>
-                        <IconGlassFull size="1.2rem" className={classes.userDetailStatIcon} />
-                        <Text fw={500}>Total Drinks:</Text>
-                        <Text>{selectedUser.total_drinks?.toLocaleString() || 'N/A'}</Text>
+                      <IconGlassFull
+                        size="1.2rem"
+                        className={classes.userDetailStatIcon}
+                      />
+                      <Text fw={500}>Total Drinks:</Text>
+                      <Text>
+                        {selectedUser.total_drinks?.toLocaleString() || "N/A"}
+                      </Text>
                     </Group>
-                    <Text mt="sm" c="dimmed" size="sm" className={classes.userDetailPlaceholder}>
-                      More detailed stats for this user will be shown here (e.g., monthly consumption chart, recent activity).
+                    <Text
+                      mt="sm"
+                      c="dimmed"
+                      size="sm"
+                      className={classes.userDetailPlaceholder}
+                    >
+                      More detailed stats for this user will be shown here
+                      (e.g., monthly consumption chart, recent activity).
                     </Text>
                   </Stack>
                 ) : (
-                  <Text c="dimmed" className={classes.userDetailPlaceholder}>Select a user to see their details.</Text>
+                  <Text c="dimmed" className={classes.userDetailPlaceholder}>
+                    Select a user to see their details.
+                  </Text>
                 )}
               </motion.div>
             </AnimatePresence>
