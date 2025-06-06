@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://192.168.7.138:8000", // adjust if your FastAPI runs elsewhere
+  baseURL: process.env.NEXT_PUBLIC_API_URL ?? "http://192.168.7.138:8000", // adjust if your FastAPI runs elsewhere
 });
 
 api.interceptors.request.use((config) => {
@@ -14,5 +14,16 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+api.interceptors.response.use(
+  (res) => res,
+  (error) => {
+    if (error.response?.status === 401 && typeof window !== "undefined") {
+      localStorage.removeItem("admin_token");
+      window.location.reload();
+    }
+    return Promise.reject(error);
+  },
+);
 
 export default api;
