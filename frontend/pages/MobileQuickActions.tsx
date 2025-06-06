@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import {
@@ -88,6 +88,23 @@ const MobileQuickActionsPage: React.FC = () => {
     }
   };
 
+  const handleAvatarChange = async (file: File | null) => {
+    if (!file || !user) return;
+    setActionLoading((prev) => ({ ...prev, drink: true }));
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      await api.post(`/users/${user.id}/avatar`, form, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      await fetchUserData(user.id.toString());
+    } catch {
+      setError("Failed to update avatar. Please try again.");
+    } finally {
+      setActionLoading((prev) => ({ ...prev, drink: false }));
+    }
+  };
+
   if (loading && !user) {
     // Show loader only if truly loading initial data
     return (
@@ -173,7 +190,10 @@ const MobileQuickActionsPage: React.FC = () => {
 
       <Box mb="xl">
         {" "}
-        <UserQuickActionsDisplay user={user} />
+        <UserQuickActionsDisplay
+          user={user}
+          onChangeAvatar={handleAvatarChange}
+        />
       </Box>
 
       <Stack>
