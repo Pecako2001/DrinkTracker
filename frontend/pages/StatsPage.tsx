@@ -18,6 +18,7 @@ function StatsPage() {
         withBorder
         shadow="sm"
         p="md"
+        mt="lg"
         className={classes.userInsightSection}
       >
         <UserInsightPanel />
