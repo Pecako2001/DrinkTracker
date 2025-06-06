@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Select, Text, Title, Card, Loader, Table } from "@mantine/core";
+import { Select, Text, Title, Card, Loader, MultiSelect, Table } from "@mantine/core";
 import { Person, BuddyScore } from "../../types";
 import api from "../../api/api";
 import classes from "../../styles/StatsPage.module.css";
