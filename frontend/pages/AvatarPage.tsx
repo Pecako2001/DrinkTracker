@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import {
   Container,
-  Group,
   Avatar,
   Text,
   FileInput,
   TextInput,
   Stack,
+  Table,
+  Group,
 } from "@mantine/core";
 import { IconUpload } from "@tabler/icons-react";
 import api from "../api/api";
 import { Person } from "../types";
+import classes from "../styles/AvatarPage.module.css";
 
 export default function AvatarPage() {
   const [users, setUsers] = useState<Person[]>([]);
@@ -40,29 +42,46 @@ export default function AvatarPage() {
 
   return (
     <Container py="md" size={600}>
-      <Stack>
-        {users.map((user) => (
-          <Group key={user.id} justify="space-between" align="center">
-            <Group>
-              <Avatar src={user.avatarUrl} radius="xl" />
-              <Stack gap={2}>
+      <Table>
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>Avatar</Table.Th>
+            <Table.Th>Name</Table.Th>
+            <Table.Th>Nickname</Table.Th>
+            <Table.Th>Upload New Avatar</Table.Th>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>
+          {users.map((user) => (
+            <Table.Tr key={user.id}>
+              <Table.Td>
+                <Avatar src={user.avatarUrl} radius="xl" />
+              </Table.Td>
+              <Table.Td>
                 <Text>{user.name}</Text>
+              </Table.Td>
+              <Table.Td>
                 <TextInput
                   placeholder="Nickname"
                   defaultValue={user.nickname ?? ""}
                   onBlur={(e) => handleNickname(user.id, e.currentTarget.value)}
                   size="xs"
                 />
-              </Stack>
-            </Group>
-            <FileInput
-              accept="image/*"
-              leftSection={<IconUpload size={16} />}
-              onChange={(file) => handleUpload(user.id, file)}
-            />
-          </Group>
-        ))}
-      </Stack>
+              </Table.Td>
+              <Table.Td>
+                <FileInput
+                  accept="image/*"
+                  leftSection={<IconUpload size={16} />}
+                  onChange={(file) => handleUpload(user.id, file)}
+                  placeholder="Upload new avatar"
+                  size="xs"
+                  className={classes.FileInput}
+                />
+              </Table.Td>
+            </Table.Tr>
+          ))}
+        </Table.Tbody>
+      </Table>
     </Container>
   );
 }
