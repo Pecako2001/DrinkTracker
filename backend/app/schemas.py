@@ -2,13 +2,16 @@ from pydantic import BaseModel
 from datetime import datetime
 from decimal import Decimal
 
+
 class PersonBase(BaseModel):
     name: str
     avatar_url: str | None = None
     nickname: str | None = None
 
+
 class PersonCreate(PersonBase):
     pass
+
 
 class Person(PersonBase):
     id: int
@@ -18,6 +21,7 @@ class Person(PersonBase):
     class Config:
         orm_mode = True
 
+
 class DrinkEvent(BaseModel):
     id: int
     person_id: int
@@ -26,9 +30,11 @@ class DrinkEvent(BaseModel):
     class Config:
         orm_mode = True
 
+
 class PaymentCreate(BaseModel):
     user_id: int
     amount: float
+
 
 class Payment(BaseModel):
     id: int
@@ -37,6 +43,15 @@ class Payment(BaseModel):
     amount: Decimal
     status: str
     created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class BuddyScore(BaseModel):
+    buddy_id: int
+    buddy_name: str
+    score: int
 
     class Config:
         orm_mode = True

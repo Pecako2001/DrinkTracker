@@ -1,31 +1,16 @@
 import React, { useState, useEffect } from "react";
-import {
-  Select,
-  MultiSelect,
-  Text,
-  Title,
-  SimpleGrid,
-  Card,
-  Loader,
-} from "@mantine/core";
-import MonthlyDrinkVolumeChart from "./MonthlyDrinkVolumeChart";
-import { Person } from "../../types";
+import { Select, Text, Title, Card, Loader, Table } from "@mantine/core";
+import { Person, BuddyScore } from "../../types";
 import api from "../../api/api";
 import classes from "../../styles/StatsPage.module.css";
 import PeakThirstHoursChart from "./PeakThirstHoursChart";
 import LongestHydrationStreakChart from "./LongestHydrationStreakChart";
 import SocialSipChart from "./SocialSipChart";
 
-interface UserStatsData {
-  drinks_last_30_days: number;
-  favorite_drink: string;
-}
-
 export function UserInsightPanel() {
   const [users, setUsers] = useState<{ value: string; label: string }[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [chartUsers, setChartUsers] = useState<string[]>([]);
-  const [userData, setUserData] = useState<UserStatsData | null>(null);
+  const [buddyScores, setBuddyScores] = useState<BuddyScore[] | null>(null);
   const [selectedUserName, setSelectedUserName] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingUsers, setLoadingUsers] = useState<boolean>(true);
@@ -52,35 +37,24 @@ export function UserInsightPanel() {
       });
   }, []);
 
-  const idToName = Object.fromEntries(users.map((u) => [Number(u.value), u.label]));
-
-  // Fetch stats for the selected user
+  // Fetch buddy scores for the selected user
   useEffect(() => {
     if (selectedUserId) {
       setLoading(true);
-      setUserData(null); // Clear previous data
+      setBuddyScores(null);
 
-      // Find user name for display
-      const selectedUser = users.find((user) => user.value === selectedUserId);
+      const selectedUser = users.find((u) => u.value === selectedUserId);
       setSelectedUserName(selectedUser ? selectedUser.label : null);
 
       api
-        .get<UserStatsData>(`/users/${selectedUserId}/stats`)
-        .then((response) => {
-          setUserData(response.data);
-        })
-        .catch(() => {
-          // Optionally handle error state
-          setUserData(null);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+        .get<BuddyScore[]>(`/users/${selectedUserId}/social_sip_scores`)
+        .then((res) => setBuddyScores(res.data))
+        .finally(() => setLoading(false));
     } else {
-      setUserData(null);
+      setBuddyScores(null);
       setSelectedUserName(null);
     }
-  }, [selectedUserId, users]); // Add users to dependency array in case it's initially empty
+  }, [selectedUserId, users]);
 
   return (
     <div className={classes.userInsightPanel}>
@@ -128,11 +102,41 @@ export function UserInsightPanel() {
         mb="lg"
       />
 
-          <SocialSipChart userId={selectedUserId} />
+      {!loading && !selectedUserId && (
+        <Text c="dimmed">Select a user to see their insights.</Text>
       )}
-      <LongestHydrationStreakChart />
-      {!loading && selectedUserId && !userData && !selectedUserName && (
-        // This case might happen briefly if user name isn't found before mock data is set
+
+      {!loading && selectedUserId && buddyScores && selectedUserName && (
+        <>
+          <Title order={4} mb="sm">
+            Top buddies for {selectedUserName}
+          </Title>
+          <Card withBorder p="md" radius="md" className={classes.userStatsCard}>
+            {buddyScores.length === 0 && (
+              <Text c="dimmed">No buddy data available.</Text>
+            )}
+            {buddyScores.length > 0 && (
+              <Table highlightOnHover verticalSpacing="sm">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th style={{ textAlign: "right" }}>Score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {buddyScores.map((b) => (
+                    <tr key={b.buddy_id}>
+                      <td>{b.buddy_name}</td>
+                      <td style={{ textAlign: "right" }}>{b.score}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            )}
+          </Card>
+        </>
+      )}
+      {!loading && selectedUserId && !buddyScores && !selectedUserName && (
         <Text c="dimmed">Loading user data...</Text>
       )}
 

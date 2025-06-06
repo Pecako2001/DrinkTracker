@@ -7,10 +7,10 @@ import uuid
 from mollie.api.client import Client as MollieClient
 import os
 
+
 def get_persons(db: Session):
     """Return all persons sorted by name for deterministic ordering."""
     return db.query(models.Person).order_by(models.Person.name.asc()).all()
-
 
 def create_person(db: Session, person: schemas.PersonCreate):
     db_person = models.Person(
@@ -23,9 +23,11 @@ def create_person(db: Session, person: schemas.PersonCreate):
     db.refresh(db_person)
     return db_person
 
+
 def delete_person(db: Session, person_id: int):
     db.query(models.Person).filter(models.Person.id == person_id).delete()
     db.commit()
+
 
 def record_drink(db: Session, person_id: int):
     person = get_person(db, person_id)
@@ -38,6 +40,7 @@ def record_drink(db: Session, person_id: int):
     db.commit()
     db.refresh(person)
     return person
+
 
 # crud.py
 def update_user_balance(
@@ -53,8 +56,10 @@ def update_user_balance(
     db.refresh(person)
     return person
 
+
 def get_person(db: Session, person_id: int):
     return db.query(models.Person).filter(models.Person.id == person_id).first()
+
 
 def create_payment(db: Session, payment: schemas.PaymentCreate):
     # Simulate creating a payment without Mollie
@@ -172,3 +177,42 @@ def get_longest_hydration_streaks(db: Session, limit: int = 10):
 #     db.commit()
 
 #     return mollie_payment.get_checkout_url()
+
+
+def get_social_sip_scores(
+    db: Session, user_id: int, limit: int = 5, window_minutes: int = 5
+):
+    """Return top drinking buddies for a user within the given time window."""
+    from datetime import timedelta
+
+    events = (
+        db.query(models.DrinkEvent.timestamp)
+        .filter(models.DrinkEvent.person_id == user_id)
+        .all()
+    )
+
+    counts: dict[int, int] = {}
+    window = timedelta(minutes=window_minutes)
+
+    for (ts,) in events:
+        start = ts - window
+        end = ts + window
+        others = (
+            db.query(models.DrinkEvent.person_id)
+            .filter(models.DrinkEvent.person_id != user_id)
+            .filter(models.DrinkEvent.timestamp >= start)
+            .filter(models.DrinkEvent.timestamp <= end)
+            .all()
+        )
+        for (pid,) in others:
+            counts[pid] = counts.get(pid, 0) + 1
+
+    sorted_buddies = sorted(counts.items(), key=lambda x: x[1], reverse=True)[:limit]
+    results = []
+    for buddy_id, score in sorted_buddies:
+        name = (
+            db.query(models.Person.name).filter(models.Person.id == buddy_id).scalar()
+        )
+        results.append({"buddy_id": buddy_id, "buddy_name": name, "score": score})
+
+    return results

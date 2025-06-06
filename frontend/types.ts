@@ -9,3 +9,9 @@ export interface Person {
 export interface TopUpResponse {
   checkoutUrl: string;
 }
+
+export interface BuddyScore {
+  buddy_id: number;
+  buddy_name: string;
+  score: number;
+}

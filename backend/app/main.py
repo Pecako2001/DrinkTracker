@@ -21,9 +21,11 @@ app = FastAPI()
 app.include_router(auth_router)
 
 
+
 class UpdateUser(BaseModel):
     balance: float
     total_drinks: int | None = None
+
 
 
 app.add_middleware(
@@ -300,3 +302,10 @@ def user_buddies(user_id: int, db: Session = Depends(get_db)):
 
     return sorted(buddy_counts.values(), key=lambda x: x["count"], reverse=True)
 
+
+@app.get("/users/{user_id}/social_sip_scores", response_model=list[schemas.BuddyScore])
+def social_sip_scores(user_id: int, db: Session = Depends(get_db)):
+    user = crud.get_person(db, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return crud.get_social_sip_scores(db, user_id)
