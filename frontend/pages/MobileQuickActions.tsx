@@ -181,10 +181,6 @@ const MobileQuickActionsPage: React.FC = () => {
 
   return (
     <Container py="xl">
-      <Title order={1} ta="center" mb="xl">
-        Quick Actions
-      </Title>
-
       <Box mb="xl">
         {" "}
         <UserQuickActionsDisplay
