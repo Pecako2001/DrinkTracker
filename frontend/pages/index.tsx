@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   TextInput,
@@ -24,23 +24,18 @@ export default function HomePage() {
   const [modalOpened, setModalOpened] = useState(false);
   const [topUpUser, setTopUpUser] = useState<Person | null>(null);
   const [amount, setAmount] = useState<number>(5);
-  const originalOrderRef = useRef<number[]>([]);
 
   const [notifications, setNotifications] = useState<DrinkNotification[]>([]);
 
   useEffect(() => {
     api.get<Person[]>("/users").then((r) => {
       setUsers(r.data);
-      originalOrderRef.current = r.data.map((u) => u.id);
     });
   }, []);
 
-  const fetchUsersSorted = async () => {
+  const fetchUsers = async () => {
     const updatedUsers = (await api.get<Person[]>("/users")).data;
-    const sorted = originalOrderRef.current.map(
-      (id) => updatedUsers.find((u) => u.id === id)!,
-    );
-    setUsers(sorted);
+    setUsers(updatedUsers);
   };
 
   const handleDrink = async (userId: number) => {
@@ -68,7 +63,7 @@ export default function HomePage() {
     ]);
 
     await api.post(`/users/${userId}/drinks`);
-    await fetchUsersSorted();
+    await fetchUsers();
   };
 
   const handleUndoDrink = async (notif: DrinkNotification) => {
@@ -79,7 +74,7 @@ export default function HomePage() {
       total_drinks: freshUser.total_drinks - 1,
     });
 
-    await fetchUsersSorted();
+    await fetchUsers();
     setNotifications((prev) => prev.filter((n) => n.id !== notif.id));
   };
 
