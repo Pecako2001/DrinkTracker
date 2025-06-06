@@ -10,6 +10,7 @@ import {
 } from "@mantine/core";
 import classes from "./UserCardImage.module.css";
 import { Person } from "../../types";
+import { resolveAvatarUrl } from "../../lib/resolveAvatarUrl";
 
 interface UserCardProps {
   user: Person;
@@ -43,7 +44,7 @@ export function UserCardImage({
       {/* Avatar */}
       <div className={classes.avatarWrapper}>
         <Avatar
-          src={user.avatarUrl}
+          src={resolveAvatarUrl(user.avatarUrl)}
           size={80}
           radius={80}
           mx="auto"
