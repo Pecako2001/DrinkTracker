@@ -5,6 +5,7 @@ import {
   Avatar,
   Text,
   FileInput,
+  TextInput,
   Stack,
 } from "@mantine/core";
 import { IconUpload } from "@tabler/icons-react";
@@ -31,14 +32,28 @@ export default function AvatarPage() {
     setUsers(data);
   };
 
+  const handleNickname = async (userId: number, nickname: string) => {
+    await api.patch(`/users/${userId}/nickname`, { nickname });
+    const { data } = await api.get<Person[]>("/users");
+    setUsers(data);
+  };
+
   return (
     <Container py="md" size={600}>
       <Stack>
         {users.map((user) => (
-          <Group key={user.id} justify="space-between">
+          <Group key={user.id} justify="space-between" align="center">
             <Group>
               <Avatar src={user.avatarUrl} radius="xl" />
-              <Text>{user.name}</Text>
+              <Stack gap={2}>
+                <Text>{user.name}</Text>
+                <TextInput
+                  placeholder="Nickname"
+                  defaultValue={user.nickname ?? ""}
+                  onBlur={(e) => handleNickname(user.id, e.currentTarget.value)}
+                  size="xs"
+                />
+              </Stack>
             </Group>
             <FileInput
               accept="image/*"

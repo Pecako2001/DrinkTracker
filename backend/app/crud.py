@@ -15,7 +15,7 @@ def get_persons(db: Session):
 def create_person(db: Session, person: schemas.PersonCreate):
     db_person = models.Person(
         name=person.name,
-        avatar_url=person.avatar_url,
+        avatar_url=person.avatarUrl,
         nickname=person.nickname,
     )
     db.add(db_person)
@@ -61,6 +61,15 @@ def update_user_avatar(db: Session, user_id: int, avatar_url: str):
     if not person:
         return None
     person.avatar_url = avatar_url
+    db.commit()
+    db.refresh(person)
+    return person
+
+def update_user_nickname(db: Session, user_id: int, nickname: str | None):
+    person = get_person(db, user_id)
+    if not person:
+        return None
+    person.nickname = nickname
     db.commit()
     db.refresh(person)
     return person
@@ -131,6 +140,8 @@ def get_longest_hydration_streaks(db: Session, limit: int = 10):
 
     days_by_user: dict[int, list[date]] = defaultdict(list)
     for user_id, day in rows:
+        if isinstance(day, str):
+            day = date.fromisoformat(day)
         days_by_user[user_id].append(day)
 
     streaks: list[tuple[int, int]] = []
