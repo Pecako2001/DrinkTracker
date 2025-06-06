@@ -12,6 +12,7 @@ app = FastAPI()
 
 class UpdateUser(BaseModel):
     balance: float
+    total_drinks: int | None = None
 
 app.add_middleware(
     CORSMiddleware,
@@ -51,7 +52,7 @@ def list_payments(db: Session = Depends(get_db)):
 
 @app.patch("/users/{user_id}")
 def update_user(user_id: int, update: UpdateUser, db: Session = Depends(get_db)):
-    person = crud.update_user_balance(db, user_id, update.balance)
+    person = crud.update_user_balance(db, user_id, update.balance, update.total_drinks)
     if not person:
         raise HTTPException(status_code=404, detail="User not found")
     return person

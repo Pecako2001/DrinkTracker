@@ -36,11 +36,15 @@ def record_drink(db: Session, person_id: int):
     return person
 
 # crud.py
-def update_user_balance(db: Session, user_id: int, new_balance: float):
+def update_user_balance(
+    db: Session, user_id: int, new_balance: float, new_total_drinks: int | None = None
+):
     person = get_person(db, user_id)
     if not person:
         return None
     person.balance = new_balance
+    if new_total_drinks is not None:
+        person.total_drinks = new_total_drinks
     db.commit()
     db.refresh(person)
     return person
