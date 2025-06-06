@@ -8,7 +8,7 @@ import {
   Stack,
   Group,
 } from "@mantine/core";
-import { IconCoffee, IconCreditCardPay } from '@tabler/icons-react';
+import { IconCoffee, IconCreditCardPay } from "@tabler/icons-react";
 import classes from "./UserCardImage.module.css";
 import { Person } from "../../types";
 import { resolveAvatarUrl } from "../../lib/resolveAvatarUrl";
@@ -43,7 +43,7 @@ export function UserCardImage({
       {/* Avatar */}
       <div className={classes.avatarWrapper}>
         <Avatar
-          src={resolveAvatarUrl(user.avatarUrl)} 
+          src={resolveAvatarUrl(user.avatarUrl)}
           size={80}
           radius={80}
           mx="auto"
@@ -90,10 +90,19 @@ export function UserCardImage({
 
       {/* Actions: +1 Drink, Top Up */}
       <Stack gap={8} mt="md">
-        <Button fullWidth leftSection={<IconCoffee size={25} />} onClick={onDrink}>
+        <Button
+          fullWidth
+          leftSection={<IconCoffee size={25} />}
+          onClick={onDrink}
+        >
           +1 Drink
         </Button>
-        <Button fullWidth leftSection={<IconCreditCardPay size={25} />}  variant="outline" onClick={onTopUp}>
+        <Button
+          fullWidth
+          leftSection={<IconCreditCardPay size={25} />}
+          variant="outline"
+          onClick={onTopUp}
+        >
           Top Up
         </Button>
       </Stack>

@@ -4,7 +4,7 @@ export function resolveAvatarUrl(avatarUrl?: string): string | undefined {
 
   if (!avatarUrl) {
     console.log(
-      "[resolveAvatarUrl] avatarUrl is undefined or empty → returning undefined"
+      "[resolveAvatarUrl] avatarUrl is undefined or empty → returning undefined",
     );
     return undefined;
   }
@@ -16,7 +16,7 @@ export function resolveAvatarUrl(avatarUrl?: string): string | undefined {
   } catch (err) {
     console.log(
       "[resolveAvatarUrl] URL constructor threw, falling back to raw avatarUrl →",
-      avatarUrl
+      avatarUrl,
     );
     return avatarUrl;
   }
