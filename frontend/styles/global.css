@@ -1,13 +1,15 @@
 :root {
-  --color-bg: #f8fafc;
-  --color-text: #1f2937;
-  --color-border: #e2e8f0;
+  --color-bg: #f1f3f5;
+  --color-text: #212529;
+  --color-border: #ced4da;
+  --color-logo: #1c7ed6;
 }
 
 [data-theme="dark"] {
-  --color-bg: #1e293b;
-  --color-text: #f1f5f9;
-  --color-border: #334155;
+  --color-bg: #1a1b1e;
+  --color-text: #c1c2c5;
+  --color-border: #373a40;
+  --color-logo: #4dabf7;
 }
 
 body {
