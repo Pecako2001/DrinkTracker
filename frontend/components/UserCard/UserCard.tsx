@@ -52,9 +52,7 @@ export function UserCardImage({
         >
           {user.name.charAt(0).toUpperCase()}
         </Avatar>
-        <Button size="xs" className={classes.changeBtn} onClick={triggerFile}>
-          <span>📷</span>
-        </Button>
+
         <input
           ref={fileRef}
           type="file"

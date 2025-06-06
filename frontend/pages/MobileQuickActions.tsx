@@ -32,7 +32,7 @@ const MobileQuickActionsPage: React.FC = () => {
     try {
       const response = await api.get<Person>(`/users/${userId}`);
       setUser(response.data);
-      setError(null); // Clear any previous errors
+      setError(null);
     } catch (err) {
       console.error("Failed to fetch user data:", err);
       setError("Failed to load user data. Please try again or re-select user.");
@@ -40,17 +40,17 @@ const MobileQuickActionsPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, []); // No dependencies needed as it's a stable function defined within the component scope
+  }, []); 
 
   useEffect(() => {
     const userId = Cookies.get("selected_user_id");
     if (!userId) {
       router.push("/MobileUserSelect");
-      setLoading(false); // Stop loading as we are redirecting
+      setLoading(false);
       return;
     }
     fetchUserData(userId);
-  }, [router, fetchUserData]); // fetchUserData is now a dependency
+  }, [router, fetchUserData]);
 
   const handleAddDrink = async () => {
     if (!user) return;
@@ -137,6 +137,10 @@ const MobileQuickActionsPage: React.FC = () => {
         >
           Select Different User
         </Button>
+          {/* TODO: Actual trigger for avatar */}
+        {/* <Button size="xs" className={classes.changeBtn} onClick={triggerFile}>
+          <span>📷</span>
+        </Button> */}
       </Container>
     );
   }

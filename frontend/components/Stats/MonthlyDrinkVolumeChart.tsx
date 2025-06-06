@@ -29,9 +29,9 @@ export default function MonthlyDrinkVolumeChart({ data }: Props) {
   });
 
   const series = seriesIds.map((id) => ({
-    name: `User ${id}`,
-    valueKey: `user-${id}`,
-  }));
+    name: `user-${id}`,
+    color: 'blue.6',
+}));
 
   return (
     <BarChart
@@ -40,7 +40,7 @@ export default function MonthlyDrinkVolumeChart({ data }: Props) {
       dataKey="month"
       series={series}
       withLegend
-      yAxis={{ label: "Drinks" }}
+      yAxisLabel="Drinks"
     />
   );
 }
