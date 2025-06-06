@@ -115,7 +115,7 @@ export default function HomePage() {
         mb="md"
         value={search}
         onChange={(e) => setSearch(e.currentTarget.value)}
-        __clearable
+        clearable
       />
 
       <TopUpModal
