@@ -40,7 +40,6 @@ export function UserManagement({ users, setUsers }: Props) {
 
   return (
     <>
-      <Title order={2}>User Management</Title>
       <Table striped highlightOnHover>
         <thead>
           <tr>

@@ -26,7 +26,7 @@ function StatsPage() {
       <Title order={2} mt="sm" mb="xs">
         Leaderboard
       </Title>
-      <Tabs value={value} onChange={setValue} ClassName={classes.list}>
+      <Tabs value={value} onChange={setValue} className={classes.list}>
         <Tabs.List mb="md"  ref={setRootRef}>
           <Tabs.Tab value="monthly" ref={setControlRef('monthly')} className={classes.tab}>
             Monthly</Tabs.Tab>
@@ -56,9 +56,6 @@ function StatsPage() {
       <Title order={2} mt="lg" mb="sm">
         Your Insights
       </Title>
-      {/* <Paper withBorder shadow="sm" p="md" mb="md">
-        <OverallStats />
-      </Paper> */}
       <Paper
         withBorder
         shadow="sm"
