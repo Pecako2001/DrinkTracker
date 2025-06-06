@@ -16,16 +16,15 @@ const UserQuickActionsDisplay: React.FC<UserQuickActionsDisplayProps> = ({
 }) => {
   const fileRef = useRef<HTMLInputElement>(null);
   const triggerFile = () => fileRef.current?.click();
+  const avatarSrc = resolveAvatarUrl(
+    user.avatarUrl ?? (user as Record<string, string>)["avatar_url"],
+  );
+
   return (
     <Paper shadow="md" p="lg" radius="md" withBorder>
       <Stack align="center" gap="md">
         <div style={{ position: "relative" }}>
-          <Avatar
-            src={resolveAvatarUrl(user.avatarUrl)}
-            size="xl"
-            color="blue"
-            radius="xl"
-          >
+          <Avatar src={avatarSrc} size="xl" color="blue" radius="xl">
             {user.name.charAt(0).toUpperCase()}
           </Avatar>
           {onChangeAvatar && (
