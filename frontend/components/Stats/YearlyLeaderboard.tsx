@@ -1,15 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, ScrollArea, Table, Title } from "@mantine/core";
-import { Person } from "../../types";
+import api from "../../api/api";
 import classes from "../../styles/StatsPage.module.css"; // Import CSS module
 
-interface LeaderboardProps {
-  users: Person[];
+interface LeaderboardEntry {
+  id: number;
+  name: string;
+  drinks: number;
 }
 
-export function YearlyLeaderboard({ users }: LeaderboardProps) {
-  // TODO: Update to use actual yearly drink data when available
-  const sorted = [...users].sort((a, b) => b.total_drinks - a.total_drinks);
+export function YearlyLeaderboard() {
+  const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
+
+  useEffect(() => {
+    api.get<LeaderboardEntry[]>("/stats/yearly_leaderboard").then((r) => {
+      setEntries(r.data);
+    });
+  }, []);
+
+  const sorted = [...entries].sort((a, b) => b.drinks - a.drinks);
 
   return (
     <Card
@@ -37,10 +46,7 @@ export function YearlyLeaderboard({ users }: LeaderboardProps) {
               <tr key={u.id}>
                 <td>{i + 1}</td>
                 <td>{u.name}</td>
-                <td>
-                  {u.total_drinks.toLocaleString()}{" "}
-                  {/* TODO: Display actual yearly drink count */}
-                </td>
+                <td>{u.drinks.toLocaleString()}</td>
               </tr>
             ))}
           </tbody>
