@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Select, Text, Title, Card, Loader, MultiSelect, Table } from "@mantine/core";
 import { Person, BuddyScore } from "../../types";
 import api from "../../api/api";
-import classes from "../../styles/StatsPage.module.css";
 import PeakThirstHoursChart from "./PeakThirstHoursChart";
-import LongestHydrationStreakChart from "./LongestHydrationStreakChart";
-import SocialSipChart from "./SocialSipChart";
+import MonthlyDrinkVolumeChart from "./MonthlyDrinkVolumeChart";
+import classes from "../../styles/StatsPage.module.css";
 
 export function UserInsightPanel() {
   const [users, setUsers] = useState<{ value: string; label: string }[]>([]);
@@ -13,48 +12,25 @@ export function UserInsightPanel() {
   const [buddyScores, setBuddyScores] = useState<BuddyScore[] | null>(null);
   const [selectedUserName, setSelectedUserName] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [loadingUsers, setLoadingUsers] = useState<boolean>(true);
   const [chartUsers, setChartUsers] = useState<string[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(true);
 
-  // Fetch all users for the dropdown
+  // load users for dropdown
   useEffect(() => {
     setLoadingUsers(true);
     api
       .get<Person[]>("/users")
-      .then((response) => {
-        const transformedUsers = response.data.map((user) => ({
-          value: user.id.toString(),
-          label: user.name,
-        }));
-        setUsers(transformedUsers);
+      .then((res) => {
+        setUsers(
+          res.data.map((u) => ({ value: u.id.toString(), label: u.name })),
+        );
       })
-      .catch((_error) => {
-        // Optionally set an error state here
-        // console.error("Error fetching users:", error);
-      })
-      .finally(() => {
-        setLoadingUsers(false);
-      });
+      .finally(() => setLoadingUsers(false));
   }, []);
 
-  // Fetch buddy scores for the selected user
-  useEffect(() => {
-    if (selectedUserId) {
-      setLoading(true);
-      setBuddyScores(null);
-
-      const selectedUser = users.find((u) => u.value === selectedUserId);
-      setSelectedUserName(selectedUser ? selectedUser.label : null);
-
-      api
-        .get<BuddyScore[]>(`/users/${selectedUserId}/social_sip_scores`)
-        .then((res) => setBuddyScores(res.data))
-        .finally(() => setLoading(false));
-    } else {
-      setBuddyScores(null);
-      setSelectedUserName(null);
-    }
-  }, [selectedUserId, users]);
+  const idToName = Object.fromEntries(
+    users.map((u) => [parseInt(u.value, 10), u.label]),
+  );
 
   return (
     <div className={classes.userInsightPanel}>
@@ -93,34 +69,13 @@ export function UserInsightPanel() {
         <Text c="dimmed">Select a user to see their insights.</Text>
       )}
 
-      {!loading && selectedUserId && buddyScores && selectedUserName && (
+      {selectedUserId && (
         <>
-          <Title order={4} mb="sm">
-            Top buddies for {selectedUserName}
-          </Title>
-          <Card withBorder p="md" radius="md" className={classes.userStatsCard}>
-            {buddyScores.length === 0 && (
-              <Text c="dimmed">No buddy data available.</Text>
-            )}
-            {buddyScores.length > 0 && (
-              <Table highlightOnHover verticalSpacing="sm">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th style={{ textAlign: "right" }}>Score</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {buddyScores.map((b) => (
-                    <tr key={b.buddy_id}>
-                      <td>{b.buddy_name}</td>
-                      <td style={{ textAlign: "right" }}>{b.score}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            )}
-          </Card>
+          <PeakThirstHoursChart
+            userIds={[parseInt(selectedUserId, 10)]}
+            idToName={idToName}
+          />
+          <MonthlyDrinkVolumeChart userIds={[parseInt(selectedUserId, 10)]} />
         </>
       )}
       {!loading && selectedUserId && !buddyScores && !selectedUserName && (
