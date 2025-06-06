@@ -15,7 +15,11 @@ import classes from "./NavbarSimple.module.css";
 
 const mainLinks = [
   { href: "/", label: "Drinks", icon: IconBeer },
-  { href: "/LeaderBoardPage", label: "Leaderboard", icon: IconDeviceDesktopAnalytics },
+  {
+    href: "/LeaderBoardPage",
+    label: "Leaderboard",
+    icon: IconDeviceDesktopAnalytics,
+  },
   { href: "/StatsPage", label: "Stats", icon: IconDeviceDesktopAnalytics },
 ];
 const footerLinks = [
