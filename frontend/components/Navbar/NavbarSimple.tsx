@@ -2,29 +2,28 @@
 import { useState } from "react";
 import Link from "next/link";
 import {
-  IconHome,
-  IconChartDots3,
+  IconBeer,
+  IconDeviceDesktopAnalytics,
   IconSettings,
-  IconUserPlus, // if you don’t have this, pick another add‑user icon
+  IconUserPlus,
+  IconShield,
   IconSun,
-  IconAdmin,
   IconMoon,
 } from "@tabler/icons-react";
 import { Group, Text, ActionIcon, useMantineColorScheme } from "@mantine/core";
 import classes from "./NavbarSimple.module.css";
 
 const mainLinks = [
-  { href: "/", label: "Home", icon: IconHome },
-  { href: "/StatsPage", label: "Statistieken", icon: IconChartDots3 },
+  { href: "/", label: "Drinks", icon: IconBeer },
+  { href: "/StatsPage", label: "Stats", icon: IconDeviceDesktopAnalytics },
 ];
 const footerLinks = [
-  // { href: "/AdminPage", label: "Admin", icon: IconAdmin },
   { href: "/AddUserPage", label: "Add User", icon: IconUserPlus },
-  { href: "/SettingsPage", label: "Settings", icon: IconSettings },
+  { href: "/SettingsPage", label: "Admin", icon: IconShield },
 ];
 
 export default function NavbarSimpleContent() {
-  const [active, setActive] = useState("Home");
+  const [active, setActive] = useState("Drinks");
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 
   return (
