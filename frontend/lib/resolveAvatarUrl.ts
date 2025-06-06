@@ -1,8 +1,23 @@
 export function resolveAvatarUrl(avatarUrl?: string): string | undefined {
-  if (!avatarUrl) return undefined;
+  // Log the raw argument on every invocation:
+  console.log("[resolveAvatarUrl] received avatarUrl →", avatarUrl);
+
+  if (!avatarUrl) {
+    console.log(
+      "[resolveAvatarUrl] avatarUrl is undefined or empty → returning undefined"
+    );
+    return undefined;
+  }
+
   try {
-    return new URL(avatarUrl, process.env.NEXT_PUBLIC_API_URL || "").href;
-  } catch {
+    const fullUrl = new URL(avatarUrl, process.env.NEXT_PUBLIC_API_URL).href;
+    console.log("[resolveAvatarUrl] built full URL →", fullUrl);
+    return fullUrl;
+  } catch (err) {
+    console.log(
+      "[resolveAvatarUrl] URL constructor threw, falling back to raw avatarUrl →",
+      avatarUrl
+    );
     return avatarUrl;
   }
 }

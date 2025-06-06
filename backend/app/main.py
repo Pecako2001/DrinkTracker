@@ -12,6 +12,7 @@ from datetime import datetime, timedelta
 from typing import List
 from .auth import router as auth_router, get_current_admin
 import dotenv
+from . import database
 from uuid import uuid4
 import os
 
@@ -41,10 +42,10 @@ app.add_middleware(
 )
 
 
-@app.get("/users", response_model=list[schemas.Person])
-def read_users(db: Session = Depends(get_db)):
-    return crud.get_persons(db)
-
+@app.get("/users", response_model=List[schemas.PersonOut])
+def read_users(db: Session = Depends(database.get_db)):
+    persons = crud.get_persons(db)
+    return persons
 
 @app.post("/users", response_model=schemas.Person)
 def create_user(

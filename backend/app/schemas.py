@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from typing import Optional
 from datetime import datetime
 from decimal import Decimal
 
@@ -39,7 +40,7 @@ class PaymentCreate(BaseModel):
 class Payment(BaseModel):
     id: int
     mollie_id: str
-    person_id: int  # ✅ Must match your SQLAlchemy model
+    person_id: int 
     amount: Decimal
     status: str
     created_at: datetime
@@ -55,3 +56,18 @@ class BuddyScore(BaseModel):
 
     class Config:
         orm_mode = True
+
+class PersonOut(BaseModel):
+    id: int
+    name: str
+    avatarUrl: Optional[str] = None   # NOTE: camelCase here
+    nickname: Optional[str] = None
+    balance: Decimal
+    total_drinks: int
+
+    class Config:
+        orm_mode = True
+        # Map Pydantic’s "avatarUrl" → SQLAlchemy’s "avatar_url"
+        fields = {
+            "avatarUrl": "avatar_url",
+        }

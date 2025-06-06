@@ -27,8 +27,6 @@ export function UserCardImage({
 }: UserCardProps) {
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const triggerFile = () => fileRef.current?.click();
-
   return (
     <Card withBorder radius="md" className={classes.card}>
       {/* Header Image */}
@@ -44,7 +42,7 @@ export function UserCardImage({
       {/* Avatar */}
       <div className={classes.avatarWrapper}>
         <Avatar
-          src={resolveAvatarUrl(user.avatarUrl)}
+          src="http://localhost:8000/avatars/40_5a7d2222d2d145ef95ac5bbc2603c5d3.png"
           size={80}
           radius={80}
           mx="auto"

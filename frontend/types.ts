@@ -3,7 +3,7 @@ export interface Person {
   name: string;
   balance: number;
   total_drinks: number;
-  avatarUrl?: string; // Added avatarUrl property
+  avatarUrl?: string;
   nickname?: string | null;
 }
 
