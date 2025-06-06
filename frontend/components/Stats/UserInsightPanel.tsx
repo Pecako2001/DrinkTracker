@@ -3,6 +3,7 @@ import { Select, Text, Title, SimpleGrid, Card, Loader } from "@mantine/core";
 import { Person } from "../../types";
 import api from "../../api/api";
 import classes from "../../styles/StatsPage.module.css";
+import SocialSipChart from "./SocialSipChart";
 
 interface UserStatsData {
   drinks_last_30_days: number;
@@ -126,6 +127,7 @@ export function UserInsightPanel() {
             </Card>
             {/* Add more stat cards here */}
           </SimpleGrid>
+          <SocialSipChart userId={selectedUserId} />
         </>
       )}
       {!loading && selectedUserId && !userData && !selectedUserName && (

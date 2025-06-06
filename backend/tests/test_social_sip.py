@@ -3,13 +3,13 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 from datetime import datetime, timedelta
-import sys
 import os
+import sys
 
 # Ensure backend/app is in path
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
-# Provide dummy env vars so database module can be imported
+# Set env vars for database module
 os.environ.setdefault("POSTGRES_USER", "test")
 os.environ.setdefault("POSTGRES_PASSWORD", "test")
 os.environ.setdefault("POSTGRES_DB", "test")
@@ -37,30 +37,40 @@ def override_get_db():
     finally:
         db.close()
 
+
 client = TestClient(app)
 
 
-def test_user_stats_last_30_days():
+def test_social_sip_score():
     app.dependency_overrides[get_db] = override_get_db
     db = TestingSessionLocal()
-    # create user and events
-    user = Person(name="Test")
-    db.add(user)
+    alice = Person(name="Alice")
+    bob = Person(name="Bob")
+    charlie = Person(name="Charlie")
+    db.add_all([alice, bob, charlie])
     db.commit()
-    db.refresh(user)
-    user_id = user.id
+    db.refresh(alice)
+    db.refresh(bob)
+    db.refresh(charlie)
+    alice_id = alice.id
+    bob_id = bob.id
 
-    # within last 30 days
-    event_recent = DrinkEvent(person_id=user.id, timestamp=datetime.utcnow() - timedelta(days=5))
-    # older than 30 days
-    event_old = DrinkEvent(person_id=user.id, timestamp=datetime.utcnow() - timedelta(days=40))
-    db.add_all([event_recent, event_old])
+    base_time = datetime.utcnow()
+    events = [
+        DrinkEvent(person_id=alice.id, timestamp=base_time),
+        DrinkEvent(person_id=bob.id, timestamp=base_time + timedelta(minutes=1)),
+        DrinkEvent(person_id=alice.id, timestamp=base_time + timedelta(minutes=2)),
+        DrinkEvent(person_id=charlie.id, timestamp=base_time + timedelta(minutes=10)),
+    ]
+    db.add_all(events)
     db.commit()
     db.close()
 
-    response = client.get(f"/users/{user_id}/stats")
-    assert response.status_code == 200
-    data = response.json()
-    assert data["drinks_last_30_days"] == 1
-    assert "favorite_drink" in data
+    resp = client.get(f"/users/{alice_id}/buddies")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert len(data) == 1
+    assert data[0]["id"] == bob_id
+    assert data[0]["count"] == 2
     app.dependency_overrides.clear()
+
