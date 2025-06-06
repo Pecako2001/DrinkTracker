@@ -343,3 +343,40 @@ def social_sip_scores(user_id: int, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return crud.get_social_sip_scores(db, user_id)
+
+
+def _subtract_months(dt: datetime, months: int) -> datetime:
+    """Return dt shifted back by given months preserving day where possible."""
+    year = dt.year
+    month = dt.month - months
+    while month <= 0:
+        month += 12
+        year -= 1
+    return dt.replace(year=year, month=month)
+
+
+@app.get("/users/{user_id}/monthly_drinks")
+def monthly_drinks(user_id: int, db: Session = Depends(get_db)):
+    """Return drink counts per month for the last six months for a user."""
+    user = crud.get_person(db, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    start = _subtract_months(
+        datetime.utcnow().replace(day=1, hour=0, minute=0, second=0, microsecond=0),
+        5,
+    )
+    rows = (
+        db.query(
+            func.to_char(func.date_trunc("month", models.DrinkEvent.timestamp), "YYYY-MM").label("month"),
+            func.count(models.DrinkEvent.id).label("count"),
+        )
+        .filter(models.DrinkEvent.person_id == user_id, models.DrinkEvent.timestamp >= start)
+        .group_by("month")
+        .order_by("month")
+        .all()
+    )
+    return [
+        {"userId": user_id, "month": r.month, "count": int(r.count)}
+        for r in rows
+    ]
