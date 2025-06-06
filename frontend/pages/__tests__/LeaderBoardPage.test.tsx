@@ -1,7 +1,7 @@
 import MockAdapter from "axios-mock-adapter";
 import api from "../../api/api";
 import { render, screen, userEvent } from "../../test-utils";
-import StatsPage from "../StatsPage";
+import LeaderBoardPage from "../LeaderBoardPage";
 
 const mock = new MockAdapter(api);
 
@@ -13,7 +13,7 @@ afterEach(() => {
 test("navigates leaderboard tabs", async () => {
   mock.onGet(/\/stats\//).reply(200, []);
   mock.onGet("/users").reply(200, []);
-  render(<StatsPage />);
+  render(<LeaderBoardPage />);
 
   // Monthly is default
   expect((await screen.findAllByText(/this month/i)).length).toBeGreaterThan(0);
