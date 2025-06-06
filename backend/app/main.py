@@ -91,7 +91,6 @@ def read_users(db: Session = Depends(get_db)):
 def create_user(
     person: schemas.PersonCreate,
     db: Session = Depends(get_db),
-    admin: None = Depends(get_current_admin),
 ):
     return crud.create_person(db, person)
 

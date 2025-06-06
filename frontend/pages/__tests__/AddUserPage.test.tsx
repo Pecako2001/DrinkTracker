@@ -12,18 +12,9 @@ afterEach(() => {
 });
 
 test("adds multiple users", async () => {
-  mock.onPost("/auth/login").reply(200, { access_token: "tok" });
   mock.onPost("/users").reply(201);
 
   render(<AddUserPage />);
-
-  await userEvent.type(
-    screen.getByPlaceholderText(/enter admin password/i),
-    "pass",
-  );
-  await userEvent.click(screen.getByRole("button", { name: /login/i }));
-
-  await waitFor(() => expect(localStorage.getItem("admin_token")).toBe("tok"));
 
   await userEvent.click(screen.getByRole("button", { name: /add another/i }));
   const inputs = screen.getAllByLabelText(/name/i);
