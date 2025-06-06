@@ -1,7 +1,15 @@
 .card {
-    background-color: var(--mantine-color-body);
-  }
-  
-  .avatar {
-    border: 2px solid var(--mantine-color-body);
-  }
+  background-color: var(--mantine-color-body);
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--mantine-shadow-lg);
+  transform: translateY(-2px);
+}
+
+.avatar {
+  border: 2px solid var(--mantine-color-body);
+}

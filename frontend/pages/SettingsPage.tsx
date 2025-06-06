@@ -1,6 +1,12 @@
 // frontend/pages/SettingsPage.tsx
 import React, { useState, useEffect } from "react";
-import { Container, Paper, Tabs, Title, FloatingIndicator } from "@mantine/core";
+import {
+  Container,
+  Paper,
+  Tabs,
+  Title,
+  FloatingIndicator,
+} from "@mantine/core";
 import api from "../api/api";
 import { Person } from "../types";
 import { UserManagement } from "../components/Settings/UserManagement";
@@ -32,13 +38,15 @@ export default function SettingsPage() {
   }, [isAuth]);
 
   const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
-  const [value, setValue] = useState<string | null>('Users');
-  const [controlsRefs, setControlsRefs] = useState<Record<string, HTMLButtonElement | null>>({});
+  const [value, setValue] = useState<string | null>("Users");
+  const [controlsRefs, setControlsRefs] = useState<
+    Record<string, HTMLButtonElement | null>
+  >({});
   const setControlRef = (val: string) => (node: HTMLButtonElement) => {
     controlsRefs[val] = node;
     setControlsRefs(controlsRefs);
   };
-  
+
   return (
     <Container py="md">
       <AdminGate onAuthenticated={() => setIsAuth(true)}>
@@ -46,11 +54,21 @@ export default function SettingsPage() {
           Admin Control
         </Title>
         <Tabs value={value} onChange={setValue} className={classes.list}>
-          <Tabs.List mb="md"  ref={setRootRef}>
-            <Tabs.Tab value="Users" ref={setControlRef('Users')} className={classes.tab}>
-              Users</Tabs.Tab>
-            <Tabs.Tab value="Payments" ref={setControlRef('Payments')} className={classes.tab}>
-              Payments</Tabs.Tab>
+          <Tabs.List mb="md" ref={setRootRef}>
+            <Tabs.Tab
+              value="Users"
+              ref={setControlRef("Users")}
+              className={classes.tab}
+            >
+              Users
+            </Tabs.Tab>
+            <Tabs.Tab
+              value="Payments"
+              ref={setControlRef("Payments")}
+              className={classes.tab}
+            >
+              Payments
+            </Tabs.Tab>
             <FloatingIndicator
               target={value ? controlsRefs[value] : null}
               parent={rootRef}
@@ -59,13 +77,12 @@ export default function SettingsPage() {
           </Tabs.List>
 
           <Tabs.Panel value="Users">
-            <UserManagement users={users} setUsers={setUsers}/>
+            <UserManagement users={users} setUsers={setUsers} />
           </Tabs.Panel>
           <Tabs.Panel value="Payments">
             <PaymentsTable payments={payments} />
           </Tabs.Panel>
         </Tabs>
-
       </AdminGate>
     </Container>
   );

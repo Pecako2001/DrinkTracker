@@ -1,5 +1,15 @@
 import React from "react";
-import { Modal, NumberInput, Button, Stack, Text, Group, SegmentedControl, Divider, Title } from "@mantine/core";
+import {
+  Modal,
+  NumberInput,
+  Button,
+  Stack,
+  Text,
+  Group,
+  SegmentedControl,
+  Divider,
+  Title,
+} from "@mantine/core";
 
 interface MobileTopUpModalProps {
   opened: boolean;
@@ -23,7 +33,11 @@ const MobileTopUpModal: React.FC<MobileTopUpModalProps> = ({
     onClose={onClose}
     centered
     size="xs"
-    title={<Title order={4} ta="center">Top Up Balance</Title>}
+    title={
+      <Title order={4} ta="center">
+        Top Up Balance
+      </Title>
+    }
     radius="md"
     padding="lg"
   >

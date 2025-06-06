@@ -1,11 +1,14 @@
 .navbar {
-  height: 700px;
-  width: 300px;
+  height: 100vh;
+  width: 250px;
   padding: var(--mantine-spacing-md);
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--color-border);
   background-color: var(--color-bg);
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .navbarMain {
@@ -35,6 +38,9 @@
   padding: var(--mantine-spacing-xs) var(--mantine-spacing-sm);
   border-radius: var(--mantine-radius-sm);
   font-weight: 500;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 
   &:hover {
     background-color: light-dark(
@@ -51,11 +57,11 @@
   &[data-active] {
     &,
     &:hover {
-      background-color: var(--mantine-color-blue-light);
-      color: var(--mantine-color-blue-light-color);
+      background-color: var(--mantine-color-primary-light);
+      color: var(--mantine-color-primary-light-color);
 
       .linkIcon {
-        color: var(--mantine-color-blue-light-color);
+        color: var(--mantine-color-primary-light-color);
       }
     }
   }
@@ -72,4 +78,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+@media (max-width: 48em) {
+  .navbar {
+    width: 200px;
+  }
 }
