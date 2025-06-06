@@ -133,11 +133,13 @@ def get_date_range_last_year():
     )
     return start, end
 
+
 def get_date_range_last_30_days():
     now = datetime.utcnow()
     end = now
     start = now - timedelta(days=30)
     return start, end
+
 
 @app.get("/stats/drinks_this_month")
 def drinks_this_month(db: Session = Depends(get_db)):
@@ -227,7 +229,6 @@ def yearly_leaderboard(db: Session = Depends(get_db)):
         .all()
     )
     return [{"id": r.id, "name": r.name, "drinks": int(r.drinks)} for r in results]
-
 
 
 @app.get("/users/{user_id}/stats")

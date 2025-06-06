@@ -35,6 +35,7 @@ def override_get_db():
     finally:
         db.close()
 
+
 app.dependency_overrides[get_db] = override_get_db
 client = TestClient(app)
 
@@ -49,9 +50,13 @@ def test_user_stats_last_30_days():
     user_id = user.id
 
     # within last 30 days
-    event_recent = DrinkEvent(person_id=user.id, timestamp=datetime.utcnow() - timedelta(days=5))
+    event_recent = DrinkEvent(
+        person_id=user.id, timestamp=datetime.utcnow() - timedelta(days=5)
+    )
     # older than 30 days
-    event_old = DrinkEvent(person_id=user.id, timestamp=datetime.utcnow() - timedelta(days=40))
+    event_old = DrinkEvent(
+        person_id=user.id, timestamp=datetime.utcnow() - timedelta(days=40)
+    )
     db.add_all([event_recent, event_old])
     db.commit()
     db.close()

@@ -25,24 +25,24 @@ export function AllTimeLeaderboard() {
         Most Drinks of All Time
       </Title>
       <ScrollArea>
-          <Table highlightOnHover>
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th>Standing</Table.Th>
-                <Table.Th>Name</Table.Th>
-                <Table.Th>Drinks</Table.Th>
+        <Table highlightOnHover>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Standing</Table.Th>
+              <Table.Th>Name</Table.Th>
+              <Table.Th>Drinks</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {sorted.map((u, i) => (
+              <Table.Tr key={u.id}>
+                <Table.Td>{i + 1}</Table.Td>
+                <Table.Td>{u.name}</Table.Td>
+                <Table.Td>{u.total_drinks.toLocaleString()}</Table.Td>
               </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              {sorted.map((u, i) => (
-                <Table.Tr key={u.id}>
-                  <Table.Td>{i + 1}</Table.Td>
-                  <Table.Td>{u.name}</Table.Td>
-                  <Table.Td>{u.total_drinks.toLocaleString()}</Table.Td>
-                </Table.Tr>
-              ))}
-            </Table.Tbody>
-          </Table>
+            ))}
+          </Table.Tbody>
+        </Table>
       </ScrollArea>
     </Card>
   );

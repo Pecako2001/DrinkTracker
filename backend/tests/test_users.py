@@ -54,7 +54,11 @@ def client():
 def test_create_user_with_avatar_and_nickname(client):
     resp = client.post(
         "/users",
-        json={"name": "Alice", "avatar_url": "http://example.com/a.png", "nickname": "Al"},
+        json={
+            "name": "Alice",
+            "avatar_url": "http://example.com/a.png",
+            "nickname": "Al",
+        },
     )
     assert resp.status_code == 200
     data = resp.json()
@@ -64,7 +68,10 @@ def test_create_user_with_avatar_and_nickname(client):
     resp = client.get("/users")
     assert resp.status_code == 200
     users = resp.json()
-    assert any(u["avatar_url"] == "http://example.com/a.png" and u["nickname"] == "Al" for u in users)
+    assert any(
+        u["avatar_url"] == "http://example.com/a.png" and u["nickname"] == "Al"
+        for u in users
+    )
 
 
 def test_create_user_without_optional_fields(client):

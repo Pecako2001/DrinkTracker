@@ -1,6 +1,13 @@
-import React from 'react';
-import { Person } from '../../types';
-import { SimpleGrid, Card, Text, Avatar, Group, UnstyledButton } from '@mantine/core';
+import React from "react";
+import { Person } from "../../types";
+import {
+  SimpleGrid,
+  Card,
+  Text,
+  Avatar,
+  Group,
+  UnstyledButton,
+} from "@mantine/core";
 
 interface UserSelectorProps {
   users: Person[];
@@ -9,7 +16,7 @@ interface UserSelectorProps {
 
 const UserSelector: React.FC<UserSelectorProps> = ({ users, onSelectUser }) => {
   return (
-    <SimpleGrid 
+    <SimpleGrid
       cols={1} // Always single column for mobile user selection for clarity
       spacing="md"
     >
@@ -17,14 +24,14 @@ const UserSelector: React.FC<UserSelectorProps> = ({ users, onSelectUser }) => {
         <UnstyledButton
           key={user.id}
           onClick={() => onSelectUser(user.id.toString())}
-          style={{ width: '100%' }}
+          style={{ width: "100%" }}
         >
           <Card shadow="sm" padding="lg" radius="md" withBorder>
             <Group>
               <Avatar color="blue" radius="xl" size="lg">
                 {user.name.charAt(0).toUpperCase()}
               </Avatar>
-              <Text fz="lg" fw={500}> 
+              <Text fz="lg" fw={500}>
                 {user.name}
               </Text>
             </Group>

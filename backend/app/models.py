@@ -1,7 +1,17 @@
-from sqlalchemy import Column, Integer, String, Numeric, DateTime, ForeignKey, func, DECIMAL
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Numeric,
+    DateTime,
+    ForeignKey,
+    func,
+    DECIMAL,
+)
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from .database import Base
+
 
 class Person(Base):
     __tablename__ = "persons"
@@ -9,10 +19,11 @@ class Person(Base):
     name = Column(String, unique=True, nullable=False)
     avatar_url = Column(String, nullable=True)
     nickname = Column(String, nullable=True)
-    balance = Column(Numeric(10,2), default=0)
+    balance = Column(Numeric(10, 2), default=0)
     total_drinks = Column(Integer, default=0)
     drinks = relationship("DrinkEvent", back_populates="person")
     payments = relationship("Payment", back_populates="person")
+
 
 class DrinkEvent(Base):
     __tablename__ = "drink_events"
@@ -20,6 +31,7 @@ class DrinkEvent(Base):
     person_id = Column(Integer, ForeignKey("persons.id"))
     timestamp = Column(DateTime(timezone=True), server_default=func.now())
     person = relationship("Person", back_populates="drinks")
+
 
 class Payment(Base):
     __tablename__ = "payments"

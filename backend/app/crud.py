@@ -6,6 +6,7 @@ import uuid
 from mollie.api.client import Client as MollieClient
 import os
 
+
 def get_persons(db: Session):
     """Return all persons sorted by name for deterministic ordering."""
     return db.query(models.Person).order_by(models.Person.name.asc()).all()
@@ -22,9 +23,11 @@ def create_person(db: Session, person: schemas.PersonCreate):
     db.refresh(db_person)
     return db_person
 
+
 def delete_person(db: Session, person_id: int):
     db.query(models.Person).filter(models.Person.id == person_id).delete()
     db.commit()
+
 
 def record_drink(db: Session, person_id: int):
     person = get_person(db, person_id)
@@ -37,6 +40,7 @@ def record_drink(db: Session, person_id: int):
     db.commit()
     db.refresh(person)
     return person
+
 
 # crud.py
 def update_user_balance(
@@ -52,8 +56,10 @@ def update_user_balance(
     db.refresh(person)
     return person
 
+
 def get_person(db: Session, person_id: int):
     return db.query(models.Person).filter(models.Person.id == person_id).first()
+
 
 def create_payment(db: Session, payment: schemas.PaymentCreate):
     # Simulate creating a payment without Mollie
@@ -76,6 +82,7 @@ def create_payment(db: Session, payment: schemas.PaymentCreate):
 
     # Simulate redirect URL
     return "http://localhost:3000/?success=true"
+
 
 # def create_payment(db: Session, payment: schemas.PaymentCreate):
 #     mollie_api_key = os.getenv("MOLLIE_API_KEY")
