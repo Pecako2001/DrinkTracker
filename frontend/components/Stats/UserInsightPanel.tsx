@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Select, Text, Title, SimpleGrid, Card, Loader } from "@mantine/core";
+import {
+  Select,
+  MultiSelect,
+  Text,
+  Title,
+  SimpleGrid,
+  Card,
+  Loader,
+} from "@mantine/core";
+import MonthlyDrinkVolumeChart from "./MonthlyDrinkVolumeChart";
 import { Person } from "../../types";
 import api from "../../api/api";
 import classes from "../../styles/StatsPage.module.css";
@@ -12,6 +21,7 @@ interface UserStatsData {
 export function UserInsightPanel() {
   const [users, setUsers] = useState<{ value: string; label: string }[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [chartUsers, setChartUsers] = useState<string[]>([]);
   const [userData, setUserData] = useState<UserStatsData | null>(null);
   const [selectedUserName, setSelectedUserName] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -85,6 +95,20 @@ export function UserInsightPanel() {
           loadingUsers ? "Loading users..." : "No users found"
         }
       />
+      <MultiSelect
+        label="Compare Users"
+        placeholder="Pick users to compare"
+        data={users}
+        value={chartUsers}
+        onChange={setChartUsers}
+        searchable
+        clearable
+        disabled={loadingUsers}
+        mb="lg"
+        nothingFoundMessage={
+          loadingUsers ? "Loading users..." : "No users found"
+        }
+      />
 
       {loading && <Loader />}
 
@@ -132,6 +156,8 @@ export function UserInsightPanel() {
         // This case might happen briefly if user name isn't found before mock data is set
         <Text c="dimmed">Loading user data...</Text>
       )}
+
+      <MonthlyDrinkVolumeChart userIds={chartUsers.map(Number)} />
     </div>
   );
 }
