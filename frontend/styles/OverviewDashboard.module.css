@@ -103,14 +103,7 @@
   color: var(--mantine-color-primary-filled-hover);
 }
 
-
-/* User Detail Panel specific styles */
-.userDetailContent {
-  /* Spacing and layout within the user detail panel */
-}
-
 .userDetailAvatar {
-  /* Custom styles for avatar if needed beyond Mantine's defaults */
   box-shadow: var(--mantine-shadow-xs);
 }
 

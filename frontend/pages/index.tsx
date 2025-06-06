@@ -141,7 +141,6 @@ export default function HomePage() {
         mb="md"
         value={search}
         onChange={(e) => setSearch(e.currentTarget.value)}
-        /* Clear button removed due to type incompatibility */
       />
 
       <TopUpModal

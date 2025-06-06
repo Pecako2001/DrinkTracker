@@ -81,7 +81,7 @@ def get_person(db: Session, person_id: int):
 def create_payment(db: Session, payment: schemas.PaymentCreate):
     # Simulate creating a payment without Mollie
     payment_obj = models.Payment(
-        mollie_id=f"simulated-{uuid.uuid4().hex}",
+        mollie_id=f"simulated-{uuid4().hex}",
         person_id=payment.user_id,
         amount=Decimal(str(payment.amount)),
         status="completed",
