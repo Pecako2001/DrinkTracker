@@ -6,6 +6,7 @@ import {
   IconChartDots3,
   IconSettings,
   IconUserPlus, // if you don’t have this, pick another add‑user icon
+  IconUpload,
   IconSun,
   IconMoon,
 } from "@tabler/icons-react";
@@ -18,6 +19,7 @@ const mainLinks = [
 ];
 const footerLinks = [
   { href: "/AddUserPage", label: "Add User", icon: IconUserPlus },
+  { href: "/AvatarPage", label: "Avatar", icon: IconUpload },
   { href: "/SettingsPage", label: "Settings", icon: IconSettings },
 ];
 

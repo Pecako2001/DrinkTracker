@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from . import models, schemas
 from fastapi import HTTPException
+from uuid import uuid4
 from decimal import Decimal
-import uuid
 from mollie.api.client import Client as MollieClient
 import os
 
@@ -13,7 +13,7 @@ def get_person(db: Session, person_id: int):
     return db.query(models.Person).filter(models.Person.id == person_id).first()
 
 def create_person(db: Session, person: schemas.PersonCreate):
-    db_person = models.Person(name=person.name)
+    db_person = models.Person(name=person.name, avatar_url=person.avatarUrl)
     db.add(db_person)
     db.commit()
     db.refresh(db_person)
@@ -41,6 +41,15 @@ def update_user_balance(db: Session, user_id: int, new_balance: float):
     if not person:
         return None
     person.balance = new_balance
+    db.commit()
+    db.refresh(person)
+    return person
+
+def update_user_avatar(db: Session, user_id: int, avatar_url: str):
+    person = get_person(db, user_id)
+    if not person:
+        return None
+    person.avatar_url = avatar_url
     db.commit()
     db.refresh(person)
     return person

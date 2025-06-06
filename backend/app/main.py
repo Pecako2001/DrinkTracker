@@ -1,14 +1,20 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session
 from . import models, schemas, crud
 from .database import engine, Base, get_db
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from datetime import datetime, timedelta
+from uuid import uuid4
+import os
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+avatars_dir = os.path.join(os.path.dirname(__file__), "avatars")
+os.makedirs(avatars_dir, exist_ok=True)
+app.mount("/avatars", StaticFiles(directory=avatars_dir), name="avatars")
 
 class UpdateUser(BaseModel):
     balance: float
@@ -55,6 +61,20 @@ def update_user(user_id: int, update: UpdateUser, db: Session = Depends(get_db))
     if not person:
         raise HTTPException(status_code=404, detail="User not found")
     return person
+
+@app.post("/users/{user_id}/avatar", response_model=schemas.Person)
+async def upload_avatar(user_id: int, file: UploadFile = File(...), db: Session = Depends(get_db)):
+    user = crud.get_person(db, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    ext = os.path.splitext(file.filename)[1]
+    filename = f"{user_id}_{uuid4().hex}{ext}"
+    filepath = os.path.join(avatars_dir, filename)
+    with open(filepath, "wb") as buffer:
+        buffer.write(await file.read())
+    avatar_url = f"/avatars/{filename}"
+    crud.update_user_avatar(db, user_id, avatar_url)
+    return crud.get_person(db, user_id)
 
 @app.get("/users/{user_id}", response_model=schemas.Person)
 def get_user(user_id: int, db: Session = Depends(get_db)):
