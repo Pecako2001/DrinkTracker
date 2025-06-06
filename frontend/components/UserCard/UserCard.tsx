@@ -85,7 +85,17 @@ export function UserCardImage({
 
       {/* Single Stat: Balance */}
       <Group justify="center" gap={4} mb="md">
-        <Text size="lg" fw={500}>
+        <Text
+          size="lg"
+          fw={500}
+          c={
+            Number(user.balance ?? 0) > 0
+              ? "blue"
+              : Number(user.balance ?? 0) < 0
+                ? "red"
+                : "dimmed"
+          }
+        >
           €{Number(user.balance ?? 0).toFixed(2)}
         </Text>
         <Text color="dimmed" size="sm">
