@@ -6,6 +6,7 @@ import {
   Text,
   Avatar,
   Group,
+  Stack,
   UnstyledButton,
 } from "@mantine/core";
 
@@ -31,9 +32,16 @@ const UserSelector: React.FC<UserSelectorProps> = ({ users, onSelectUser }) => {
               <Avatar color="blue" radius="xl" size="lg">
                 {user.name.charAt(0).toUpperCase()}
               </Avatar>
-              <Text fz="lg" fw={500}>
-                {user.name}
-              </Text>
+              <Stack gap={2}>
+                <Text fz="lg" fw={500}>
+                  {user.name}
+                </Text>
+                {user.nickname && (
+                  <Text c="dimmed" size="sm">
+                    “{user.nickname}”
+                  </Text>
+                )}
+              </Stack>
             </Group>
           </Card>
         </UnstyledButton>
