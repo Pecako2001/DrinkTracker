@@ -42,12 +42,8 @@ export default function SettingsPage() {
   return (
     <Container py="md">
       <AdminGate onAuthenticated={() => setIsAuth(true)}>
-        <Title order={1} mb="sm">
-          Stats
-        </Title>
-
         <Title order={2} mt="sm" mb="xs">
-          Leaderboard
+          Admin Control
         </Title>
         <Tabs value={value} onChange={setValue} className={classes.list}>
           <Tabs.List mb="md"  ref={setRootRef}>
