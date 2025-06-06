@@ -2,12 +2,16 @@
   --color-bg: #f1f3f5;
   --color-text: #212529;
   --color-border: #ced4da;
+  --color-main: var(--mantine-color-blue-6);
+  --color-main-lightest: var(--mantine-color-blue-0);
 }
 
 [data-theme="dark"] {
   --color-bg: #1a1b1e;
   --color-text: #c1c2c5;
   --color-border: #373a40;
+  --color-main: var(--mantine-color-blue-6);
+  --color-main-lightest: var(--mantine-color-blue-0);
 }
 
 body {
