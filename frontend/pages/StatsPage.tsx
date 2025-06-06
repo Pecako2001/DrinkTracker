@@ -27,9 +27,7 @@ function StatsPage() {
 
   return (
     <Container size="xl" py="md" className={classes.statsContainer}>
-      <Title>
-        Your Insights
-      </Title>
+      <Title>Your Insights</Title>
       <Paper
         withBorder
         shadow="sm"

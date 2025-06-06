@@ -77,6 +77,51 @@ def create_payment(db: Session, payment: schemas.PaymentCreate):
     # Simulate redirect URL
     return "http://localhost:3000/?success=true"
 
+
+def get_longest_hydration_streaks(db: Session, limit: int = 10):
+    """Return users with the longest consecutive-day drink streaks."""
+    from collections import defaultdict
+    from datetime import timedelta
+
+    rows = (
+        db.query(
+            models.DrinkEvent.person_id,
+            func.date(models.DrinkEvent.timestamp).label("day"),
+        )
+        .group_by(models.DrinkEvent.person_id, func.date(models.DrinkEvent.timestamp))
+        .order_by(models.DrinkEvent.person_id, func.date(models.DrinkEvent.timestamp))
+        .all()
+    )
+
+    days_by_user: dict[int, list[date]] = defaultdict(list)
+    for user_id, day in rows:
+        days_by_user[user_id].append(day)
+
+    streaks: list[tuple[int, int]] = []
+    for user_id, days in days_by_user.items():
+        days_sorted = sorted(days)
+        longest = 0
+        current = 0
+        prev_day = None
+        for d in days_sorted:
+            if prev_day is not None and d == prev_day + timedelta(days=1):
+                current += 1
+            else:
+                current = 1
+            longest = max(longest, current)
+            prev_day = d
+        streaks.append((user_id, longest))
+
+    id_to_name = {
+        p.id: p.name for p in db.query(models.Person.id, models.Person.name).all()
+    }
+
+    sorted_streaks = sorted(streaks, key=lambda x: x[1], reverse=True)[:limit]
+    return [
+        {"id": uid, "name": id_to_name.get(uid, ""), "streak": streak}
+        for uid, streak in sorted_streaks
+    ]
+
 # def create_payment(db: Session, payment: schemas.PaymentCreate):
 #     mollie_api_key = os.getenv("MOLLIE_API_KEY")
 #     mollie = MollieClient()

@@ -229,6 +229,11 @@ def yearly_leaderboard(db: Session = Depends(get_db)):
     return [{"id": r.id, "name": r.name, "drinks": int(r.drinks)} for r in results]
 
 
+@app.get("/stats/longest_hydration_streaks")
+def longest_hydration_streaks(limit: int = 10, db: Session = Depends(get_db)):
+    return crud.get_longest_hydration_streaks(db, limit)
+
+
 
 @app.get("/users/{user_id}/stats")
 def user_stats(user_id: int, db: Session = Depends(get_db)):

@@ -3,6 +3,7 @@ import { Select, Text, Title, SimpleGrid, Card, Loader } from "@mantine/core";
 import { Person } from "../../types";
 import api from "../../api/api";
 import classes from "../../styles/StatsPage.module.css";
+import LongestHydrationStreakChart from "./LongestHydrationStreakChart";
 
 interface UserStatsData {
   drinks_last_30_days: number;
@@ -128,6 +129,7 @@ export function UserInsightPanel() {
           </SimpleGrid>
         </>
       )}
+      <LongestHydrationStreakChart />
       {!loading && selectedUserId && !userData && !selectedUserName && (
         // This case might happen briefly if user name isn't found before mock data is set
         <Text c="dimmed">Loading user data...</Text>
