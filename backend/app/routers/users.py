@@ -101,6 +101,14 @@ async def upload_avatar(
     user = crud.get_person(db, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+
+    # Remove previous avatar file if it exists
+    old_avatar = user.avatar_url
+    if old_avatar and old_avatar.startswith("/avatars/"):
+        old_path = os.path.join(avatars_dir, os.path.basename(old_avatar))
+        if os.path.exists(old_path):
+            os.remove(old_path)
+
     ext = os.path.splitext(file.filename)[1]
     filename = f"{user_id}_{uuid4().hex}{ext}"
     filepath = os.path.join(avatars_dir, filename)
