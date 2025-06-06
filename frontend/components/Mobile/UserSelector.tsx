@@ -8,6 +8,7 @@ import {
   Group,
   UnstyledButton,
 } from "@mantine/core";
+import { resolveAvatarUrl } from "../../lib/resolveAvatarUrl";
 
 interface UserSelectorProps {
   users: Person[];
@@ -28,7 +29,12 @@ const UserSelector: React.FC<UserSelectorProps> = ({ users, onSelectUser }) => {
         >
           <Card shadow="sm" padding="lg" radius="md" withBorder>
             <Group>
-              <Avatar color="blue" radius="xl" size="lg">
+              <Avatar
+                src={resolveAvatarUrl(user.avatarUrl)}
+                color="blue"
+                radius="xl"
+                size="lg"
+              >
                 {user.name.charAt(0).toUpperCase()}
               </Avatar>
               <Text fz="lg" fw={500}>

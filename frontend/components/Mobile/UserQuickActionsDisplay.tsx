@@ -1,6 +1,7 @@
 import React from "react";
 import { Person } from "../../types";
 import { Paper, Group, Avatar, Text, Stack, Box } from "@mantine/core";
+import { resolveAvatarUrl } from "../../lib/resolveAvatarUrl";
 // Removed ThemeIcon and IconCash as they are not used in the final example from the prompt
 // but good to keep in mind for future enhancements.
 
@@ -14,7 +15,12 @@ const UserQuickActionsDisplay: React.FC<UserQuickActionsDisplayProps> = ({
   return (
     <Paper shadow="md" p="lg" radius="md" withBorder>
       <Stack align="center" gap="md">
-        <Avatar size="xl" color="blue" radius="xl">
+        <Avatar
+          src={resolveAvatarUrl(user.avatarUrl)}
+          size="xl"
+          color="blue"
+          radius="xl"
+        >
           {user.name.charAt(0).toUpperCase()}
         </Avatar>
         <Text size="xl" fw={700} ta="center">
