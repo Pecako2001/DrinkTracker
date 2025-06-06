@@ -1,4 +1,4 @@
-mport React, { useEffect, useState, useMemo } from 'react'; // Added useMemo
+import React, { useEffect, useState, useMemo } from 'react'; // Added useMemo
 import { Box, Grid, Flex, Paper, Select, Title, Text, Card, Group, ThemeIcon, Stack, Avatar, Tooltip } from '@mantine/core'; // Added Stack, Avatar, Tooltip
 import { IconUserSearch, IconArrowUpRight, IconArrowDownRight, IconMail, IconGlassFull } from '@tabler/icons-react'; // Added more icons
 import { motion, AnimatePresence } from 'framer-motion'; // Added AnimatePresence
