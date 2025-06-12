@@ -6,8 +6,6 @@ from . import models, schemas
 from fastapi import HTTPException
 from uuid import uuid4
 from decimal import Decimal
-from mollie.api.client import Client as MollieClient
-import os
 
 
 def get_persons(db: Session) -> list[models.Person]:
@@ -216,33 +214,6 @@ def get_longest_hydration_streaks(
     ]
 
 
-# def create_payment(db: Session, payment: schemas.PaymentCreate):
-#     mollie_api_key = os.getenv("MOLLIE_API_KEY")
-#     mollie = MollieClient()
-#     mollie.set_api_key(mollie_api_key)
-
-#     # store placeholder in your DB
-#     payment_obj = models.Payment(
-#         mollie_id="pending",
-#         person_id=payment.user_id,
-#         amount=payment.amount,
-#         status="created",
-#     )
-#     db.add(payment_obj)
-#     db.commit()
-#     db.refresh(payment_obj)
-
-#     # create Mollie payment
-#     mollie_payment = mollie.payments.create({
-#         "amount": {"currency": "EUR", "value": f"{payment.amount:.2f}"},
-#         "description": f"Top up for user {payment.user_id}",
-#         "redirectUrl": os.getenv("FRONTEND_URL", "http://localhost:3000") + "/",
-#     })
-#     # update your DB with real Mollie ID
-#     payment_obj.mollie_id = mollie_payment.id
-#     db.commit()
-
-#     return mollie_payment.get_checkout_url()
 
 
 def get_social_sip_scores(
