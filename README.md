@@ -99,16 +99,9 @@ Usage example:
 ./scripts/backup_db.sh gdrive DrinkTrackerBackups
 ```
 
-To run the backup every day at 2 AM via cron:
-
-```cron
-0 2 * * * /path/to/DrinkTracker/scripts/backup_db.sh gdrive DrinkTrackerBackups
-```
-
-You can automate the setup using `scripts/install_backup_cron.sh`, which creates a daily cron entry. The following command installs a job that runs at 2 AM every day:
-
-```bash
-./scripts/install_backup_cron.sh gdrive DrinkTrackerBackups 2
-```
+The backend automatically runs this backup every day at midnight while the
+application is running. Set `BACKUP_REMOTE_NAME` and `BACKUP_REMOTE_PATH` in the
+environment to customize the destination. Use `DISABLE_BACKUPS=1` if you wish to
+disable this scheduler.
 
 <p align="right">(<a href="#top">Back to top</a>)</p>
