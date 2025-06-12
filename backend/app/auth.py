@@ -30,10 +30,15 @@ def login(req: LoginRequest):
 
 security = HTTPBearer()
 
-def get_current_admin(credentials: HTTPAuthorizationCredentials = Depends(security)):
+def get_current_admin(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+) -> None:
     try:
-        payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(
+            credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM]
+        )
         if payload.get("sub") != "admin":
             raise JWTError()
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid credentials")
+    return None
