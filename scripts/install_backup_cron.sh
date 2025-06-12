@@ -6,7 +6,7 @@ set -euo pipefail
 
 REMOTE_NAME="${1:-gdrive}"
 REMOTE_PATH="${2:-DrinkTrackerBackups}"
-HOUR="${3:-2}"
+HOUR="${3:-0}"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CRON_ENTRY="0 ${HOUR} * * * ${SCRIPT_DIR}/backup_db.sh ${REMOTE_NAME} ${REMOTE_PATH} >/dev/null 2>&1"

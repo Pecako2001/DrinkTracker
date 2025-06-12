@@ -4,6 +4,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
+from .backup_scheduler import start_backup_scheduler, shutdown_backup_scheduler
+
 from .database import engine, Base, get_db
 from .auth import router as auth_router
 from .routers import users, payments, stats
@@ -51,3 +53,13 @@ __all__ = [
     "longest_hydration_streaks",
     "_subtract_months",
 ]
+
+
+@app.on_event("startup")
+async def _start_scheduler() -> None:
+    start_backup_scheduler()
+
+
+@app.on_event("shutdown")
+async def _stop_scheduler() -> None:
+    shutdown_backup_scheduler()

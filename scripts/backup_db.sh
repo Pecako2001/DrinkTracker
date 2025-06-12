@@ -1,6 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
+# Ensure required commands are available
+command -v pg_dump >/dev/null 2>&1 || { echo "pg_dump is required but not installed." >&2; exit 1; }
+command -v rclone >/dev/null 2>&1 || { echo "rclone is required but not installed." >&2; exit 1; }
+
 # Usage: ./backup_db.sh [remote_name] [remote_path]
 # remote_name: rclone remote name (e.g., gdrive or onedrive)
 # remote_path: directory path on the remote (default: DrinkTrackerBackups)
