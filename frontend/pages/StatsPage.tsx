@@ -1,19 +1,17 @@
 import React from "react";
-import { useState } from "react";
-import {
-  Container,
-  Text,
-  Title,
-} from "@mantine/core";
+import { Container, Title, Paper } from "@mantine/core";
+import UserMonthlyComparison from "../components/Stats/UserMonthlyComparison";
 import classes from "../styles/StatsPage.module.css";
 
 function StatsPage() {
   return (
     <Container size="xl" py="md" className={classes.statsContainer}>
-      <Title>Statistics </Title>
-      <Text size="sm" color="dimmed" mb="md">
-        View insights about users, drinks, and more. coming soon.
-      </Text>
+      <Title order={1} mb="sm">
+        Statistics
+      </Title>
+      <Paper p="md" className={classes.userInsightSection}>
+        <UserMonthlyComparison />
+      </Paper>
     </Container>
   );
 }
