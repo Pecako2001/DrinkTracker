@@ -1,21 +1,18 @@
+import os
+import sys
+import pytest
+import conftest
+conftest.set_env_vars()
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 from datetime import datetime, timedelta
-import os
-import sys
 
 # Ensure backend/app is in path
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
-# Set env vars for database module
-os.environ.setdefault("POSTGRES_USER", "test")
-os.environ.setdefault("POSTGRES_PASSWORD", "test")
-os.environ.setdefault("POSTGRES_DB", "test")
-os.environ.setdefault("POSTGRES_HOST", "localhost")
-os.environ.setdefault("POSTGRES_PORT", "5432")
-os.environ["TESTING"] = "1"
+pytestmark = pytest.mark.usefixtures("env_vars")
 
 from app.main import app, get_db
 from app.models import Base, Person, DrinkEvent

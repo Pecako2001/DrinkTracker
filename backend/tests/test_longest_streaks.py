@@ -6,6 +6,10 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 from unittest import mock
 import pytest
+import conftest
+conftest.set_env_vars()
+
+pytestmark = pytest.mark.usefixtures("env_vars")
 
 # Stub mollie client to avoid optional dependency in tests
 mollie = types.ModuleType("mollie")
