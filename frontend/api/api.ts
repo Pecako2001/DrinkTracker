@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL ?? "http://100.120.48.51:8000", // adjust if your FastAPI runs elsewhere
+  baseURL: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000", // adjust if your FastAPI runs elsewhere
 });
 
 api.interceptors.request.use((config) => {
