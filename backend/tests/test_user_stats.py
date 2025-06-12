@@ -31,32 +31,28 @@ Base.metadata.create_all(bind=engine)
 
 
 def override_get_db():
-    db = TestingSessionLocal()
-    try:
+    with TestingSessionLocal() as db:
         yield db
-    finally:
-        db.close()
 
 client = TestClient(app)
 
 
 def test_user_stats_last_30_days():
     app.dependency_overrides[get_db] = override_get_db
-    db = TestingSessionLocal()
-    # create user and events
-    user = Person(name="Test")
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    user_id = user.id
+    with TestingSessionLocal() as db:
+        # create user and events
+        user = Person(name="Test")
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        user_id = user.id
 
-    # within last 30 days
-    event_recent = DrinkEvent(person_id=user.id, timestamp=datetime.utcnow() - timedelta(days=5))
-    # older than 30 days
-    event_old = DrinkEvent(person_id=user.id, timestamp=datetime.utcnow() - timedelta(days=40))
-    db.add_all([event_recent, event_old])
-    db.commit()
-    db.close()
+        # within last 30 days
+        event_recent = DrinkEvent(person_id=user.id, timestamp=datetime.utcnow() - timedelta(days=5))
+        # older than 30 days
+        event_old = DrinkEvent(person_id=user.id, timestamp=datetime.utcnow() - timedelta(days=40))
+        db.add_all([event_recent, event_old])
+        db.commit()
 
     response = client.get(f"/users/{user_id}/stats")
     assert response.status_code == 200
