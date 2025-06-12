@@ -232,6 +232,52 @@ def monthly_drinks(user_id: int, db: Session = Depends(get_db)) -> list[dict[str
     return [{"userId": user_id, "month": r.month, "count": int(r.count)} for r in rows]
 
 
+@router.get("/insights/monthly_totals")
+def monthly_totals(user_ids: str, db: Session = Depends(get_db)) -> list[dict[str, Any]]:
+    """Return 6 month drink totals for multiple users."""
+    try:
+        ids = [int(u) for u in user_ids.split(",") if u]
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid user_ids")
+    if not ids:
+        return []
+
+    base = datetime.utcnow().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    start = _subtract_months(base, 5)
+
+    dialect = db.bind.dialect.name if db.bind else ""
+    if dialect == "sqlite":
+        month_expr = func.strftime("%Y-%m", models.DrinkEvent.timestamp)
+    else:
+        month_expr = func.to_char(func.date_trunc("month", models.DrinkEvent.timestamp), "YYYY-MM")
+
+    rows = (
+        db.query(
+            models.DrinkEvent.person_id,
+            month_expr.label("month"),
+            func.count(models.DrinkEvent.id).label("count"),
+        )
+        .filter(models.DrinkEvent.person_id.in_(ids), models.DrinkEvent.timestamp >= start)
+        .group_by(models.DrinkEvent.person_id, "month")
+        .order_by("month")
+        .all()
+    )
+
+    from collections import defaultdict
+
+    counts: dict[int, dict[str, int]] = defaultdict(dict)
+    for uid, month, count in rows:
+        counts[int(uid)][month] = int(count)
+
+    months = [(base if i == 0 else _subtract_months(base, i)).strftime("%Y-%m") for i in range(5, -1, -1)]
+
+    results: list[dict[str, Any]] = []
+    for uid in ids:
+        for m in months:
+            results.append({"userId": uid, "month": m, "count": counts.get(uid, {}).get(m, 0)})
+    return results
+
+
 @router.get(
     "/users/{user_id}/social_sip_scores", response_model=list[schemas.BuddyScore]
 )
