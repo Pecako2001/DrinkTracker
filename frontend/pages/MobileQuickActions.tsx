@@ -136,7 +136,7 @@ const MobileQuickActionsPage: React.FC = () => {
   if (loading && !user) {
     // Show loader only if truly loading initial data
     return (
-      <Container className={styles.container}>     
+      <Container className={styles.container} fluid>
         <Loader />
       </Container>
     );
@@ -144,7 +144,7 @@ const MobileQuickActionsPage: React.FC = () => {
 
   if (error) {
     return (
-      <Container className={styles.container}>     
+      <Container className={styles.container} fluid>
         <Title order={2} c="red.500" ta="center">
           Error
         </Title>
@@ -173,7 +173,7 @@ const MobileQuickActionsPage: React.FC = () => {
   if (!user) {
     // Should ideally be covered by loading or error state, but as a fallback
     return (
-      <Container className={styles.container}>     
+      <Container className={styles.container} fluid>
         <Text>No user data available. You might need to re-select a user.</Text>
         <Button onClick={() => router.push("/MobileUserSelect")} mt="md">
           Go to User Selection
@@ -183,7 +183,7 @@ const MobileQuickActionsPage: React.FC = () => {
   }
 
   return (
-    <Container className={styles.container}>
+    <Container className={styles.container} fluid>
       <Box className={styles.box}>
         <UserQuickActionsDisplay
           user={user}
@@ -191,7 +191,7 @@ const MobileQuickActionsPage: React.FC = () => {
         />
       </Box>
 
-      <Stack className={styles.stack}> 
+      <Stack className={styles.stack}>
         <Button
           onClick={handleAddDrink}
           loading={actionLoading.drink}
