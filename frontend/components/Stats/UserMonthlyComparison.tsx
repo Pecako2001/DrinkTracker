@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { MultiSelect, Loader } from "@mantine/core";
+import { Select, Loader } from "@mantine/core";
 import api from "../../api/api";
 import type { Person } from "../../types";
 import type { MonthlyVolumeEntry } from "../../types/insights";
@@ -8,7 +8,7 @@ import classes from "../../styles/StatsPage.module.css";
 
 export default function UserMonthlyComparison() {
   const [users, setUsers] = useState<Person[]>([]);
-  const [selected, setSelected] = useState<string[]>([]);
+  const [selected, setSelected] = useState<string | null>(null);
   const [data, setData] = useState<MonthlyVolumeEntry[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -18,23 +18,22 @@ export default function UserMonthlyComparison() {
 
   const options = users.map((u) => ({ value: u.id.toString(), label: u.name }));
 
+  // Only include the selected user in the idToName map
   const idToName = useMemo(() => {
-    const map: Record<number, string> = {};
-    users.forEach((u) => {
-      map[u.id] = u.name;
-    });
-    return map;
-  }, [users]);
+    if (!selected) return {};
+    const user = users.find((u) => u.id.toString() === selected);
+    return user ? { [user.id]: user.name } : {};
+  }, [users, selected]);
 
   useEffect(() => {
-    if (selected.length === 0) {
+    if (!selected) {
       setData([]);
       return;
     }
     setLoading(true);
     api
       .get<MonthlyVolumeEntry[]>("/insights/monthly_totals", {
-        params: { user_ids: selected.join(",") },
+        params: { user_ids: selected },
       })
       .then((res) => setData(res.data))
       .finally(() => setLoading(false));
@@ -42,9 +41,9 @@ export default function UserMonthlyComparison() {
 
   return (
     <div className={classes.userInsightPanel}>
-      <MultiSelect
-        label="Select users"
-        placeholder="Choose users"
+      <Select
+        label="Select user"
+        placeholder="Choose a user"
         data={options}
         searchable
         value={selected}
@@ -52,7 +51,7 @@ export default function UserMonthlyComparison() {
         clearable
       />
       {loading && <Loader />}
-      {!loading && selected.length > 0 && (
+      {!loading && selected && (
         <MonthlyDrinkVolumeChart data={data} users={idToName} />
       )}
     </div>
