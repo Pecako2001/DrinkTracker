@@ -10,12 +10,13 @@ import {
 } from "@mantine/core";
 import { IconCoffee, IconCreditCardPay } from "@tabler/icons-react";
 import classes from "./UserCardImage.module.css";
+import styles from "@/styles/MobileQuickActions.module.css"
 import { Person } from "../../types";
 import { resolveAvatarUrl } from "../../lib/resolveAvatarUrl";
 
 interface UserCardProps {
   user: Person;
-  onDrink: () => void;
+  onDrink: () => Promise<void> | void;
   onTopUp: () => void;
   onChangeAvatar?: (file: File | null) => void;
 }
@@ -28,11 +29,21 @@ export function UserCardImage({
 }: UserCardProps) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [animateDrink, setAnimateDrink] = useState(false);
+  const [actionLoading, setActionLoading] = useState({
+    drink: false,
+    topup: false,
+  });
 
-  const handleDrink = () => {
-    onDrink();
+  // Unified drink handler with animation and loading state
+  const handleAddDrinkWithAnimation = async () => {
     setAnimateDrink(true);
+    setActionLoading((prev) => ({ ...prev, drink: true }));
     setTimeout(() => setAnimateDrink(false), 300);
+    try {
+      await onDrink();
+    } finally {
+      setActionLoading((prev) => ({ ...prev, drink: false }));
+    }
   };
 
   return (
@@ -51,15 +62,14 @@ export function UserCardImage({
       <div className={classes.avatarWrapper}>
         <Avatar
           src={resolveAvatarUrl(user.avatarUrl)}
-          size={80}
-          radius={80}
+          size={120}
+          radius={120}
           mx="auto"
-          mt={-40}
+          mt={-60}
           className={classes.avatar}
         >
           {user.name.charAt(0).toUpperCase()}
         </Avatar>
-
         <input
           ref={fileRef}
           type="file"
@@ -92,8 +102,8 @@ export function UserCardImage({
             Number(user.balance ?? 0) > 0
               ? "blue"
               : Number(user.balance ?? 0) < 0
-                ? "red"
-                : "dimmed"
+              ? "red"
+              : "dimmed"
           }
         >
           €{Number(user.balance ?? 0).toFixed(2)}
@@ -108,10 +118,12 @@ export function UserCardImage({
       {/* Actions: +1 Drink, Top Up */}
       <Stack gap={8} mt="md">
         <Button
-          fullWidth
+          onClick={handleAddDrinkWithAnimation}
+          loading={actionLoading.drink}
+          disabled={actionLoading.topup}
+          size="lg"
           leftSection={<IconCoffee size={25} />}
-          onClick={handleDrink}
-          className={`${classes.drinkButton} ${animateDrink ? classes.animate : ""}`}
+          className={`${styles.button} ${animateDrink ? styles.animate : ""}`}
         >
           +1 Drink
         </Button>
@@ -120,6 +132,7 @@ export function UserCardImage({
           leftSection={<IconCreditCardPay size={25} />}
           variant="outline"
           onClick={onTopUp}
+          disabled={actionLoading.drink}
         >
           Top Up
         </Button>

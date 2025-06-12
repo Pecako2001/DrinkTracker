@@ -1,19 +1,17 @@
+import os
+import sys
+import pytest
+import conftest
+conftest.set_env_vars()
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 from datetime import datetime
-import os
-import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
-os.environ.setdefault("POSTGRES_USER", "test")
-os.environ.setdefault("POSTGRES_PASSWORD", "test")
-os.environ.setdefault("POSTGRES_DB", "test")
-os.environ.setdefault("POSTGRES_HOST", "localhost")
-os.environ.setdefault("POSTGRES_PORT", "5432")
-os.environ["TESTING"] = "1"
+pytestmark = pytest.mark.usefixtures("env_vars")
 
 from app.main import app, get_db, _subtract_months
 from app.models import Base, Person, DrinkEvent
@@ -29,33 +27,29 @@ Base.metadata.create_all(bind=engine)
 
 
 def override_get_db():
-    db = TestingSessionLocal()
-    try:
+    with TestingSessionLocal() as db:
         yield db
-    finally:
-        db.close()
 
 client = TestClient(app)
 
 
 def test_monthly_drinks():
     app.dependency_overrides[get_db] = override_get_db
-    db = TestingSessionLocal()
-    user = Person(name="Test")
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    user_id = user.id
-    base = datetime.utcnow().replace(day=15, hour=0, minute=0, second=0, microsecond=0)
-    events = [
-        DrinkEvent(person_id=user.id, timestamp=base),
-        DrinkEvent(person_id=user.id, timestamp=_subtract_months(base, 1)),
-        DrinkEvent(person_id=user.id, timestamp=_subtract_months(base, 7)),
-    ]
-    db.add_all(events)
-    db.commit()
-    user_id = user.id
-    db.close()
+    with TestingSessionLocal() as db:
+        user = Person(name="Test")
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        user_id = user.id
+        base = datetime.utcnow().replace(day=15, hour=0, minute=0, second=0, microsecond=0)
+        events = [
+            DrinkEvent(person_id=user.id, timestamp=base),
+            DrinkEvent(person_id=user.id, timestamp=_subtract_months(base, 1)),
+            DrinkEvent(person_id=user.id, timestamp=_subtract_months(base, 7)),
+        ]
+        db.add_all(events)
+        db.commit()
+        user_id = user.id
 
     resp = client.get(f"/users/{user_id}/monthly_drinks")
     assert resp.status_code == 200

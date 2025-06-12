@@ -7,9 +7,9 @@ import {
   Text,
   Group,
   SegmentedControl,
-  Divider,
   Title,
 } from "@mantine/core";
+import styles from "./Mobile.module.css";
 
 interface MobileTopUpModalProps {
   opened: boolean;
@@ -52,24 +52,29 @@ const MobileTopUpModal: React.FC<MobileTopUpModalProps> = ({
         value={amount.toString()}
         onChange={(value) => onChangeAmount(Number(value))}
       />
-      <Divider my="xs" />
       <NumberInput
-        label="Custom amount"
+        label="Custom amount:"
         min={1}
+        decimalScale={2}
         value={amount}
         onChange={(val) => typeof val === "number" && onChangeAmount(val)}
         hideControls
-        styles={{
-          input: { textAlign: "center", fontSize: 20 },
-          label: { width: "100%", textAlign: "center" },
+        prefix="€"
+        className={styles.numberInput}
+        classNames={{
+          input: styles.centeredInput,
+          label: styles.centeredLabel,
         }}
       />
+      <Text size="sm" c="dimmed" w="100%" ta="center">
+        Note that every transaction has a 0.30€ fee.
+      </Text>
       <Group justify="center" mt="md" gap="sm" w="100%">
-        <Button variant="light" color="gray" onClick={onClose}>
-          Cancel
-        </Button>
-        <Button color="teal" onClick={onConfirm}>
+        <Button className={styles.button} onClick={onConfirm}>
           Proceed to Checkout
+        </Button>
+        <Button className={styles.cancelbutton} onClick={onClose}>
+          Cancel
         </Button>
       </Group>
     </Stack>

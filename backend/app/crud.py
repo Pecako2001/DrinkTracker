@@ -1,3 +1,5 @@
+"""Database access helpers."""
+
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from . import models, schemas
@@ -8,11 +10,13 @@ from mollie.api.client import Client as MollieClient
 import os
 
 
-def get_persons(db: Session):
+def get_persons(db: Session) -> list[models.Person]:
     """Return all persons sorted by name for deterministic ordering."""
     return db.query(models.Person).order_by(models.Person.name.asc()).all()
 
-def create_person(db: Session, person: schemas.PersonCreate):
+
+def create_person(db: Session, person: schemas.PersonCreate) -> models.Person:
+    """Create a new person entry."""
     db_person = models.Person(
         name=person.name,
         avatar_url=person.avatarUrl,
@@ -24,12 +28,14 @@ def create_person(db: Session, person: schemas.PersonCreate):
     return db_person
 
 
-def delete_person(db: Session, person_id: int):
+def delete_person(db: Session, person_id: int) -> None:
+    """Remove a person by id."""
     db.query(models.Person).filter(models.Person.id == person_id).delete()
     db.commit()
 
 
-def record_drink(db: Session, person_id: int):
+def record_drink(db: Session, person_id: int) -> models.Person | None:
+    """Record a drink event and decrement the user's balance."""
     person = get_person(db, person_id)
     if not person:
         return None
@@ -42,7 +48,7 @@ def record_drink(db: Session, person_id: int):
     return person
 
 
-def undo_last_drink(db: Session, person_id: int):
+def undo_last_drink(db: Session, person_id: int) -> models.Person | None:
     """Revert the most recent drink event for a user."""
     person = get_person(db, person_id)
     if not person or person.total_drinks <= 0:
@@ -68,7 +74,8 @@ def undo_last_drink(db: Session, person_id: int):
 # crud.py
 def update_user_balance(
     db: Session, user_id: int, new_balance: float, new_total_drinks: int | None = None
-):
+) -> models.Person | None:
+    """Update user's balance and optionally total drinks."""
     person = get_person(db, user_id)
     if not person:
         return None
@@ -79,7 +86,11 @@ def update_user_balance(
     db.refresh(person)
     return person
 
-def update_user_avatar(db: Session, user_id: int, avatar_url: str):
+
+def update_user_avatar(
+    db: Session, user_id: int, avatar_url: str
+) -> models.Person | None:
+    """Update the avatar URL for a user."""
     person = get_person(db, user_id)
     if not person:
         return None
@@ -88,7 +99,11 @@ def update_user_avatar(db: Session, user_id: int, avatar_url: str):
     db.refresh(person)
     return person
 
-def update_user_nickname(db: Session, user_id: int, nickname: str | None):
+
+def update_user_nickname(
+    db: Session, user_id: int, nickname: str | None
+) -> models.Person | None:
+    """Change a user's nickname."""
     person = get_person(db, user_id)
     if not person:
         return None
@@ -97,11 +112,14 @@ def update_user_nickname(db: Session, user_id: int, nickname: str | None):
     db.refresh(person)
     return person
 
-def get_person(db: Session, person_id: int):
+
+def get_person(db: Session, person_id: int) -> models.Person | None:
+    """Fetch a single person by id."""
     return db.query(models.Person).filter(models.Person.id == person_id).first()
 
 
-def create_payment(db: Session, payment: schemas.PaymentCreate):
+def create_payment(db: Session, payment: schemas.PaymentCreate) -> str:
+    """Create a payment record and return a checkout URL."""
     # Simulate creating a payment without Mollie
     payment_obj = models.Payment(
         mollie_id=f"simulated-{uuid4().hex}",
@@ -124,7 +142,7 @@ def create_payment(db: Session, payment: schemas.PaymentCreate):
     return "http://localhost:3000/?success=true"
 
 
-def drinks_per_hour(db: Session, user_ids: list[int]):
+def drinks_per_hour(db: Session, user_ids: list[int]) -> dict[int, list[int]]:
     """Return count of drinks grouped by hour for each given user."""
     if not user_ids:
         return {}
@@ -145,8 +163,13 @@ def drinks_per_hour(db: Session, user_ids: list[int]):
         data[row.person_id][int(row.hour)] = int(row.count)
     return data
 
+
 from datetime import date
-def get_longest_hydration_streaks(db: Session, limit: int = 10):
+
+
+def get_longest_hydration_streaks(
+    db: Session, limit: int = 10
+) -> list[dict[str, int | str]]:
     """Return users with the longest consecutive-day drink streaks."""
     from collections import defaultdict
     from datetime import timedelta
@@ -192,6 +215,7 @@ def get_longest_hydration_streaks(db: Session, limit: int = 10):
         for uid, streak in sorted_streaks
     ]
 
+
 # def create_payment(db: Session, payment: schemas.PaymentCreate):
 #     mollie_api_key = os.getenv("MOLLIE_API_KEY")
 #     mollie = MollieClient()
@@ -223,7 +247,7 @@ def get_longest_hydration_streaks(db: Session, limit: int = 10):
 
 def get_social_sip_scores(
     db: Session, user_id: int, limit: int = 5, window_minutes: int = 5
-):
+) -> list[dict[str, int | str]]:
     """Return top drinking buddies for a user within the given time window."""
     from datetime import timedelta
 
@@ -260,7 +284,10 @@ def get_social_sip_scores(
     return results
 
 
-def create_backup_log(db: Session, success: bool, message: str | None = None):
+def create_backup_log(
+    db: Session, success: bool, message: str | None = None
+) -> models.BackupLog:
+    """Record the outcome of a backup operation."""
     log = models.BackupLog(success=success, message=message)
     db.add(log)
     db.commit()
@@ -268,7 +295,8 @@ def create_backup_log(db: Session, success: bool, message: str | None = None):
     return log
 
 
-def get_backups(db: Session, limit: int = 20):
+def get_backups(db: Session, limit: int = 20) -> list[models.BackupLog]:
+    """Return recent backup log entries."""
     return (
         db.query(models.BackupLog)
         .order_by(models.BackupLog.timestamp.desc())

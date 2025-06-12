@@ -6,6 +6,10 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 from unittest import mock
 import pytest
+import conftest
+conftest.set_env_vars()
+
+pytestmark = pytest.mark.usefixtures("env_vars")
 
 # Stub mollie client to avoid optional dependency in tests
 mollie = types.ModuleType("mollie")
@@ -38,11 +42,8 @@ def create_test_app():
     Base.metadata.create_all(bind=test_engine)
 
     def override_get_db():
-        db = TestingSessionLocal()
-        try:
+        with TestingSessionLocal() as db:
             yield db
-        finally:
-            db.close()
 
     app.dependency_overrides[get_db] = override_get_db
     client = TestClient(app)

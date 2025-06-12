@@ -1,6 +1,8 @@
 import os
 import sys
 import pytest
+import conftest
+conftest.set_env_vars()
 from fastapi import FastAPI, Depends
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -9,11 +11,7 @@ from sqlalchemy.orm import sessionmaker
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-os.environ.setdefault("POSTGRES_USER", "test")
-os.environ.setdefault("POSTGRES_PASSWORD", "test")
-os.environ.setdefault("POSTGRES_DB", "test")
-os.environ.setdefault("POSTGRES_HOST", "localhost")
-os.environ.setdefault("POSTGRES_PORT", "5432")
+pytestmark = pytest.mark.usefixtures("env_vars")
 
 from app.database import Base, get_db
 from app import crud, schemas
@@ -32,11 +30,8 @@ def client():
     app = FastAPI()
 
     def override_get_db():
-        db = TestingSessionLocal()
-        try:
+        with TestingSessionLocal() as db:
             yield db
-        finally:
-            db.close()
 
     app.dependency_overrides[get_db] = override_get_db
 

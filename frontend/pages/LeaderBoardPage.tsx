@@ -2,16 +2,13 @@ import React from "react";
 import { useState } from "react";
 import {
   Container,
-  Paper,
   Tabs,
   Title,
   FloatingIndicator,
 } from "@mantine/core";
-import { OverallStats } from "../components/Stats/OverallStats";
 import { MonthlyLeaderboard } from "../components/Stats/MonthlyLeaderboard";
 import { YearlyLeaderboard } from "../components/Stats/YearlyLeaderboard";
 import { AllTimeLeaderboard } from "../components/Stats/AllTimeLeaderboard";
-import { UserInsightPanel } from "../components/Stats/UserInsightPanel";
 import classes from "../styles/StatsPage.module.css";
 
 function StatsPage() {

@@ -30,7 +30,8 @@ class UpdateNickname(BaseModel):
     response_model=list[schemas.PersonOut],
     response_model_by_alias=False,
 )
-def read_users(db: Session = Depends(get_db)):
+def read_users(db: Session = Depends(get_db)) -> list[schemas.PersonOut]:
+    """Return all users."""
     persons = crud.get_persons(db)
     for p in persons:
         print(
@@ -44,7 +45,8 @@ def create_user(
     person: schemas.PersonCreate,
     db: Session = Depends(get_db),
     admin: None = Depends(get_current_admin),
-):
+) -> schemas.Person:
+    """Create a new user."""
     return crud.create_person(db, person)
 
 
@@ -53,13 +55,15 @@ def delete_user(
     user_id: int,
     db: Session = Depends(get_db),
     admin: None = Depends(get_current_admin),
-):
+) -> dict[str, bool]:
+    """Delete a user by ID."""
     crud.delete_person(db, user_id)
     return {"ok": True}
 
 
 @router.post("/users/{user_id}/drinks", response_model=schemas.Person)
-def add_drink(user_id: int, db: Session = Depends(get_db)):
+def add_drink(user_id: int, db: Session = Depends(get_db)) -> schemas.Person:
+    """Record a drink for a user."""
     person = crud.record_drink(db, user_id)
     if not person:
         raise HTTPException(status_code=404, detail="User not found")
@@ -67,7 +71,8 @@ def add_drink(user_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/users/{user_id}/drinks/undo", response_model=schemas.Person)
-def undo_drink(user_id: int, db: Session = Depends(get_db)):
+def undo_drink(user_id: int, db: Session = Depends(get_db)) -> schemas.Person:
+    """Undo a user's most recent drink."""
     person = crud.undo_last_drink(db, user_id)
     if not person:
         raise HTTPException(status_code=404, detail="User or drink not found")
@@ -80,7 +85,8 @@ def update_user(
     update: UpdateUser,
     db: Session = Depends(get_db),
     admin: None = Depends(get_current_admin),
-):
+) -> schemas.Person:
+    """Update a user's balance."""
     person = crud.update_user_balance(db, user_id, update.balance)
     if not person:
         raise HTTPException(status_code=404, detail="User not found")
@@ -93,7 +99,8 @@ def update_nickname(
     update: UpdateNickname,
     db: Session = Depends(get_db),
     admin: None = Depends(get_current_admin),
-):
+) -> schemas.Person:
+    """Update a user's nickname."""
     person = crud.update_user_nickname(db, user_id, update.nickname)
     if not person:
         raise HTTPException(status_code=404, detail="User not found")
@@ -105,7 +112,8 @@ async def upload_avatar(
     user_id: int,
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
-):
+) -> schemas.Person:
+    """Upload and set a new avatar for a user."""
     user = crud.get_person(db, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -128,7 +136,8 @@ async def upload_avatar(
 
 
 @router.get("/users/{user_id}", response_model=schemas.Person)
-def get_user(user_id: int, db: Session = Depends(get_db)):
+def get_user(user_id: int, db: Session = Depends(get_db)) -> schemas.Person:
+    """Retrieve a single user."""
     user = crud.get_person(db, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -136,7 +145,7 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/users/{user_id}/buddies")
-def user_buddies(user_id: int, db: Session = Depends(get_db)):
+def user_buddies(user_id: int, db: Session = Depends(get_db)) -> list[dict[str, Any]]:
     """Return how often other users drink within 5 minutes of the given user."""
     user = crud.get_person(db, user_id)
     if not user:

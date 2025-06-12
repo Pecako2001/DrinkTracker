@@ -1,18 +1,10 @@
-import os
+import pytest
+import conftest
+conftest.set_env_vars()
 from fastapi.testclient import TestClient
 from jose import jwt
-from passlib.context import CryptContext
 
-os.environ["ADMIN_SECRET_KEY"] = "testsecret"
-os.environ.setdefault("POSTGRES_USER", "test")
-os.environ.setdefault("POSTGRES_PASSWORD", "test")
-os.environ.setdefault("POSTGRES_DB", "test")
-os.environ.setdefault("POSTGRES_HOST", "localhost")
-os.environ.setdefault("POSTGRES_PORT", "5432")
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-hashed = pwd_context.hash("admin")
-os.environ["ADMIN_PASSWORD_HASH"] = hashed
+pytestmark = pytest.mark.usefixtures("env_vars")
 
 from fastapi import FastAPI
 from app.auth import router
