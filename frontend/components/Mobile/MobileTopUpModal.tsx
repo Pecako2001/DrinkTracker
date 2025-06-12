@@ -55,6 +55,7 @@ const MobileTopUpModal: React.FC<MobileTopUpModalProps> = ({
       <NumberInput
         label="Custom amount:"
         min={1}
+        decimalScale={2}
         value={amount}
         onChange={(val) => typeof val === "number" && onChangeAmount(val)}
         hideControls

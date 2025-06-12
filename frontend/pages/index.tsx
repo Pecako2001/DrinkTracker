@@ -131,7 +131,7 @@ export default function HomePage() {
 
   // Render desktop UI when not on a mobile device
   return (
-    <Container size={750} py="md">
+    <Container size={1500} py="md">
       <TextInput
         placeholder="Search users..."
         leftSection={<IconSearch size={16} />}

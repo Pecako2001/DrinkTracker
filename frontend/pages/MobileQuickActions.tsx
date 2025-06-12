@@ -39,6 +39,7 @@ const MobileQuickActionsPage: React.FC = () => {
   const [topUpModalOpen, setTopUpModalOpen] = useState(false);
   const [topUpAmount, setTopUpAmount] = useState(5);
   const [notifications, setNotifications] = useState<DrinkNotification[]>([]);
+  const [animateDrink, setAnimateDrink] = useState(false);
   const router = useRouter();
 
   const fetchUserData = useCallback(async (userId: string) => {
@@ -89,6 +90,12 @@ const MobileQuickActionsPage: React.FC = () => {
     } finally {
       setActionLoading((prev) => ({ ...prev, drink: false }));
     }
+  };
+
+  const handleAddDrinkWithAnimation = async () => {
+    setAnimateDrink(true);
+    setTimeout(() => setAnimateDrink(false), 300);
+    await handleAddDrink();
   };
 
   const handleUndoDrink = async (notif: DrinkNotification) => {
@@ -193,12 +200,12 @@ const MobileQuickActionsPage: React.FC = () => {
 
       <Stack className={styles.stack}>
         <Button
-          onClick={handleAddDrink}
+          onClick={handleAddDrinkWithAnimation}
           loading={actionLoading.drink}
           disabled={actionLoading.topup}
           size="lg"
           leftSection={<IconCoffee size={25} />}
-          className={styles.button}
+          className={`${styles.button} ${animateDrink ? styles.animate : ""}`}
         >
           +1 Drink
         </Button>

@@ -7,7 +7,6 @@
 
 .card:hover {
   box-shadow: var(--mantine-shadow-lg);
-  transform: translateY(-2px);
 }
 
 .avatar {
@@ -35,16 +34,4 @@
 
 .animate {
   animation: drinkBounce 0.3s ease;
-}
-
-@keyframes drinkBounce {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
 }

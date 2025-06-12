@@ -20,7 +20,7 @@ const UserQuickActionsDisplay: React.FC<UserQuickActionsDisplayProps> = ({
     <Stack align="center" gap="md" px="lg" pb="lg">
       <div className={classes.avatarWrapper}>
         <Avatar
-          src={resolveAvatarUrl(user.avatarUrl)}
+          src={resolveAvatarUrl(user.avatar_url)}
           size={200}
           radius={200}
           mx="auto"
@@ -44,6 +44,7 @@ const UserQuickActionsDisplay: React.FC<UserQuickActionsDisplayProps> = ({
               size="xs"
               className={classes.changeBtn}
               onClick={triggerFile}
+              mt={-30}
               style={{
                 display: "flex",
                 justifyContent: "center",
