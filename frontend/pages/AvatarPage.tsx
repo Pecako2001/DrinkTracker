@@ -33,14 +33,10 @@ export default function AvatarPage() {
     }
     const form = new FormData();
     form.append("file", file);
-    await api.post(`/users/${userId}/avatar`, form, {
+    const { data } = await api.post<Person>(`/users/${userId}/avatar`, form, {
       headers: { "Content-Type": "multipart/form-data" },
     });
-    const { data } = await api.get<Person[]>("/users");
-    setUsers(data);
-    if (typeof window !== "undefined") {
-      window.location.reload();
-    }
+    setUsers((prev) => prev.map((u) => (u.id === userId ? data : u)));
   };
 
   const handleNickname = async (userId: number, nickname: string) => {
