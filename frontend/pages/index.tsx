@@ -55,13 +55,10 @@ export default function HomePage() {
     }
     const form = new FormData();
     form.append("file", file);
-    await api.post(`/users/${userId}/avatar`, form, {
+    const { data } = await api.post<Person>(`/users/${userId}/avatar`, form, {
       headers: { "Content-Type": "multipart/form-data" },
     });
-    await fetchUsers();
-    if (typeof window !== "undefined") {
-      window.location.reload();
-    }
+    setUsers((prev) => prev.map((u) => (u.id === userId ? data : u)));
   };
 
   const handleDrink = async (userId: number) => {
