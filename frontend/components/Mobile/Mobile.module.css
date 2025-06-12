@@ -1,0 +1,29 @@
+/* Top Up css */
+.button {
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+.cancelbutton {
+    background-color: #cacaca; /* Red */
+}
+
+.numberInput {
+    width: 80%;
+    padding: 10px;
+    text-align: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.centeredInput {
+  text-align: center;
+  font-size: 16px;
+}

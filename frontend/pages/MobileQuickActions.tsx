@@ -21,6 +21,7 @@ import {
 } from "@tabler/icons-react";
 import UserQuickActionsDisplay from "../components/Mobile/UserQuickActionsDisplay";
 import MobileTopUpModal from "../components/Mobile/MobileTopUpModal";
+import styles from "../styles/MobileQuickActions.module.css"; // Assuming you have a CSS module for styles
 
 interface DrinkNotification {
   user: Person;
@@ -135,14 +136,7 @@ const MobileQuickActionsPage: React.FC = () => {
   if (loading && !user) {
     // Show loader only if truly loading initial data
     return (
-      <Container
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
+      <Container className={styles.container}>     
         <Loader />
       </Container>
     );
@@ -150,16 +144,7 @@ const MobileQuickActionsPage: React.FC = () => {
 
   if (error) {
     return (
-      <Container
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-          padding: "20px",
-        }}
-      >
+      <Container className={styles.container}>     
         <Title order={2} c="red.500" ta="center">
           Error
         </Title>
@@ -188,15 +173,7 @@ const MobileQuickActionsPage: React.FC = () => {
   if (!user) {
     // Should ideally be covered by loading or error state, but as a fallback
     return (
-      <Container
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
+      <Container className={styles.container}>     
         <Text>No user data available. You might need to re-select a user.</Text>
         <Button onClick={() => router.push("/MobileUserSelect")} mt="md">
           Go to User Selection
@@ -206,23 +183,22 @@ const MobileQuickActionsPage: React.FC = () => {
   }
 
   return (
-    <Container py="xl">
-      <Box mb="xl">
-        {" "}
+    <Container className={styles.container}>
+      <Box className={styles.box}>
         <UserQuickActionsDisplay
           user={user}
           onChangeAvatar={handleAvatarChange}
         />
       </Box>
 
-      <Stack>
+      <Stack className={styles.stack}> 
         <Button
           onClick={handleAddDrink}
           loading={actionLoading.drink}
-          disabled={actionLoading.topup} // Disable if other action is in progress
+          disabled={actionLoading.topup}
           size="lg"
           leftSection={<IconCoffee size={25} />}
-          variant="filled"
+          className={styles.button}
         >
           +1 Drink
         </Button>
@@ -233,6 +209,7 @@ const MobileQuickActionsPage: React.FC = () => {
           size="lg"
           leftSection={<IconCreditCardPay size={25} />}
           variant="outline"
+          className={styles.button}
         >
           Top Up
         </Button>

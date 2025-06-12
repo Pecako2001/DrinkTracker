@@ -1,8 +1,8 @@
 import React, { useRef } from "react";
 import { Person } from "../../types";
-import { Card, Avatar, Text, Stack, Box, Button } from "@mantine/core";
+import { Avatar, Text, Stack, Box, Button } from "@mantine/core";
 import { resolveAvatarUrl } from "../../lib/resolveAvatarUrl";
-import classes from "../UserCard/UserCardImage.module.css";
+import classes from "./Mobile.module.css";
 import { IconCamera } from "@tabler/icons-react";
 
 interface UserQuickActionsDisplayProps {
@@ -17,23 +17,12 @@ const UserQuickActionsDisplay: React.FC<UserQuickActionsDisplayProps> = ({
   const fileRef = useRef<HTMLInputElement>(null);
   const triggerFile = () => fileRef.current?.click();
   return (
-    <Card withBorder radius="md" className={classes.card}>
-      {/* Header Image */}
-      <Card.Section
-        h={120}
-        style={{
-          backgroundImage: 'url("/images/Logo.png")',
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      />
-
       <Stack align="center" gap="md" px="lg" pb="lg">
         <div className={classes.avatarWrapper}>
           <Avatar
             src={resolveAvatarUrl(user.avatarUrl)}
-            size={80}
-            radius={80}
+            size={200}
+            radius={200}
             mx="auto"
             mt={-40}
             className={classes.avatar}
@@ -87,8 +76,7 @@ const UserQuickActionsDisplay: React.FC<UserQuickActionsDisplayProps> = ({
             €{user.balance.toFixed(2)}
           </Text>
         </Box>
-      </Stack>
-    </Card>
+      </Stack>    
   );
 };
 
