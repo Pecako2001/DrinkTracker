@@ -9,7 +9,10 @@ router = APIRouter()
 
 
 @router.post("/payments/topup")
-def top_up(payment: schemas.PaymentCreate, db: Session = Depends(get_db)):
+def top_up(
+    payment: schemas.PaymentCreate, db: Session = Depends(get_db)
+) -> dict[str, str]:
+    """Create a payment and return the checkout URL."""
     url = crud.create_payment(db, payment)
     return {"checkoutUrl": url}
 
@@ -18,5 +21,6 @@ def top_up(payment: schemas.PaymentCreate, db: Session = Depends(get_db)):
 def list_payments(
     db: Session = Depends(get_db),
     admin: None = Depends(get_current_admin),
-):
+) -> list[models.Payment]:
+    """List all payment records."""
     return db.query(models.Payment).all()
