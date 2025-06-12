@@ -2,27 +2,18 @@ import React from "react";
 import { useState } from "react";
 import {
   Container,
-  Paper,
-  Tabs,
+  Text,
   Title,
-  FloatingIndicator,
 } from "@mantine/core";
-import { UserInsightPanel } from "../components/Stats/UserInsightPanel";
 import classes from "../styles/StatsPage.module.css";
 
 function StatsPage() {
   return (
     <Container size="xl" py="md" className={classes.statsContainer}>
-      <Title>Statistics</Title>
-      <Paper
-        withBorder
-        shadow="sm"
-        p="md"
-        mt="lg"
-        className={classes.userInsightSection}
-      >
-        <UserInsightPanel />
-      </Paper>
+      <Title>Statistics </Title>
+      <Text size="sm" color="dimmed" mb="md">
+        View insights about users, drinks, and more. coming soon.
+      </Text>
     </Container>
   );
 }
