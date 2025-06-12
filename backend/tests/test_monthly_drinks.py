@@ -27,33 +27,29 @@ Base.metadata.create_all(bind=engine)
 
 
 def override_get_db():
-    db = TestingSessionLocal()
-    try:
+    with TestingSessionLocal() as db:
         yield db
-    finally:
-        db.close()
 
 client = TestClient(app)
 
 
 def test_monthly_drinks():
     app.dependency_overrides[get_db] = override_get_db
-    db = TestingSessionLocal()
-    user = Person(name="Test")
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    user_id = user.id
-    base = datetime.utcnow().replace(day=15, hour=0, minute=0, second=0, microsecond=0)
-    events = [
-        DrinkEvent(person_id=user.id, timestamp=base),
-        DrinkEvent(person_id=user.id, timestamp=_subtract_months(base, 1)),
-        DrinkEvent(person_id=user.id, timestamp=_subtract_months(base, 7)),
-    ]
-    db.add_all(events)
-    db.commit()
-    user_id = user.id
-    db.close()
+    with TestingSessionLocal() as db:
+        user = Person(name="Test")
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        user_id = user.id
+        base = datetime.utcnow().replace(day=15, hour=0, minute=0, second=0, microsecond=0)
+        events = [
+            DrinkEvent(person_id=user.id, timestamp=base),
+            DrinkEvent(person_id=user.id, timestamp=_subtract_months(base, 1)),
+            DrinkEvent(person_id=user.id, timestamp=_subtract_months(base, 7)),
+        ]
+        db.add_all(events)
+        db.commit()
+        user_id = user.id
 
     resp = client.get(f"/users/{user_id}/monthly_drinks")
     assert resp.status_code == 200

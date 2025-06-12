@@ -28,11 +28,8 @@ Base.metadata.create_all(bind=engine)
 
 
 def override_get_db():
-    db = TestingSessionLocal()
-    try:
+    with TestingSessionLocal() as db:
         yield db
-    finally:
-        db.close()
 
 
 client = TestClient(app)
@@ -40,28 +37,27 @@ client = TestClient(app)
 
 def test_social_sip_score():
     app.dependency_overrides[get_db] = override_get_db
-    db = TestingSessionLocal()
-    alice = Person(name="Alice")
-    bob = Person(name="Bob")
-    charlie = Person(name="Charlie")
-    db.add_all([alice, bob, charlie])
-    db.commit()
-    db.refresh(alice)
-    db.refresh(bob)
-    db.refresh(charlie)
-    alice_id = alice.id
-    bob_id = bob.id
+    with TestingSessionLocal() as db:
+        alice = Person(name="Alice")
+        bob = Person(name="Bob")
+        charlie = Person(name="Charlie")
+        db.add_all([alice, bob, charlie])
+        db.commit()
+        db.refresh(alice)
+        db.refresh(bob)
+        db.refresh(charlie)
+        alice_id = alice.id
+        bob_id = bob.id
 
-    base_time = datetime.utcnow()
-    events = [
-        DrinkEvent(person_id=alice.id, timestamp=base_time),
-        DrinkEvent(person_id=bob.id, timestamp=base_time + timedelta(minutes=1)),
-        DrinkEvent(person_id=alice.id, timestamp=base_time + timedelta(minutes=2)),
-        DrinkEvent(person_id=charlie.id, timestamp=base_time + timedelta(minutes=10)),
-    ]
-    db.add_all(events)
-    db.commit()
-    db.close()
+        base_time = datetime.utcnow()
+        events = [
+            DrinkEvent(person_id=alice.id, timestamp=base_time),
+            DrinkEvent(person_id=bob.id, timestamp=base_time + timedelta(minutes=1)),
+            DrinkEvent(person_id=alice.id, timestamp=base_time + timedelta(minutes=2)),
+            DrinkEvent(person_id=charlie.id, timestamp=base_time + timedelta(minutes=10)),
+        ]
+        db.add_all(events)
+        db.commit()
 
     resp = client.get(f"/users/{alice_id}/buddies")
     assert resp.status_code == 200
