@@ -38,7 +38,7 @@ const MobileUserSelectPage: React.FC = () => {
   }, []);
 
   const handleSelectUser = (userId: string | number) => {
-    Cookies.set("selected_user_id", userId.toString(), { expires: 7 }); // Ensure userId is string
+    Cookies.set("selected_user_id", userId.toString(), { expires: 7, secure: true, httpOnly: true }); // Ensure userId is string
     router.push("/MobileQuickActions");
   };
 
