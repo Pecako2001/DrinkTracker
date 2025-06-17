@@ -125,9 +125,12 @@ async def upload_avatar(
         if os.path.exists(old_path):
             os.remove(old_path)
 
-    ext = os.path.splitext(file.filename)[1]
+    from werkzeug.utils import secure_filename
+    ext = os.path.splitext(secure_filename(file.filename))[1]
     filename = f"{user_id}_{uuid4().hex}{ext}"
-    filepath = os.path.join(avatars_dir, filename)
+    filepath = os.path.normpath(os.path.join(avatars_dir, filename))
+    if not filepath.startswith(avatars_dir):
+        raise HTTPException(status_code=400, detail="Invalid file path")
     with open(filepath, "wb") as buffer:
         buffer.write(await file.read())
     avatar_url = f"/avatars/{filename}"
