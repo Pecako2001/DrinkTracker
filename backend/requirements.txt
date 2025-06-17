@@ -9,3 +9,4 @@ python-jose
 passlib[bcrypt]
 pytest
 python-multipart
+werkzeug==3.1.3
