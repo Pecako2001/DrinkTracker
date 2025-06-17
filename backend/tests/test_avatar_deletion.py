@@ -54,7 +54,7 @@ def test_avatar_update_deletes_old_file():
         files={"file": ("a1.png", b"first", "image/png")},
     )
     assert resp.status_code == 200
-    first_url = resp.json()["avatar_url"]
+    first_url = resp.json()["avatarUrl"]
     first_path = os.path.join(users_router.avatars_dir, os.path.basename(first_url))
     assert os.path.exists(first_path)
 
@@ -64,7 +64,7 @@ def test_avatar_update_deletes_old_file():
         files={"file": ("a2.png", b"second", "image/png")},
     )
     assert resp.status_code == 200
-    second_url = resp.json()["avatar_url"]
+    second_url = resp.json()["avatarUrl"]
     second_path = os.path.join(users_router.avatars_dir, os.path.basename(second_url))
     assert os.path.exists(second_path)
     assert not os.path.exists(first_path)

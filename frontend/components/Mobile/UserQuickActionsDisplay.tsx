@@ -20,7 +20,7 @@ const UserQuickActionsDisplay: React.FC<UserQuickActionsDisplayProps> = ({
     <Stack align="center" gap="md" px="lg" pb="lg">
       <div className={classes.avatarWrapper}>
         <Avatar
-          src={resolveAvatarUrl(user.avatar_url)}
+          src={resolveAvatarUrl(user.avatarUrl)}
           size={200}
           radius={200}
           mx="auto"
