@@ -40,7 +40,7 @@ def read_users(db: Session = Depends(get_db)) -> list[schemas.PersonOut]:
     return persons
 
 
-@router.post("/users", response_model=schemas.Person)
+@router.post("/users", response_model=schemas.Person, response_model_by_alias=False)
 def create_user(
     person: schemas.PersonCreate,
     db: Session = Depends(get_db),
@@ -61,7 +61,11 @@ def delete_user(
     return {"ok": True}
 
 
-@router.post("/users/{user_id}/drinks", response_model=schemas.Person)
+@router.post(
+    "/users/{user_id}/drinks",
+    response_model=schemas.Person,
+    response_model_by_alias=False,
+)
 def add_drink(user_id: int, db: Session = Depends(get_db)) -> schemas.Person:
     """Record a drink for a user."""
     person = crud.record_drink(db, user_id)
@@ -70,7 +74,11 @@ def add_drink(user_id: int, db: Session = Depends(get_db)) -> schemas.Person:
     return person
 
 
-@router.post("/users/{user_id}/drinks/undo", response_model=schemas.Person)
+@router.post(
+    "/users/{user_id}/drinks/undo",
+    response_model=schemas.Person,
+    response_model_by_alias=False,
+)
 def undo_drink(user_id: int, db: Session = Depends(get_db)) -> schemas.Person:
     """Undo a user's most recent drink."""
     person = crud.undo_last_drink(db, user_id)
@@ -79,7 +87,11 @@ def undo_drink(user_id: int, db: Session = Depends(get_db)) -> schemas.Person:
     return person
 
 
-@router.patch("/users/{user_id}")
+@router.patch(
+    "/users/{user_id}",
+    response_model=schemas.Person,
+    response_model_by_alias=False,
+)
 def update_user(
     user_id: int,
     update: UpdateUser,
@@ -93,7 +105,11 @@ def update_user(
     return person
 
 
-@router.patch("/users/{user_id}/nickname", response_model=schemas.Person)
+@router.patch(
+    "/users/{user_id}/nickname",
+    response_model=schemas.Person,
+    response_model_by_alias=False,
+)
 def update_nickname(
     user_id: int,
     update: UpdateNickname,
@@ -107,7 +123,11 @@ def update_nickname(
     return person
 
 
-@router.post("/users/{user_id}/avatar", response_model=schemas.Person)
+@router.post(
+    "/users/{user_id}/avatar",
+    response_model=schemas.Person,
+    response_model_by_alias=False,
+)
 async def upload_avatar(
     user_id: int,
     file: UploadFile = File(...),
@@ -135,7 +155,11 @@ async def upload_avatar(
     return crud.get_person(db, user_id)
 
 
-@router.get("/users/{user_id}", response_model=schemas.Person)
+@router.get(
+    "/users/{user_id}",
+    response_model=schemas.Person,
+    response_model_by_alias=False,
+)
 def get_user(user_id: int, db: Session = Depends(get_db)) -> schemas.Person:
     """Retrieve a single user."""
     user = crud.get_person(db, user_id)

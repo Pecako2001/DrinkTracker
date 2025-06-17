@@ -35,11 +35,11 @@ def client():
 
     app.dependency_overrides[get_db] = override_get_db
 
-    @app.post("/users", response_model=schemas.Person)
+    @app.post("/users", response_model=schemas.Person, response_model_by_alias=False)
     def create_user(person: schemas.PersonCreate, db=Depends(get_db)):
         return crud.create_person(db, person)
 
-    @app.get("/users", response_model=list[schemas.Person])
+    @app.get("/users", response_model=list[schemas.Person], response_model_by_alias=False)
     def read_users(db=Depends(get_db)):
         return crud.get_persons(db)
 
@@ -53,20 +53,20 @@ def test_create_user_with_avatar_and_nickname(client):
     )
     assert resp.status_code == 200
     data = resp.json()
-    assert data["avatar_url"] == "http://example.com/a.png"
+    assert data["avatarUrl"] == "http://example.com/a.png"
     assert data["nickname"] == "Al"
 
     resp = client.get("/users")
     assert resp.status_code == 200
     users = resp.json()
-    assert any(u["avatar_url"] == "http://example.com/a.png" and u["nickname"] == "Al" for u in users)
+    assert any(u["avatarUrl"] == "http://example.com/a.png" and u["nickname"] == "Al" for u in users)
 
 
 def test_create_user_without_optional_fields(client):
     resp = client.post("/users", json={"name": "Bob"})
     assert resp.status_code == 200
     data = resp.json()
-    assert data["avatar_url"] is None
+    assert data["avatarUrl"] is None
     assert data["nickname"] is None
 
 
